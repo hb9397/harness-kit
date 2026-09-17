@@ -36,5 +36,5 @@ if ($decision.decision -eq 'deny') {
     [Console]::Error.WriteLine("Claude routing guard denied: $($decision.reason)")
     exit 2
 }
-$decision | ConvertTo-Json -Depth 8 -Compress
+# Allow emits nothing: Claude validates exit 0 JSON and rejects the internal routing object.
 exit 0

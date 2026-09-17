@@ -34,7 +34,7 @@
       "passed": true
     },
     "reproducible_build": {
-      "archive_sha256": "056ab4988e681a6d250e179fe6a668a6be4e6b7beab9f83f9b369330c167d80e",
+      "archive_sha256": "19aae4dcd342cb4c78e9148fce064f237cba97e551d5869332cb8ba47ecd88d9",
       "same_archive_hash": true,
       "same_manifest": true,
       "release_metadata_matches": true,

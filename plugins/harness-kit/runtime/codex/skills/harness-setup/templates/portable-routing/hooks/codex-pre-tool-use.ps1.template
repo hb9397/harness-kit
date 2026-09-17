@@ -4,33 +4,51 @@ param()
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
-$raw = [Console]::In.ReadToEnd()
-if ([string]::IsNullOrWhiteSpace($raw)) {
-    Write-Error 'Codex PreToolUse payload is required.'
-    exit 2
+# Codex PreToolUse wire contract (codex-rs/hooks, rust-v0.154.0):
+# - allow: exit 0 with empty stdout.
+# - bypass: exit 0 with {"systemMessage": ...} so the unenforced write is visible.
+# - deny and adapter/core failure: exit 0 with hookSpecificOutput.hookEventName=PreToolUse,
+#   permissionDecision=deny and a reason. Codex CLI 0.154.0 on Windows did not block on
+#   exit 2 + stderr in smoke tests, so failures fail closed through the deny response.
+# Internal routing decisions are never written to stdout because Codex rejects unknown fields.
+$utf8 = [Text.UTF8Encoding]::new($false)
+
+function New-DenyResponse([string]$Reason) {
+    [ordered]@{ hookSpecificOutput = [ordered]@{ hookEventName = 'PreToolUse'; permissionDecision = 'deny'; permissionDecisionReason = $Reason } }
 }
 
-$payload = $raw | ConvertFrom-Json
-if ([string]::IsNullOrWhiteSpace([string]$payload.tool_name) -or $null -eq $payload.tool_input) {
-    Write-Error 'Codex PreToolUse requires tool_name and tool_input.'
-    exit 2
-}
-if (($payload.tool_name -in @('Bash', 'apply_patch')) -and [string]::IsNullOrWhiteSpace([string]$payload.tool_input.command)) {
-    Write-Error 'Codex Bash and apply_patch require tool_input.command.'
-    exit 2
-}
-
-$projectRoot = (Resolve-Path (Join-Path $PSScriptRoot '..\\..')).Path
-$corePath = Join-Path $projectRoot '.ai-docs/harness/hooks/artifact-route-core.ps1'
 try {
-    $decision = (& $corePath -RuntimeHost codex -ProjectRoot $projectRoot -ToolName $payload.tool_name -ToolInput $payload.tool_input | ConvertFrom-Json)
+    $raw = [IO.StreamReader]::new([Console]::OpenStandardInput(), $utf8).ReadToEnd()
+    if ([string]::IsNullOrWhiteSpace($raw)) { throw 'Codex PreToolUse payload is required.' }
+    $payload = $raw | ConvertFrom-Json
+    $toolName = $payload.PSObject.Properties['tool_name']
+    $toolInput = $payload.PSObject.Properties['tool_input']
+    if ($null -eq $toolName -or [string]::IsNullOrWhiteSpace([string]$toolName.Value) -or $null -eq $toolInput -or $null -eq $toolInput.Value) {
+        throw 'Codex PreToolUse requires tool_name and tool_input.'
+    }
+    if ($toolName.Value -in @('Bash', 'apply_patch')) {
+        $command = $toolInput.Value.PSObject.Properties['command']
+        if ($null -eq $command -or [string]::IsNullOrWhiteSpace([string]$command.Value)) {
+            throw 'Codex Bash and apply_patch require tool_input.command.'
+        }
+    }
+
+    $projectRoot = (Resolve-Path (Join-Path $PSScriptRoot '..\\..')).Path
+    $corePath = Join-Path $projectRoot '.ai-docs/harness/hooks/artifact-route-core.ps1'
+    $decision = (& $corePath -RuntimeHost codex -ProjectRoot $projectRoot -ToolName $toolName.Value -ToolInput $toolInput.Value | ConvertFrom-Json)
+    $response = switch ([string]$decision.decision) {
+        'allow' { $null }
+        'bypass' { [ordered]@{ systemMessage = "Codex routing guard bypass: $($decision.reason)" } }
+        'deny' { New-DenyResponse "Codex routing guard denied: $($decision.reason)" }
+        default { throw "unknown routing decision: $($decision.decision)" }
+    }
 } catch {
-    [ordered]@{ hookSpecificOutput = [ordered]@{ permissionDecision = 'deny'; permissionDecisionReason = "Codex routing guard failed: $($_.Exception.Message)" } } | ConvertTo-Json -Depth 8 -Compress
-    exit 2
+    $response = New-DenyResponse "Codex routing guard failed: $($_.Exception.Message)"
 }
-if ($decision.decision -eq 'deny') {
-    [ordered]@{ hookSpecificOutput = [ordered]@{ permissionDecision = 'deny'; permissionDecisionReason = [string]$decision.reason } } | ConvertTo-Json -Depth 8 -Compress
-    exit 0
+if ($null -ne $response) {
+    $bytes = $utf8.GetBytes(($response | ConvertTo-Json -Depth 8 -Compress) + [Environment]::NewLine)
+    $stdout = [Console]::OpenStandardOutput()
+    $stdout.Write($bytes, 0, $bytes.Length)
+    $stdout.Flush()
 }
-$decision | ConvertTo-Json -Depth 8 -Compress
 exit 0

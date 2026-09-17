@@ -59,7 +59,7 @@ function Get-WriteRequests() {
         $command = Get-InputProperty $ToolInput @('command')
         if ([string]::IsNullOrWhiteSpace($command)) { return $requests }
         if ($ToolName -eq 'apply_patch') {
-            foreach ($match in [regex]::Matches($command, '(?m)^\*\*\*\s+(?:Add|Update|Delete) File:\s*(.+?)\s*$')) {
+            foreach ($match in [regex]::Matches($command, '(?m)^\*\*\*\s+(?:(?:Add|Update|Delete) File|Move to):\s*(.+?)\s*$')) {
                 $requests += [pscustomobject]@{ path = $match.Groups[1].Value.Trim(); operation = 'write'; content_hash = (Get-StringHash $command) }
             }
         } elseif ($command -match '[`$][({]') {
@@ -76,7 +76,8 @@ function Get-WriteRequests() {
 function Get-StringHash([string]$Value) {
     if ($null -eq $Value) { $Value = '' }
     $bytes = [Text.Encoding]::UTF8.GetBytes($Value)
-    return ([Security.Cryptography.SHA256]::HashData($bytes) | ForEach-Object { $_.ToString('x2') }) -join ''
+    # SHA256.Create() keeps the core usable from Windows PowerShell 5.1 hook commands.
+    return ([Security.Cryptography.SHA256]::Create().ComputeHash($bytes) | ForEach-Object { $_.ToString('x2') }) -join ''
 }
 
 function Test-Approval([string]$RelativePath, [string]$Operation, [string]$ContentHash, [string]$MarkerDirectory) {

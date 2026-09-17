@@ -915,11 +915,11 @@ python maintainer/skills/skill-portfolio-maintainer/scripts/validate_registry.py
 따라서 이후 다른 플러그인이나 일반 AI 도구를 사용해도 bundle과 앱별 routing instruction만으로 산출물 위치를 해석할 수 있다.
 
 G10 뒤 선택 host에 설치하는 `PreToolUse` adapter는 공통 write guard를 호출한다. guard는 경로를 project containment 기준으로 정규화하고, 기존 canonical 문서·승인된 앱 source·`.ai-docs/_inbox/**`·manifest exception만 통과시킨다. 새 관리 문서는 target path, operation, content SHA-256, TTL을 함께 묶은 1회성 approval marker가 정확히 일치할 때만 통과하며 성공 뒤 marker를 소비한다.
-Codex는 deny JSON을, Claude는 exit 2/stderr를 사용한다.
+Codex는 deny JSON을, Claude는 exit 2/stderr를 사용하며 두 host 모두 allow는 빈 stdout이다. Codex matcher는 `apply_patch|Bash`만 대상으로 하고, allow는 빈 stdout, bypass는 `systemMessage`, adapter/core 예외는 deny JSON(exit 0)으로 응답해 내부 판정 객체를 Codex에 노출하지 않는다.
 
 이는 관찰 가능한 local write surface의 best-effort guard다. 동적 shell target, hosted tool, opt-out path, 명령 실행 후의 redirect, 외부 process는 완전 차단을 주장하지 않고 bypass evidence로 남긴다. 실제 Codex `/hooks` trust는 여전히 별도의 사용자 증적이다.
 
-사용자가 Codex `/hooks` 또는 해당 host의 신뢰 검토를 마친 뒤에는 `install-routing.ps1 -ActivateTrust -TargetHost codex -ApproveTrustEvidence`처럼 증적을 명시해 manifest 상태만 `active`로 갱신한다. 이 명령은 신뢰 검토를 실행하거나 자동으로 증명하지 않는다.
+사용자가 Codex `/hooks` 또는 해당 host의 신뢰 검토를 마친 뒤에는 `install-routing.ps1 -ActivateTrust -TargetHost codex -ApproveTrustEvidence`처럼 증적을 명시해 manifest 상태만 `active`로 갱신한다. 이 명령은 신뢰 검토를 실행하거나 자동으로 증명하지 않는다. manifest 상태는 hook 실행 스위치가 아니므로 `/hooks` 신뢰나 `--dangerously-bypass-hook-trust`로 hook이 먼저 실행될 수 있으며, hook 정의가 바뀐 뒤 `-Apply`하면 다시 `pending-trust`가 된다.
 외부 Markdown 계열은 `normalize-artifact.ps1 -Plan`으로 UTF-8·managed marker 병합안을 보고 G12 승인 뒤에만 promotion한다. JSON/YAML·이미지·PDF는 source hash와 proposal을 `_inbox`에 보관할 뿐 손실 가능 자동 변환이나 canonical promotion을 하지 않는다.
 
 ## 결론

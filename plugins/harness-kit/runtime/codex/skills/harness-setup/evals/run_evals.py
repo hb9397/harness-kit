@@ -170,6 +170,72 @@ def render_portable(template_name: str, replacements: dict[str, str]) -> str:
     return text
 
 
+CODEX_PRE_TOOL_USE_TOP_LEVEL = {"continue", "decision", "hookSpecificOutput", "reason", "stopReason", "suppressOutput", "systemMessage"}
+CODEX_PRE_TOOL_USE_SPECIFIC = {"additionalContext", "hookEventName", "permissionDecision", "permissionDecisionReason", "updatedInput"}
+# Tool names that Codex 0.154.0 exposes to PreToolUse without writing project files.
+CODEX_READ_ONLY_TOOL_NAMES = ("update_plan", "view_image", "tool_search", "mcp__filesystem__read_file", "spawn_agent", "Read", "Grep")
+
+
+def codex_matcher_matches(matcher: str, tool_name: str) -> bool:
+    """Mirror codex-rs/hooks/src/events/common.rs matches_matcher, including tool aliases."""
+    inputs = [tool_name] + {"apply_patch": ["Write", "Edit"], "spawn_agent": ["Agent"]}.get(tool_name, [])
+    if matcher in {"", "*"}:
+        return True
+    if re.fullmatch(r"[A-Za-z0-9_|]+", matcher):
+        return any(candidate in matcher.split("|") for candidate in inputs)
+    return any(re.search(matcher, candidate) for candidate in inputs)
+
+
+def codex_pre_tool_use_outcome(returncode: int, stdout: str, stderr: str) -> tuple[str, str]:
+    """Mirror codex-rs/hooks/src/events/pre_tool_use.rs parse_completed for rust-v0.154.0.
+
+    Returns (completed|warning|blocked, reason) and raises for every output Codex marks Failed.
+    """
+    # Source accepts exit 2 + stderr as a block, but the Codex CLI 0.154.0 Windows smoke test
+    # continued the tool call, so the adapter must fail closed through the exit 0 deny response.
+    if returncode != 0:
+        raise AssertionError(f"hook exited with code {returncode}: {stderr}")
+    trimmed = stdout.strip()
+    if not trimmed:
+        return "completed", ""
+    try:
+        wire = json.loads(trimmed)
+    except json.JSONDecodeError:
+        wire = None
+    if not isinstance(wire, dict):
+        if trimmed.startswith(("{", "[")):
+            raise AssertionError(f"hook returned invalid pre-tool-use JSON output: {stdout}")
+        return "completed", ""
+    specific = wire.get("hookSpecificOutput")
+    if set(wire) - CODEX_PRE_TOOL_USE_TOP_LEVEL or (
+        specific is not None
+        and (not isinstance(specific, dict) or set(specific) - CODEX_PRE_TOOL_USE_SPECIFIC or specific.get("hookEventName") != "PreToolUse")
+    ):
+        raise AssertionError(f"hook returned invalid pre-tool-use JSON output: {stdout}")
+    if wire.get("continue") is False or "stopReason" in wire or wire.get("suppressOutput"):
+        raise AssertionError(f"PreToolUse hook returned unsupported universal field: {stdout}")
+    if specific and any(key in specific for key in ("permissionDecision", "permissionDecisionReason", "updatedInput")):
+        decision = specific.get("permissionDecision")
+        if decision == "deny" and str(specific.get("permissionDecisionReason") or "").strip():
+            return "blocked", specific["permissionDecisionReason"]
+        if decision == "allow" and "updatedInput" in specific:
+            return "completed", ""
+        raise AssertionError(f"PreToolUse hook returned unsupported hookSpecificOutput: {stdout}")
+    if "decision" in wire or "reason" in wire:
+        if wire.get("decision") == "block" and str(wire.get("reason") or "").strip():
+            return "blocked", wire["reason"]
+        raise AssertionError(f"PreToolUse hook returned unsupported legacy decision: {stdout}")
+    return ("warning", wire["systemMessage"]) if "systemMessage" in wire else ("completed", "")
+
+
+def apply_patch_payload(*files: tuple[str, str]) -> dict:
+    lines = ["*** Begin Patch"]
+    for path, content in files:
+        lines += [f"*** Add File: {path}", f"+{content}"]
+    lines.append("*** End Patch")
+    return {"hook_event_name": "PreToolUse", "tool_name": "apply_patch", "tool_use_id": "call-1", "tool_input": {"command": "\n".join(lines)}}
+
+
 def check_portable_routing_bundle() -> None:
     """B1 contract: a copied project-owned bundle remains interpretable offline."""
     fixture = json.loads(read(PORTABLE_ROUTING_FIXTURE))
@@ -235,6 +301,15 @@ def check_portable_routing_bundle() -> None:
     codex_handler = codex_hook_config["hooks"]["PreToolUse"][0]["hooks"][0]
     if replacements["{{CODEX_HOOK_PATH}}"] not in codex_handler.get("commandWindows", ""):
         raise AssertionError("Codex Windows hook config did not receive the resolved hook path")
+    codex_matcher = codex_hook_config["hooks"]["PreToolUse"][0]["matcher"]
+    for write_tool in ("apply_patch", "Bash"):
+        if not codex_matcher_matches(codex_matcher, write_tool):
+            raise AssertionError(f"Codex matcher must include write-capable tool: {write_tool}")
+    for read_tool in CODEX_READ_ONLY_TOOL_NAMES:
+        if codex_matcher_matches(codex_matcher, read_tool):
+            raise AssertionError(f"Codex matcher must not run the write guard for read-only tool: {read_tool}")
+    if f"matcher = '{codex_matcher}'" not in read(PORTABLE_ROUTING_TEMPLATE_ROOT / "install-routing.ps1.template"):
+        raise AssertionError("install-routing Codex matcher drifted from codex-hooks.json.template")
 
     claude_adapter = render_portable("hooks/claude-pre-tool-use.ps1.template", replacements)
     codex_adapter = render_portable("hooks/codex-pre-tool-use.ps1.template", replacements)
@@ -260,7 +335,7 @@ def check_portable_routing_bundle() -> None:
     ):
         if token not in core:
             raise AssertionError(f"portable routing core is missing write-guard contract: {token}")
-    if "hookSpecificOutput" not in codex_adapter or "permissionDecision" not in codex_adapter:
+    if "hookSpecificOutput" not in codex_adapter or "hookEventName = 'PreToolUse'" not in codex_adapter:
         raise AssertionError("Codex adapter must emit the documented deny response")
 
     with tempfile.TemporaryDirectory(prefix="portable-routing-bundle-") as tmp:
@@ -353,52 +428,71 @@ def check_portable_routing_bundle() -> None:
 
         codex_adapter_path = project / ".codex" / "hooks" / "codex-pre-tool-use.ps1"
 
-        def invoke_codex(payload: dict) -> tuple[int, dict, str]:
+        def invoke_codex(payload: dict | str, shell: str = "pwsh") -> tuple[str, str]:
             result = subprocess.run(
-                ["pwsh", "-NoProfile", "-File", str(codex_adapter_path)],
-                input=json.dumps(payload),
+                [shell, "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", str(codex_adapter_path)],
+                input=payload if isinstance(payload, str) else json.dumps(payload, ensure_ascii=False),
                 capture_output=True,
-                text=True,
                 encoding="utf-8",
                 errors="replace",
                 check=False,
             )
-            try:
-                parsed = json.loads(result.stdout)
-            except json.JSONDecodeError as exc:
-                raise AssertionError(f"Codex adapter did not emit JSON: {result.stdout} / {result.stderr}") from exc
-            return result.returncode, parsed, result.stderr
+            return codex_pre_tool_use_outcome(result.returncode, result.stdout, result.stderr)
 
-        outside_code, outside, outside_stderr = invoke_codex(
-            {"tool_name": "Write", "tool_input": {"file_path": "../escape.md", "content": "blocked"}}
-        )
-        if outside_code != 0 or outside.get("hookSpecificOutput", {}).get("permissionDecision") != "deny":
-            raise AssertionError(f"Codex traversal write was not denied: {outside} / {outside_stderr}")
-        superpowers_code, superpowers, superpowers_stderr = invoke_codex(
-            {"tool_name": "Write", "tool_input": {"file_path": "docs/superpowers/plans/external.md", "content": "blocked"}}
-        )
-        if superpowers_code != 0 or superpowers.get("hookSpecificOutput", {}).get("permissionDecision") != "deny" or ".ai-docs/instruction/artifact-output-routing-instruction.md" not in superpowers.get("hookSpecificOutput", {}).get("permissionDecisionReason", ""):
-            raise AssertionError(f"Superpowers default path was not redirected to canonical routing: {superpowers} / {superpowers_stderr}")
+        outside = invoke_codex(apply_patch_payload(("../escape.md", "blocked")))
+        if outside[0] != "blocked" or "outside project containment" not in outside[1]:
+            raise AssertionError(f"Codex traversal patch was not denied: {outside}")
+        superpowers = invoke_codex(apply_patch_payload(("docs/superpowers/plans/external.md", "blocked")))
+        if superpowers[0] != "blocked" or ".ai-docs/instruction/artifact-output-routing-instruction.md" not in superpowers[1]:
+            raise AssertionError(f"Superpowers default path was not redirected to canonical routing: {superpowers}")
+        moved = apply_patch_payload()
+        moved["tool_input"]["command"] = "*** Begin Patch\n*** Update File: README.md\n*** Move to: ../moved.md\n*** End Patch"
+        if invoke_codex(moved)[0] != "blocked":
+            raise AssertionError("Codex apply_patch Move to target escaped the write guard")
 
         existing = project / ".ai-docs" / "instruction" / "existing.md"
         existing.parent.mkdir(parents=True, exist_ok=True)
         existing.write_text("existing\n", encoding="utf-8")
-        existing_code, existing_result, existing_stderr = invoke_codex(
-            {"tool_name": "Write", "tool_input": {"file_path": ".ai-docs/instruction/existing.md", "content": "revised"}}
-        )
-        if existing_code != 0 or existing_result.get("decision") != "allow":
-            raise AssertionError(f"existing canonical edit was not allowed: {existing_result} / {existing_stderr}")
+        existing_patch = apply_patch_payload((".ai-docs/instruction/existing.md", "revised"))
+        if invoke_codex(existing_patch) != ("completed", ""):
+            raise AssertionError("existing canonical patch was not allowed as a Codex no-op")
+        if invoke_codex(existing_patch, shell="powershell.exe") != ("completed", ""):
+            raise AssertionError("Codex commandWindows powershell.exe path did not allow an existing canonical patch")
+        if invoke_codex({"tool_name": "Bash", "tool_input": {"command": "Get-ChildItem .ai-docs"}}) != ("completed", ""):
+            raise AssertionError("Codex read-only shell command was not a no-op")
+        bypass = invoke_codex({"tool_name": "Bash", "tool_input": {"command": "Set-Content $(Get-Target) x"}})
+        if bypass[0] != "warning" or "bypass" not in bypass[1]:
+            raise AssertionError(f"Codex dynamic shell bypass was not a schema-valid warning: {bypass}")
+        for invalid_payload, label in (
+            ("", "empty payload"),
+            ("{not json", "malformed payload"),
+            ({"tool_name": "apply_patch"}, "missing tool_input"),
+            ({"tool_name": "apply_patch", "tool_input": {"patch": "*** Begin Patch"}}, "missing command"),
+        ):
+            for shell in ("pwsh", "powershell.exe"):
+                invalid = invoke_codex(invalid_payload, shell=shell)
+                if invalid[0] != "blocked" or "Codex routing guard failed" not in invalid[1]:
+                    raise AssertionError(f"Codex {label} did not fail closed with a deny response under {shell}: {invalid}")
+        routing_path = bundle / "artifact-routing.json"
+        routing_backup = routing_path.read_bytes()
+        routing_path.write_text("{broken", encoding="utf-8")
+        try:
+            core_failure = invoke_codex(existing_patch)
+        finally:
+            routing_path.write_bytes(routing_backup)
+        if core_failure[0] != "blocked" or "Codex routing guard failed" not in core_failure[1]:
+            raise AssertionError(f"Codex core exception did not fail closed with a deny response: {core_failure}")
 
         proposed_content = "approved new instruction"
-        new_payload = {"tool_name": "Write", "tool_input": {"file_path": ".ai-docs/instruction/new.md", "content": proposed_content}}
-        new_code, new_result, new_stderr = invoke_codex(new_payload)
-        if new_code != 0 or new_result.get("hookSpecificOutput", {}).get("permissionDecision") != "deny":
-            raise AssertionError(f"new managed artifact without marker was not denied: {new_result} / {new_stderr}")
+        new_payload = apply_patch_payload((".ai-docs/instruction/new.md", proposed_content))
+        new_result = invoke_codex(new_payload)
+        if new_result[0] != "blocked" or "one-shot approval marker" not in new_result[1]:
+            raise AssertionError(f"new managed artifact without marker was not denied: {new_result}")
         approval = subprocess.run(
             [
                 "pwsh", "-NoProfile", "-File", str(bundle / "hooks" / "approve-artifact.ps1"),
                 "-ArtifactPath", ".ai-docs/instruction/new.md",
-                "-ContentSha256", hashlib.sha256(proposed_content.encode("utf-8")).hexdigest(),
+                "-ContentSha256", hashlib.sha256(new_payload["tool_input"]["command"].encode("utf-8")).hexdigest(),
                 "-Approve",
             ],
             capture_output=True,
@@ -409,12 +503,10 @@ def check_portable_routing_bundle() -> None:
         )
         if approval.returncode != 0:
             raise AssertionError(f"one-shot approval marker could not be created: {approval.stderr}")
-        approved_code, approved_result, approved_stderr = invoke_codex(new_payload)
-        if approved_code != 0 or approved_result.get("decision") != "allow":
-            raise AssertionError(f"exact approved write was not allowed: {approved_result} / {approved_stderr}")
-        replay_code, replay_result, replay_stderr = invoke_codex(new_payload)
-        if replay_code != 0 or replay_result.get("hookSpecificOutput", {}).get("permissionDecision") != "deny":
-            raise AssertionError(f"approval marker replay was not denied: {replay_result} / {replay_stderr}")
+        if invoke_codex(new_payload) != ("completed", ""):
+            raise AssertionError("exact approved patch was not allowed")
+        if invoke_codex(new_payload)[0] != "blocked":
+            raise AssertionError("approval marker replay was not denied")
 
         claude_adapter_path = project / ".claude" / "hooks" / "claude-pre-tool-use.ps1"
         claude_denied = subprocess.run(
@@ -439,8 +531,26 @@ def check_portable_routing_bundle() -> None:
             env={**os.environ, "CLAUDE_PROJECT_DIR": str(project)},
             check=False,
         )
-        if claude_allowed.returncode != 0 or json.loads(claude_allowed.stdout).get("decision") != "allow":
+        # Claude validates exit 0 JSON; the internal routing object failed as legacy decision=allow.
+        if claude_allowed.returncode != 0 or claude_allowed.stdout.strip():
             raise AssertionError(f"Claude existing canonical edit was not allowed: {claude_allowed.stdout} / {claude_allowed.stderr}")
+        # Claude settings run the shared core through Windows PowerShell 5.1.
+        for claude_payload, expected_code, expected_text in (
+            ({"tool_name": "Edit", "tool_input": {"file_path": ".ai-docs/instruction/existing.md", "new_string": "revised"}}, 0, ""),
+            ({"tool_name": "Write", "tool_input": {"file_path": ".ai-docs/instruction/claude-new.md", "content": "new"}}, 2, "Claude routing guard denied: new managed artifact requires an exact one-shot approval marker"),
+        ):
+            claude_windows = subprocess.run(
+                ["powershell.exe", "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", str(claude_adapter_path)],
+                input=json.dumps(claude_payload),
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+                errors="replace",
+                env={**os.environ, "CLAUDE_PROJECT_DIR": str(project)},
+                check=False,
+            )
+            if claude_windows.returncode != expected_code or claude_windows.stdout.strip() or expected_text not in claude_windows.stderr:
+                raise AssertionError(f"Claude powershell.exe regression: {claude_windows.stdout} / {claude_windows.stderr}")
         after_first_apply = snapshot_files(project)
         applied_again = subprocess.run(
             ["pwsh", "-NoProfile", "-File", str(bundle / "install-routing.ps1"), "-Apply", "-ApproveHostInstall"],
@@ -486,6 +596,40 @@ def check_portable_routing_bundle() -> None:
         post_trust = json.loads((bundle / "artifact-routing.json").read_text(encoding="utf-8"))
         if post_trust["hosts"]["codex"]["status"] != "active" or post_trust["hosts"]["claude"]["status"] != "pending-trust":
             raise AssertionError("Codex trust activation did not preserve the other host's pending-trust state")
+
+        def run_installer(*args: str) -> dict:
+            completed = subprocess.run(
+                ["pwsh", "-NoProfile", "-File", str(bundle / "install-routing.ps1"), *args],
+                capture_output=True, text=True, encoding="utf-8", errors="replace", check=False,
+            )
+            if completed.returncode != 0:
+                raise AssertionError(f"install-routing {args} failed: {completed.stderr}")
+            return {item["host"]: item for item in json.loads(completed.stdout)["hosts"]}
+
+        codex_config_path = project / ".codex" / "hooks.json"
+        if run_installer("-Apply", "-TargetHost", "codex", "-ApproveHostInstall")["codex"]["state"] != "active":
+            raise AssertionError("re-Apply with an unchanged trusted Codex hook definition must keep active")
+        codex_config = json.loads(read(codex_config_path))
+        managed_entry = codex_config["hooks"]["PreToolUse"][0]
+        legacy_entry = json.loads(json.dumps(managed_entry))
+        legacy_entry["matcher"] = "apply_patch|Edit|Write|Bash|MCP|.*"
+        unrelated_entry = {"matcher": "Bash", "hooks": [{"type": "command", "command": "echo unrelated"}]}
+        codex_config["hooks"]["PreToolUse"] = [unrelated_entry, legacy_entry]
+        codex_config_path.write_text(json.dumps(codex_config, indent=2), encoding="utf-8")
+        if run_installer("-Check", "-TargetHost", "codex")["codex"]["state"] != "pending-trust":
+            raise AssertionError("Check must not report active after the trusted Codex hook definition changed")
+        if run_installer("-Apply", "-TargetHost", "codex", "-ApproveHostInstall")["codex"]["state"] != "pending-trust":
+            raise AssertionError("re-Apply of a changed Codex hook definition must require trust again")
+        migrated = json.loads(read(codex_config_path))["hooks"]["PreToolUse"]
+        managed = [entry for entry in migrated if any("codex-pre-tool-use.ps1" in hook.get("commandWindows", "") for hook in entry["hooks"])]
+        if len(managed) != 1 or managed[0]["matcher"] != "apply_patch|Bash" or unrelated_entry not in migrated:
+            raise AssertionError(f"Codex re-Apply must replace the legacy managed entry once and keep unrelated hooks: {migrated}")
+        installed_adapter = (project / ".codex" / "hooks" / "codex-pre-tool-use.ps1").read_bytes()
+        if installed_adapter != (bundle / "hooks" / "codex-pre-tool-use.ps1").read_bytes():
+            raise AssertionError("installed Codex adapter differs from the project-owned bundle source")
+        routed = json.loads(read(bundle / "artifact-routing.json"))
+        if routed["setup"]["harness_kit_runtime_required"] is not True:
+            raise AssertionError("pending-trust host must keep harness_kit_runtime_required=true")
 
         text_input = project / "external.mdx"
         text_input.write_text("<!-- harness-kit:managed:start -->\nNEW-MANAGED\n<!-- harness-kit:managed:end -->\n", encoding="utf-8", newline="\n")

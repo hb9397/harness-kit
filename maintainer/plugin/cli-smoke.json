@@ -9,13 +9,34 @@
   "platforms": {
     "codex": {
       "status": "passed",
-      "cli_version": "codex-cli 0.153.0-alpha.5",
+      "cli_version": "codex-cli 0.154.0",
       "marketplace": "hb9397",
       "plugin_id": "harness-kit@hb9397",
       "evidence_level": "marketplace-install-and-cache-smoke",
       "model_invocation_verified": false,
       "installed_payload": {
-        "version": "0.6.3",
+        "version": "0.6.4",
+        "skill_count": 20,
+        "agent_count": 0,
+        "required_skills": [
+          "harness-setup",
+          "humanize-korean"
+        ],
+        "evidence_level": "installed-cache-payload",
+        "model_invocation_verified": false,
+        "nested_marketplaces": 0
+      },
+      "cleanup": "passed"
+    },
+    "claude": {
+      "status": "passed",
+      "cli_version": "2.1.274 (Claude Code)",
+      "marketplace": "hb9397",
+      "plugin_id": "harness-kit@hb9397",
+      "evidence_level": "marketplace-install-and-cache-smoke",
+      "model_invocation_verified": false,
+      "installed_payload": {
+        "version": "0.6.4",
         "skill_count": 20,
         "agent_count": 0,
         "required_skills": [

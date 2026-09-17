@@ -3,15 +3,15 @@
   "files": [
     {
       "path": ".claude-plugin/plugin.json",
-      "sha256": "3e9aab97149d61f1023dbc77a5e1cab8e238d416df46891019dfe6537178f9ed"
+      "sha256": "a43f55ba8dc0711fb1536b4f07f86db60a9872829e6579bcc3cf767b3527dbd4"
     },
     {
       "path": ".codex-plugin/plugin.json",
-      "sha256": "34d5c288bff805e4e6fbeae67f684d9c529fe100acf68deb8e56d35974a0cad8"
+      "sha256": "264e5ef7a6b05b699ad5a4071ebec933d18a6832c6e2c5dcaae1ca40a3b9fcd2"
     },
     {
       "path": "CAPABILITIES.json",
-      "sha256": "1210d3ca403c9524bbcc4707bc0f7b4b600365612fb372cb3666e500f6570135"
+      "sha256": "21faf0b3ec7d1201505d0db907b2eaa3e4325c6309efa92342954dfdf99c9545"
     },
     {
       "path": "LICENSE",
@@ -27,7 +27,7 @@
     },
     {
       "path": "UPSTREAMS.lock.json",
-      "sha256": "8f518de747886bfd003b0ec170fe24fee1300c31a3b5c41503153470205d5e76"
+      "sha256": "3e247b3cbba98a7bf3240864f6493af22d5d258cb13430f8467c5e3edfb497bc"
     },
     {
       "path": "licenses/anthropic-frontend-design-LICENSE",
@@ -331,7 +331,7 @@
     },
     {
       "path": "runtime/claude/skills/harness-setup/SKILL.md",
-      "sha256": "db2aa6892d6872990830af2a45b9d6031ea2cd4ab3be4e4ab82e532ff10f8244"
+      "sha256": "3e2ed69bb1d9da02a633508048bad70c7e924be2f3fd7ff4d97a4a3aa870a402"
     },
     {
       "path": "runtime/claude/skills/harness-setup/evals/fixtures/portable-routing-baseline.json",
@@ -347,7 +347,7 @@
     },
     {
       "path": "runtime/claude/skills/harness-setup/evals/run_evals.py",
-      "sha256": "6960010481382447b7424071cbb9c09e0f03d5ef050d2298c01fe42088c80d4d"
+      "sha256": "42b1b44044d402c88b967af6233277032f26bae3da50d154a937338c54a43fc8"
     },
     {
       "path": "runtime/claude/skills/harness-setup/prompts/detection.md",
@@ -387,7 +387,7 @@
     },
     {
       "path": "runtime/claude/skills/harness-setup/templates/portable-routing/README.md.template",
-      "sha256": "32da6317b95708bbee7e193966a63fca1d19837a6dfc141669876cb46dad4b94"
+      "sha256": "cd8bf5c7f6ab5cc7c14fe08dffbcb664e37625def0de1723ff2882611b713a78"
     },
     {
       "path": "runtime/claude/skills/harness-setup/templates/portable-routing/artifact-format-contract.json.template",
@@ -403,7 +403,7 @@
     },
     {
       "path": "runtime/claude/skills/harness-setup/templates/portable-routing/codex-hooks.json.template",
-      "sha256": "46fb16615888c48e79b9c7c6606f61a43f1c560c8472db8dad3a152c2985f4f4"
+      "sha256": "29be51d8975ca56c3653a6b9b611eff20b7d55be43c38fdaf01108063becaebb"
     },
     {
       "path": "runtime/claude/skills/harness-setup/templates/portable-routing/hooks/approve-artifact.ps1.template",
@@ -411,15 +411,15 @@
     },
     {
       "path": "runtime/claude/skills/harness-setup/templates/portable-routing/hooks/artifact-route-core.ps1.template",
-      "sha256": "2ccd6f32c04fc63bd07d6b63aa6f008d0ab1d3fa21cdc8c41afbcd73728c2fcd"
+      "sha256": "3f99c1d5f17d23a546e1bf0633cef3c8dbe4dd381cc64514c01f825133be6821"
     },
     {
       "path": "runtime/claude/skills/harness-setup/templates/portable-routing/hooks/claude-pre-tool-use.ps1.template",
-      "sha256": "b5173c5846c150bd54b12f45cf4d59b07e5dc40b783ef2267f734b67fc04cd9b"
+      "sha256": "f069c54d94ab9bf7934d73c85aca79ad2dbb9637b6163317e70f6a3aa320a8bb"
     },
     {
       "path": "runtime/claude/skills/harness-setup/templates/portable-routing/hooks/codex-pre-tool-use.ps1.template",
-      "sha256": "242527db544ab173ffd4205face76afbaf892feab0d62d67d29181df9375b79f"
+      "sha256": "fc392ee7644c23bcbece2bf02eddc590f23d21d91da8388fc7420caef4f6fc17"
     },
     {
       "path": "runtime/claude/skills/harness-setup/templates/portable-routing/inbox-artifact-manifest.json.template",
@@ -427,7 +427,7 @@
     },
     {
       "path": "runtime/claude/skills/harness-setup/templates/portable-routing/install-routing.ps1.template",
-      "sha256": "e83fdde958ac31cf4b13d2f957f850ea9d3906c6530fbea311638a5e52babb71"
+      "sha256": "a309731b60336927955a34c6c11b1a63e30c0897d6214241bf25cc800d611545"
     },
     {
       "path": "runtime/claude/skills/harness-setup/templates/portable-routing/normalize-artifact.ps1.template",
@@ -1215,7 +1215,7 @@
     },
     {
       "path": "runtime/codex/skills/harness-setup/SKILL.md",
-      "sha256": "db2aa6892d6872990830af2a45b9d6031ea2cd4ab3be4e4ab82e532ff10f8244"
+      "sha256": "3e2ed69bb1d9da02a633508048bad70c7e924be2f3fd7ff4d97a4a3aa870a402"
     },
     {
       "path": "runtime/codex/skills/harness-setup/evals/fixtures/portable-routing-baseline.json",
@@ -1231,7 +1231,7 @@
     },
     {
       "path": "runtime/codex/skills/harness-setup/evals/run_evals.py",
-      "sha256": "6960010481382447b7424071cbb9c09e0f03d5ef050d2298c01fe42088c80d4d"
+      "sha256": "42b1b44044d402c88b967af6233277032f26bae3da50d154a937338c54a43fc8"
     },
     {
       "path": "runtime/codex/skills/harness-setup/prompts/detection.md",
@@ -1271,7 +1271,7 @@
     },
     {
       "path": "runtime/codex/skills/harness-setup/templates/portable-routing/README.md.template",
-      "sha256": "32da6317b95708bbee7e193966a63fca1d19837a6dfc141669876cb46dad4b94"
+      "sha256": "cd8bf5c7f6ab5cc7c14fe08dffbcb664e37625def0de1723ff2882611b713a78"
     },
     {
       "path": "runtime/codex/skills/harness-setup/templates/portable-routing/artifact-format-contract.json.template",
@@ -1287,7 +1287,7 @@
     },
     {
       "path": "runtime/codex/skills/harness-setup/templates/portable-routing/codex-hooks.json.template",
-      "sha256": "46fb16615888c48e79b9c7c6606f61a43f1c560c8472db8dad3a152c2985f4f4"
+      "sha256": "29be51d8975ca56c3653a6b9b611eff20b7d55be43c38fdaf01108063becaebb"
     },
     {
       "path": "runtime/codex/skills/harness-setup/templates/portable-routing/hooks/approve-artifact.ps1.template",
@@ -1295,15 +1295,15 @@
     },
     {
       "path": "runtime/codex/skills/harness-setup/templates/portable-routing/hooks/artifact-route-core.ps1.template",
-      "sha256": "2ccd6f32c04fc63bd07d6b63aa6f008d0ab1d3fa21cdc8c41afbcd73728c2fcd"
+      "sha256": "3f99c1d5f17d23a546e1bf0633cef3c8dbe4dd381cc64514c01f825133be6821"
     },
     {
       "path": "runtime/codex/skills/harness-setup/templates/portable-routing/hooks/claude-pre-tool-use.ps1.template",
-      "sha256": "b5173c5846c150bd54b12f45cf4d59b07e5dc40b783ef2267f734b67fc04cd9b"
+      "sha256": "f069c54d94ab9bf7934d73c85aca79ad2dbb9637b6163317e70f6a3aa320a8bb"
     },
     {
       "path": "runtime/codex/skills/harness-setup/templates/portable-routing/hooks/codex-pre-tool-use.ps1.template",
-      "sha256": "242527db544ab173ffd4205face76afbaf892feab0d62d67d29181df9375b79f"
+      "sha256": "fc392ee7644c23bcbece2bf02eddc590f23d21d91da8388fc7420caef4f6fc17"
     },
     {
       "path": "runtime/codex/skills/harness-setup/templates/portable-routing/inbox-artifact-manifest.json.template",
@@ -1311,7 +1311,7 @@
     },
     {
       "path": "runtime/codex/skills/harness-setup/templates/portable-routing/install-routing.ps1.template",
-      "sha256": "e83fdde958ac31cf4b13d2f957f850ea9d3906c6530fbea311638a5e52babb71"
+      "sha256": "a309731b60336927955a34c6c11b1a63e30c0897d6214241bf25cc800d611545"
     },
     {
       "path": "runtime/codex/skills/harness-setup/templates/portable-routing/normalize-artifact.ps1.template",

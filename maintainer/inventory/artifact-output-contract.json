@@ -117,12 +117,14 @@
         "config": ".claude/settings.json",
         "adapter": ".claude/hooks/claude-pre-tool-use.ps1",
         "input_contract": "PreToolUse JSON stdin with tool_name and tool_input; project root from CLAUDE_PROJECT_DIR",
+        "output_contract": "allow=exit 0 empty stdout; deny and adapter/core failure=exit 2 with stderr reason",
         "merge_rule": "merge only the managed PreToolUse entry; preserve unrelated settings"
       },
       "codex": {
         "config": ".codex/hooks.json",
         "adapter": ".codex/hooks/codex-pre-tool-use.ps1",
-        "input_contract": "PreToolUse JSON stdin; Bash and apply_patch inspect tool_input.command",
+        "input_contract": "PreToolUse JSON stdin; matcher apply_patch|Bash; Bash and apply_patch inspect tool_input.command",
+        "output_contract": "allow=exit 0 empty stdout; bypass=exit 0 systemMessage; deny=exit 0 hookSpecificOutput{hookEventName=PreToolUse,permissionDecision=deny,permissionDecisionReason}; adapter/core failure=same exit 0 deny response (exit 2 did not block in Codex CLI 0.154.0 Windows smoke)",
         "merge_rule": "merge only the managed hooks.json entry; never add inline [hooks] to .codex/config.toml"
       }
     },

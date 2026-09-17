@@ -50,7 +50,7 @@ function Get-HostPaths([string]$Name) {
     if ($Name -eq 'claude') {
         return [ordered]@{ config = (Join-Path $projectRoot '.claude/settings.json'); adapter = (Join-Path $projectRoot '.claude/hooks/claude-pre-tool-use.ps1'); source = (Join-Path $PSScriptRoot 'hooks/claude-pre-tool-use.ps1'); matcher = 'Write|Edit' }
     }
-    return [ordered]@{ config = (Join-Path $projectRoot '.codex/hooks.json'); adapter = (Join-Path $projectRoot '.codex/hooks/codex-pre-tool-use.ps1'); source = (Join-Path $PSScriptRoot 'hooks/codex-pre-tool-use.ps1'); matcher = 'apply_patch|Edit|Write|Bash|MCP|.*' }
+    return [ordered]@{ config = (Join-Path $projectRoot '.codex/hooks.json'); adapter = (Join-Path $projectRoot '.codex/hooks/codex-pre-tool-use.ps1'); source = (Join-Path $PSScriptRoot 'hooks/codex-pre-tool-use.ps1'); matcher = 'apply_patch|Bash' }
 }
 function Get-Handler([string]$Name, [object]$Paths) {
     if ($Name -eq 'claude') {
@@ -59,14 +59,18 @@ function Get-Handler([string]$Name, [object]$Paths) {
     return [ordered]@{ type = 'command'; command = "pwsh -NoProfile -ExecutionPolicy Bypass -File `"$($Paths.adapter)`""; commandWindows = "powershell.exe -NoProfile -ExecutionPolicy Bypass -File `"$($Paths.adapter)`"" }
 }
 function Is-ManagedHandler([string]$Name, [object]$Handler, [object]$Paths) {
-    if ($Name -eq 'claude') { return $Handler.command -eq 'powershell.exe' -and ($Handler.args -contains '${CLAUDE_PROJECT_DIR}/.claude/hooks/claude-pre-tool-use.ps1') }
-    return $Handler.commandWindows -like "*$($Paths.adapter)*"
+    # Unrelated handlers may omit args or commandWindows; StrictMode must not fail on them.
+    $argsProperty = $Handler.PSObject.Properties['args']
+    $commandProperty = $Handler.PSObject.Properties['command']
+    $windowsProperty = $Handler.PSObject.Properties['commandWindows']
+    if ($Name -eq 'claude') { return $null -ne $commandProperty -and $commandProperty.Value -eq 'powershell.exe' -and $null -ne $argsProperty -and (@($argsProperty.Value) -contains '${CLAUDE_PROJECT_DIR}/.claude/hooks/claude-pre-tool-use.ps1') }
+    return $null -ne $windowsProperty -and ([string]$windowsProperty.Value).Contains([string]$Paths.adapter)
 }
 function Merge-Handler([string]$Name, [object]$Paths, [bool]$Remove) {
     $config = Read-Config $Paths.config
     if ($null -eq $config.PSObject.Properties['hooks']) { $config | Add-Member -NotePropertyName hooks -NotePropertyValue ([pscustomobject]@{}) }
     $entries = if ($null -eq $config.hooks.PSObject.Properties['PreToolUse']) { @() } else { @($config.hooks.PreToolUse) }
-    $remaining = @($entries | Where-Object { -not (($_.hooks | Where-Object { Is-ManagedHandler $Name $_ $Paths }).Count -gt 0) })
+    $remaining = @($entries | Where-Object { $hooksProperty = $_.PSObject.Properties['hooks']; -not ($null -ne $hooksProperty -and @($hooksProperty.Value | Where-Object { Is-ManagedHandler $Name $_ $Paths }).Count -gt 0) })
     if (-not $Remove) {
         $remaining += [pscustomobject]@{ matcher = $Paths.matcher; hooks = @([pscustomobject](Get-Handler $Name $Paths)) }
     }
@@ -82,10 +86,15 @@ foreach ($name in $hosts) {
         New-Item -ItemType Directory -Force -Path (Split-Path -Parent $paths.adapter) | Out-Null
         Copy-Item -LiteralPath $paths.source -Destination $paths.adapter -Force
         Merge-Handler $name $paths $false
-        $routing.hosts.$name.status = 'pending-trust'
-        $routing.hosts.$name.trust = 'pending'
-        $routing.hosts.$name.config_sha256 = Get-Hash $paths.config
-        $routing.setup.host_installation = 'pending-trust'
+        # Host trust is keyed to the hook definition, so only an unchanged active config keeps active.
+        $configHash = Get-Hash $paths.config
+        if ($routing.hosts.$name.status -ne 'active' -or $routing.hosts.$name.config_sha256 -ne $configHash) {
+            $routing.hosts.$name.status = 'pending-trust'
+            $routing.hosts.$name.trust = 'pending'
+            $routing.setup.host_installation = 'pending-trust'
+            $routing.setup.harness_kit_runtime_required = $true
+        }
+        $routing.hosts.$name.config_sha256 = $configHash
     } elseif ($operation -eq 'ActivateTrust') {
         if (-not $exists) { throw "ActivateTrust requires installed $name adapter and config." }
         $routing.hosts.$name.status = 'active'
@@ -99,7 +108,7 @@ foreach ($name in $hosts) {
         $routing.hosts.$name.config_sha256 = Get-Hash $paths.config
         $routing.setup.host_installation = 'not-installed'
     }
-    $result += [ordered]@{ host = $name; operation = $operation.ToLowerInvariant(); config = $paths.config; adapter = $paths.adapter; state = if ($operation -eq 'Plan') { 'proposed' } elseif ($operation -eq 'Check') { if ($exists) { $routing.hosts.$name.status } else { 'not-installed' } } else { $routing.hosts.$name.status }; trust = if ($operation -eq 'Plan') { 'pending-trust' } else { $routing.hosts.$name.trust }; diff = if ($operation -eq 'Plan') { 'host-specific managed merge proposal; unrelated settings are preserved' } else { $null } }
+    $result += [ordered]@{ host = $name; operation = $operation.ToLowerInvariant(); config = $paths.config; adapter = $paths.adapter; state = if ($operation -eq 'Plan') { 'proposed' } elseif ($operation -eq 'Check') { if (-not $exists) { 'not-installed' } elseif ($routing.hosts.$name.status -eq 'active' -and $routing.hosts.$name.config_sha256 -ne (Get-Hash $paths.config)) { 'pending-trust' } else { $routing.hosts.$name.status } } else { $routing.hosts.$name.status }; trust = if ($operation -eq 'Plan') { 'pending-trust' } else { $routing.hosts.$name.trust }; diff = if ($operation -eq 'Plan') { 'host-specific managed merge proposal; unrelated settings are preserved' } else { $null } }
 }
 if ($operation -eq 'ActivateTrust') {
     $routing.setup.harness_kit_runtime_required = -not (@($routing.hosts.PSObject.Properties | ForEach-Object { $_.Value.status }) -notcontains 'pending-trust' -and @($routing.hosts.PSObject.Properties | ForEach-Object { $_.Value.status }) -notcontains 'uninstalled')

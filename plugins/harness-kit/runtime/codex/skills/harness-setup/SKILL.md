@@ -424,6 +424,19 @@ source, `.ai-docs/_inbox/**`, manifest exception은 허용한다. 새 managed `.
 context 파일은 target path·operation·content SHA-256·TTL에 정확히 묶인 one-shot marker가
 있을 때만 통과하며 성공 후 원자적으로 소비한다. Codex는
 `hookSpecificOutput.permissionDecision=deny`, Claude는 exit 2/stderr로 차단한다.
+Claude allow도 빈 stdout으로 끝나며 내부 판정 객체를 출력하지 않는다.
+Codex matcher는 쓰기 가능 도구 `apply_patch|Bash`만 대상으로 하며, adapter는 내부 판정
+객체를 stdout에 노출하지 않는다. allow는 빈 stdout, bypass는 `systemMessage`, deny는
+`hookEventName=PreToolUse`를 포함한 deny JSON을 쓰고, adapter/core 예외·잘못된 payload도
+같은 deny JSON(exit 0)으로 fail-closed한다. Codex CLI 0.154.0 Windows 실측에서 exit 2와
+stderr는 도구 실행을 막지 못했으므로 차단 경로로 쓰지 않는다.
+
+manifest의 `pending-trust`/`active`는 사용자 신뢰 증적 기록이며 hook 실행 여부를 결정하지
+않는다. Codex 실행 여부는 사용자 `/hooks` trusted hash 또는 호출 단위
+`--dangerously-bypass-hook-trust`가 결정하므로 `pending-trust` 상태에서도 hook이 실행될 수
+있고, guard는 이를 이유로 차단하지 않는다. `-Apply`는 이미 `active`인 host의 config hash가
+그대로일 때만 `active`를 유지하고, hook 정의가 바뀌면 `pending-trust`로 되돌린다. `-Check`도
+기록된 hash와 현재 config가 다르면 `pending-trust`로 보고한다.
 
 동적 Bash target, hosted tool, opt-out tool path, command 이후 redirect, 외부 process는
 완전 판정할 수 없으므로 bypass evidence로 남긴다. 이를 전면 보안 sandbox나 Codex trust
