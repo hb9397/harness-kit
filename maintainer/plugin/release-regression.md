@@ -5,8 +5,8 @@
 ## 요약
 
 - 전체 상태: `not-release-ready`
-- 플러그인: `harness-kit` `0.6.4`
-- 아카이브 SHA-256: `19aae4dcd342cb4c78e9148fce064f237cba97e551d5869332cb8ba47ecd88d9`
+- 플러그인: `harness-kit` `0.6.5`
+- 아카이브 SHA-256: `22e0f98637cacf9c3eef94b439711deed34e4f8aacaa2eb08250ab64f6a4b3ab`
 - 릴리스 게이트: `not-release-ready`
 - push/tag/release 생성: `false`
 

@@ -6,6 +6,7 @@ import hashlib
 import json
 import os
 import re
+import shutil
 import subprocess
 import tempfile
 from pathlib import Path
@@ -20,6 +21,8 @@ PORTABLE_BASELINE_FIXTURE = SETUP_ROOT / "evals" / "fixtures" / "portable-routin
 PORTABLE_ROUTING_TEMPLATE_ROOT = SETUP_ROOT / "templates" / "portable-routing"
 PORTABLE_ROUTING_FIXTURE = SETUP_ROOT / "evals" / "fixtures" / "portable-routing-bundle.json"
 ROUTING_COVERAGE_MANIFEST = SETUP_ROOT / "evals" / "fixtures" / "portable-routing-coverage.json"
+# Windows PowerShell 5.1 is the configured host shell, but Linux CI only has pwsh.
+HOOK_SHELLS = tuple(shell for shell in ("pwsh", "powershell.exe") if shutil.which(shell))
 
 FORBIDDEN_LOCAL_SKILL_PATHS = (
     ".agents/skills",
@@ -456,8 +459,9 @@ def check_portable_routing_bundle() -> None:
         existing_patch = apply_patch_payload((".ai-docs/instruction/existing.md", "revised"))
         if invoke_codex(existing_patch) != ("completed", ""):
             raise AssertionError("existing canonical patch was not allowed as a Codex no-op")
-        if invoke_codex(existing_patch, shell="powershell.exe") != ("completed", ""):
-            raise AssertionError("Codex commandWindows powershell.exe path did not allow an existing canonical patch")
+        for shell in HOOK_SHELLS:
+            if invoke_codex(existing_patch, shell=shell) != ("completed", ""):
+                raise AssertionError(f"Codex existing canonical patch was not allowed under {shell}")
         if invoke_codex({"tool_name": "Bash", "tool_input": {"command": "Get-ChildItem .ai-docs"}}) != ("completed", ""):
             raise AssertionError("Codex read-only shell command was not a no-op")
         bypass = invoke_codex({"tool_name": "Bash", "tool_input": {"command": "Set-Content $(Get-Target) x"}})
@@ -469,7 +473,7 @@ def check_portable_routing_bundle() -> None:
             ({"tool_name": "apply_patch"}, "missing tool_input"),
             ({"tool_name": "apply_patch", "tool_input": {"patch": "*** Begin Patch"}}, "missing command"),
         ):
-            for shell in ("pwsh", "powershell.exe"):
+            for shell in HOOK_SHELLS:
                 invalid = invoke_codex(invalid_payload, shell=shell)
                 if invalid[0] != "blocked" or "Codex routing guard failed" not in invalid[1]:
                     raise AssertionError(f"Codex {label} did not fail closed with a deny response under {shell}: {invalid}")
@@ -535,12 +539,16 @@ def check_portable_routing_bundle() -> None:
         if claude_allowed.returncode != 0 or claude_allowed.stdout.strip():
             raise AssertionError(f"Claude existing canonical edit was not allowed: {claude_allowed.stdout} / {claude_allowed.stderr}")
         # Claude settings run the shared core through Windows PowerShell 5.1.
-        for claude_payload, expected_code, expected_text in (
-            ({"tool_name": "Edit", "tool_input": {"file_path": ".ai-docs/instruction/existing.md", "new_string": "revised"}}, 0, ""),
-            ({"tool_name": "Write", "tool_input": {"file_path": ".ai-docs/instruction/claude-new.md", "content": "new"}}, 2, "Claude routing guard denied: new managed artifact requires an exact one-shot approval marker"),
-        ):
+        for (claude_payload, expected_code, expected_text), shell in [
+            (case, shell)
+            for case in (
+                ({"tool_name": "Edit", "tool_input": {"file_path": ".ai-docs/instruction/existing.md", "new_string": "revised"}}, 0, ""),
+                ({"tool_name": "Write", "tool_input": {"file_path": ".ai-docs/instruction/claude-new.md", "content": "new"}}, 2, "Claude routing guard denied: new managed artifact requires an exact one-shot approval marker"),
+            )
+            for shell in HOOK_SHELLS
+        ]:
             claude_windows = subprocess.run(
-                ["powershell.exe", "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", str(claude_adapter_path)],
+                [shell, "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", str(claude_adapter_path)],
                 input=json.dumps(claude_payload),
                 capture_output=True,
                 text=True,
@@ -550,7 +558,7 @@ def check_portable_routing_bundle() -> None:
                 check=False,
             )
             if claude_windows.returncode != expected_code or claude_windows.stdout.strip() or expected_text not in claude_windows.stderr:
-                raise AssertionError(f"Claude powershell.exe regression: {claude_windows.stdout} / {claude_windows.stderr}")
+                raise AssertionError(f"Claude {shell} regression: {claude_windows.stdout} / {claude_windows.stderr}")
         after_first_apply = snapshot_files(project)
         applied_again = subprocess.run(
             ["pwsh", "-NoProfile", "-File", str(bundle / "install-routing.ps1"), "-Apply", "-ApproveHostInstall"],

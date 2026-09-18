@@ -4,10 +4,10 @@
   "plugin": {
     "plugin_root": "plugins/harness-kit",
     "plugin_id": "harness-kit",
-    "version": "0.6.4",
+    "version": "0.6.5",
     "codex_manifest_matches_claude": true,
-    "archive": "plugins/harness-kit-0.6.4.zip",
-    "archive_sha256": "19aae4dcd342cb4c78e9148fce064f237cba97e551d5869332cb8ba47ecd88d9",
+    "archive": "plugins/harness-kit-0.6.5.zip",
+    "archive_sha256": "22e0f98637cacf9c3eef94b439711deed34e4f8aacaa2eb08250ab64f6a4b3ab",
     "archive_sha256_matches_release": true,
     "logical_user_skills": 20,
     "codex_physical_skills": 20,
@@ -119,13 +119,13 @@
     "platforms": {
       "codex": {
         "status": "passed",
-        "cli_version": "codex-cli 0.154.0",
+        "cli_version": "codex-cli 0.155.0",
         "marketplace": "hb9397",
         "plugin_id": "harness-kit@hb9397",
         "evidence_level": "marketplace-install-and-cache-smoke",
         "model_invocation_verified": false,
         "installed_payload": {
-          "version": "0.6.4",
+          "version": "0.6.5",
           "skill_count": 20,
           "agent_count": 0,
           "required_skills": [
@@ -146,7 +146,7 @@
         "evidence_level": "marketplace-install-and-cache-smoke",
         "model_invocation_verified": false,
         "installed_payload": {
-          "version": "0.6.4",
+          "version": "0.6.5",
           "skill_count": 20,
           "agent_count": 0,
           "required_skills": [

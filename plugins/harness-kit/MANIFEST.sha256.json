@@ -3,15 +3,15 @@
   "files": [
     {
       "path": ".claude-plugin/plugin.json",
-      "sha256": "a43f55ba8dc0711fb1536b4f07f86db60a9872829e6579bcc3cf767b3527dbd4"
+      "sha256": "d85fc3d337cf11afa9bd64a0dd14eb1fc343fd4fbb34ec32a1573e8cc6b17175"
     },
     {
       "path": ".codex-plugin/plugin.json",
-      "sha256": "264e5ef7a6b05b699ad5a4071ebec933d18a6832c6e2c5dcaae1ca40a3b9fcd2"
+      "sha256": "81209aff87b1578ae10a97543a37e3dd62025f6c5c917d7488284d99598b56f2"
     },
     {
       "path": "CAPABILITIES.json",
-      "sha256": "21faf0b3ec7d1201505d0db907b2eaa3e4325c6309efa92342954dfdf99c9545"
+      "sha256": "168cdf74377bb1d624813b300d0483b338097b98592be2a8ba131c2934697b50"
     },
     {
       "path": "LICENSE",
@@ -27,7 +27,7 @@
     },
     {
       "path": "UPSTREAMS.lock.json",
-      "sha256": "3e247b3cbba98a7bf3240864f6493af22d5d258cb13430f8467c5e3edfb497bc"
+      "sha256": "8b292acefb264a819df0054f8f2de575cb1fda505338139cd8bcaea9b036b5c1"
     },
     {
       "path": "licenses/anthropic-frontend-design-LICENSE",
@@ -347,7 +347,7 @@
     },
     {
       "path": "runtime/claude/skills/harness-setup/evals/run_evals.py",
-      "sha256": "42b1b44044d402c88b967af6233277032f26bae3da50d154a937338c54a43fc8"
+      "sha256": "0f428b568e0a8769a0fe8b4d07c1137e9fc669099253e01e50efcf829c6c3bd5"
     },
     {
       "path": "runtime/claude/skills/harness-setup/prompts/detection.md",
@@ -1231,7 +1231,7 @@
     },
     {
       "path": "runtime/codex/skills/harness-setup/evals/run_evals.py",
-      "sha256": "42b1b44044d402c88b967af6233277032f26bae3da50d154a937338c54a43fc8"
+      "sha256": "0f428b568e0a8769a0fe8b4d07c1137e9fc669099253e01e50efcf829c6c3bd5"
     },
     {
       "path": "runtime/codex/skills/harness-setup/prompts/detection.md",
