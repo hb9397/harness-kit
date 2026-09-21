@@ -488,7 +488,8 @@ def check_portable_routing_bundle() -> None:
         nested_cwd = project / "src" / "nested"
         nested_cwd.mkdir(parents=True)
         codex_config = json.loads(read(project / ".codex" / "hooks.json"))
-        portable_command = codex_config["hooks"]["PreToolUse"][0]["hooks"][0]["commandWindows"]
+        command_key = "commandWindows" if os.name == "nt" else "command"
+        portable_command = codex_config["hooks"]["PreToolUse"][0]["hooks"][0][command_key]
         portable_run = subprocess.run(
             portable_command,
             shell=True,
@@ -1229,7 +1230,7 @@ def check_filesystem_fixtures() -> None:
         nested_project.mkdir(parents=True)
         (ancestor / "CLAUDE.local.md").write_text("team override\n", encoding="utf-8")
         found = find_claude_instruction_files(nested_project, root)
-        if found != [ancestor / "CLAUDE.local.md"]:
+        if found != [(ancestor / "CLAUDE.local.md").resolve()]:
             raise AssertionError(f"ancestor Claude instruction preemption was not detected: {found}")
 
         user_bridge_project = root / "user-claude-project"

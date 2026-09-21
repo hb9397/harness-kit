@@ -343,7 +343,7 @@
     },
     {
       "path": "runtime/claude/skills/harness-setup/evals/run_evals.py",
-      "sha256": "49877a4a39191128caf390550f8bed23e896bb375104ee6841fde72a4225a88f"
+      "sha256": "b7f286b083d812b9e86df629d4a2d588174d9dddc0ef515d2b5f3a03421bb79c"
     },
     {
       "path": "runtime/claude/skills/harness-setup/prompts/detection.md",
@@ -1219,7 +1219,7 @@
     },
     {
       "path": "runtime/codex/skills/harness-setup/evals/run_evals.py",
-      "sha256": "49877a4a39191128caf390550f8bed23e896bb375104ee6841fde72a4225a88f"
+      "sha256": "b7f286b083d812b9e86df629d4a2d588174d9dddc0ef515d2b5f3a03421bb79c"
     },
     {
       "path": "runtime/codex/skills/harness-setup/prompts/detection.md",
