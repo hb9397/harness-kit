@@ -36,7 +36,7 @@
       {
         "id": "write-access-guard",
         "event": "PreToolUse",
-        "command": ["python3", "hooks/write-access-guard.py"],
+        "command": ["python3", "hooks/write-access-guard-muse.py"],
         "timeoutMs": 5000,
         "statusMessage": "Checking project write access"
       }
