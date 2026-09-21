@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "name": "harness-kit-muse",
+  "displayName": "Harness Kit Muse",
+  "version": "0.1.0",
+  "description": "Harness Kit project skills for Muse.",
+  "compat": {
+    "source": "native",
+    "manifestDir": ".muse-plugin"
+  },
+  "capabilities": {
+    "skills": [
+      {"id": "code-comment", "path": "skills/code-comment/SKILL.md", "enabledDefault": true},
+      {"id": "commit", "path": "skills/commit/SKILL.md", "enabledDefault": true},
+      {"id": "context-doc", "path": "skills/context-doc/SKILL.md", "enabledDefault": true},
+      {"id": "create-prototype", "path": "skills/create-prototype/SKILL.md", "enabledDefault": true},
+      {"id": "design-doc", "path": "skills/design-doc/SKILL.md", "enabledDefault": true},
+      {"id": "design-prototype-docs", "path": "skills/design-prototype-docs/SKILL.md", "enabledDefault": true},
+      {"id": "doc-audit", "path": "skills/doc-audit/SKILL.md", "enabledDefault": true},
+      {"id": "frontend-design", "path": "skills/frontend-design/SKILL.md", "enabledDefault": true},
+      {"id": "git-scoped-account", "path": "skills/git-scoped-account/SKILL.md", "enabledDefault": true},
+      {"id": "harness-bootstrap", "path": "skills/harness-bootstrap/SKILL.md", "enabledDefault": true},
+      {"id": "harness-setup", "path": "skills/harness-setup/SKILL.md", "enabledDefault": true},
+      {"id": "humanize-korean", "path": "skills/humanize-korean/SKILL.md", "enabledDefault": true},
+      {"id": "impl-doc", "path": "skills/impl-doc/SKILL.md", "enabledDefault": true},
+      {"id": "impl-fe-be-doc", "path": "skills/impl-fe-be-doc/SKILL.md", "enabledDefault": true},
+      {"id": "impl-reuse-scan", "path": "skills/impl-reuse-scan/SKILL.md", "enabledDefault": true},
+      {"id": "impl-verify", "path": "skills/impl-verify/SKILL.md", "enabledDefault": true},
+      {"id": "motion-design", "path": "skills/motion-design/SKILL.md", "enabledDefault": true},
+      {"id": "multi-review", "path": "skills/multi-review/SKILL.md", "enabledDefault": true},
+      {"id": "project-write-access", "path": "skills/project-write-access/SKILL.md", "enabledDefault": true},
+      {"id": "ui-ux-pro-max", "path": "skills/ui-ux-pro-max/SKILL.md", "enabledDefault": true}
+    ],
+    "commands": [],
+    "hooks": [
+      {
+        "id": "write-access-guard",
+        "event": "PreToolUse",
+        "command": ["python3", "hooks/write-access-guard.py"],
+        "timeoutMs": 5000,
+        "statusMessage": "Checking project write access"
+      }
+    ],
+    "mcpServers": [],
+    "reminders": []
+  }
+}

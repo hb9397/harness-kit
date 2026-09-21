@@ -1,0 +1,70 @@
+<!-- harness-kit:managed:start -->
+# AI Agent 컨텍스트
+
+> 이 파일은 `harness-setup`이 관리하는 프로젝트 전체 읽기 지도다.
+> Claude Code 2.1.277 이상과 Codex는 이 `AGENTS.md`를 프로젝트 지침으로 직접 읽는다.
+> 애플리케이션의 설계·기술 맥락과 세부 instruction은 앱 문서에서 읽으며 이 파일에
+> 본문을 복제하지 않는다.
+
+---
+
+## 프로젝트 범위
+
+- 프로젝트 루트: `./` (이 파일이 있는 현재 체크아웃)
+- 프로젝트 유형: 단일 애플리케이션
+- AI 문서 루트: `.ai-docs/`
+
+## 컨텍스트와 산출물
+
+- 애플리케이션 컨텍스트: `@.ai-docs/{{APP_ID}}-context.md`
+- 설계 문서: `@.ai-docs/context-base/DESIGN.md`
+- 주제별 instruction: `@.ai-docs/instruction/*-instruction.md`
+- 산출물 위치·소유권·인계: `@.ai-docs/instruction/artifact-output-routing-instruction.md`
+- portable routing 계약: `@.ai-docs/harness/artifact-routing.json`
+- host별 로컬 설치 상태(비추적): `.ai-docs/.harness/routing-state.local.json`
+- 구현 계획: `.ai-docs/impl-doc/{사용자}/{기능}.md`
+- 프로토타입: `.ai-docs/prototype/{사용자}/{id}/`
+
+### Portable routing을 참조하는 이유
+
+`.ai-docs/harness/`는 `harness-setup`이 프로젝트 안에 만드는 **프로젝트 소유 산출물 계약**이다.
+이후 Harness Kit가 아닌 스킬·에이전트도 Layer 2 instruction을 읽고 따르면, 같은 개념의
+문서를 기존 `.ai-docs` 정규 경로와 소유·인계 규칙에 맞춰 이어서 만들 수 있다. 따라서 도구가
+바뀌어도 산출물 구조가 분산되지 않는다. 이 bundle은 스킬 자체를 대체하지 않으며, 스킬
+실행은 설치된 플러그인 또는 해당 도구가 담당한다.
+
+`artifact-routing.json`은 Layer 1 공유 계약 정본이다. 단일/복수 앱 모드, 앱별 문서
+루트와 산출물 소유권, Layer 2 instruction 위치를 상대경로로 기록한다. Claude·Codex
+adapter의 설치·신뢰 상태는 Git에서 제외되는 `routing-state.local.json`에 둔다. 실제
+파일을 어디에 만들고 누구에게 인계할지는 Layer 2인
+`artifact-output-routing-instruction.md`를 따른다.
+
+manifest는 **공유 계약**, `install-routing.ps1 -Check`은 **현재 PC의 실제 설치 상태**를
+보여 준다. 로컬 상태가 없거나 adapter가 없으면 `not-installed`이며 active hook으로
+취급하지 않는다.
+
+세팅만으로 Claude·Codex 설정이나 hook이 자동 활성화되지는 않는다. 기본 bundle 생성은
+공유 문서만 만들며, `install-routing.ps1 -Plan`/`-Check`은 읽기 전용이다. host별
+`.claude/` 또는 `.codex/` adapter는 별도 설치 승인 뒤에만 병합하고, Codex는 `/hooks`
+신뢰 검토까지 끝나기 전 `pending-trust` 상태를 활성화로 간주하지 않는다.
+
+Claude Code도 이 파일의 portable routing 계약을 직접 따른다. bundle 생성만으로 Claude
+설정이나 hook이 활성화되지는 않으며, 로컬 상태가 `pending-trust`이면 host별 승인과 신뢰
+검토가 끝날 때까지 활성 hook으로 간주하지 않는다.
+
+> 아직 존재하지 않는 참조는 `context-doc` 또는 해당 산출물 스킬을 실행한 뒤
+> 실제 파일과 1:1로 맞춘다.
+
+## 운영 원칙
+
+- 사용자 스킬은 프로젝트 local copy가 아니라 설치된 `harness-kit`
+  플러그인에서 제공한다.
+- 위 local-copy 금지는 Harness Kit의 배포 규칙일 뿐이다. 다른 설치 스킬·플러그인·일반
+  Agent도 routing instruction의 산출물 계약을 따르면 사용할 수 있으며,
+  `플러그인 스킬만 사용` 규칙으로 확대하지 않는다.
+- 프로젝트에 `.agents/skills/`, `.claude/skills/`, `skills/` 사용자 스킬
+  projection을 만들거나 동기화하지 않는다.
+- 프로젝트 전체 읽기·라우팅 규칙과 Claude host 차이는 이 `AGENTS.md`에 함께 둔다.
+- Claude/Codex host hook은 각 host의 별도 신뢰 절차가 끝난 뒤에만 사용한다.
+- 기존 파일과 사용자 코드를 변경하기 전에 적용 범위를 확인한다.
+<!-- harness-kit:managed:end -->
