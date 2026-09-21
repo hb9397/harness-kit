@@ -43,6 +43,37 @@ legacy/custom local skill 후보로만 기록하고, 실행 컨텍스트 판정�
 
 ---
 
+## [Claude instruction 선점 검사]
+
+프로젝트 루트가 확정되면 파일을 쓰기 전에 해당 경로부터 파일시스템 루트까지 부모
+경로를 하나씩 올라가며 다음 파일을 읽기 전용으로 확인한다.
+
+- `{각 경로}/CLAUDE.md`
+- `{각 경로}/.claude/CLAUDE.md`
+- `{각 경로}/CLAUDE.local.md`
+
+Claude Code의 기본 `claude-md-or-agents-md` 설정에서는 작업 디렉토리 또는 상위 경로에
+이 파일 중 하나가 있으면 `AGENTS.md` 대신 Claude instruction이 선택될 수 있다.
+
+| 발견 위치·상태 | 처리 |
+|---|---|
+| 없음 | `AGENTS.md` 직접 로드 전제 통과 |
+| 프로젝트 루트 `CLAUDE.md`가 정확히 하나의 harness 관리 bridge이고 marker 밖에 공백만 있음 | 갱신 모드의 승인형 bridge 제거 후보 |
+| 프로젝트 루트 `.claude/CLAUDE.md` 또는 `CLAUDE.local.md` | 자동 변경 없이 중단하고 경로 보고 |
+| 프로젝트 루트의 unmanaged·malformed `CLAUDE.md` 또는 관리 블록 밖 사용자 내용 존재 | 자동 변경 없이 중단하고 `AGENTS.md`로 수동 이관할 내용 보고 |
+| 프로젝트 상위 경로에서 하나 이상 발견 | 프로젝트 범위 밖이므로 자동 변경 없이 중단하고 정확한 경로 보고 |
+
+프로젝트 루트의 관리 bridge를 제거할 때도 먼저 최신 `AGENTS.md` 관리 블록에 Claude
+portable routing·host trust 규칙이 들어 있는지 검증한다. 같은 실행의 승인된 갱신에서만
+루트 bridge와 `.ai-docs/root-context/CLAUDE.md` 관리 사본을 제거한다. 어느 파일이든
+사용자 내용이 있거나 출처를 확정할 수 없으면 삭제하지 않는다.
+
+Claude Code를 사용할 예정이면 2.1.277 이상인지 확인 가능한 범위에서 버전을 읽고,
+구버전이면 `AGENTS.md` 직접 로드를 지원하지 않는다고 보고한 뒤 중단한다. 버전을 확인할
+수 없는 다른 host의 호환성을 추정하지 않는다.
+
+---
+
 ## [프로젝트 유형 감지]
 
 프로젝트 루트 확정 후, 단일/복수 애플리케이션 여부를 판정한다.
@@ -90,7 +121,7 @@ legacy/custom local skill 후보로만 기록하고, 실행 컨텍스트 판정�
 
 - `.ai-docs/`와 그 안의 Markdown·`root-context/`
 - 이전 `.docs/`와 그 안의 `harness/access-control/` 정책·서명·훅
-- 루트 `AGENTS.md`, `CLAUDE.md`
+- 루트 `AGENTS.md`와 Claude instruction 선점 검사 대상
 - `.claude/skills/*/SKILL.md`, `.agents/skills/*/SKILL.md`,
   `skills/*/SKILL.md` legacy/custom local copy 후보
 

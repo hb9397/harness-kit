@@ -37,6 +37,8 @@
 
 `.agents/skills/`와 `.claude/skills/`는 직접 편집하지 않는다. 다음 생성기로만 갱신한다.
 
+Claude Code는 `.claude/skills/`에서 repo-local 관리자 스킬을 발견한다. 이 경로는 생성물이므로 수정은 `maintainer/skills/` 정본에서 수행한다.
+
 ```bash
 python maintainer/skills/harness-plugin-maintainer/scripts/sync_manager_projections.py
 python maintainer/skills/harness-plugin-maintainer/scripts/sync_manager_projections.py --check

@@ -46,7 +46,8 @@ Markdown marker는
 > | 유형 | 대상 | 상태 | 처리 |
 > |------|------|------|------|
 > | `.ai-docs` 안내·정책 | README/.gitignore/_inbox | {new/managed/unmanaged/malformed} | {생성/관리 블록 갱신/보존} |
-> | 루트 컨텍스트 | 단일 앱 AGENTS.md 정본 또는 복수 앱 root-context 관리 원본·루트 실행본, CLAUDE.md bridge | {상태} | {처리} |
+> | 루트 컨텍스트 | 단일 앱 AGENTS.md 정본 또는 복수 앱 root-context 관리 원본·루트 실행본 | {상태} | {처리} |
+> | legacy Claude instruction | 프로젝트·상위 경로의 CLAUDE.md/.claude/CLAUDE.md/CLAUDE.local.md | {없음/관리 bridge/사용자 파일/상위 파일} | {통과/승인 후 제거/중단} |
 > | legacy local skill copy | 읽기 전용 report만 출력 |
 >
 > 진행하시겠습니까? **(승인 / 수정 / 취소)**
@@ -97,15 +98,13 @@ Markdown marker는
 
 단일 앱은 루트 `AGENTS.md`가 공통 정본이다. 복수 앱은
 `.ai-docs/root-context/AGENTS.md`가 Git 관리 원본이고 루트 `AGENTS.md`는 실행본이다.
-`CLAUDE.md`는 `@AGENTS.md` bridge와 Claude 전용 차이만 둔다.
+Claude Code 전용 portable routing·host trust 규칙도 `AGENTS.md` 관리 블록에 둔다.
 
 단일 앱:
 - `AGENTS.md`가 없으면 `templates/root-context-single.template` 기반 뼈대를
   생성한다. `{{APP_ID}}`는 Step 2에서 확정한 단일 앱 식별자로 치환해
   `.ai-docs/{앱}-context.md`를 가리킨다. 기존 파일은 관리 블록만 갱신하고 블록 밖의
   프로젝트 규칙은 보존한다.
-- `CLAUDE.md`가 없으면 bridge 템플릿으로 생성한다. 기존 파일은 관리 블록의
-  `@AGENTS.md` bridge만 갱신하고 블록 밖 Claude 전용 차이를 보존한다.
 - marker가 없는 기존 파일은 Section 3의 `unmanaged` 규칙을 그대로 적용한다.
 
 복수 앱:
@@ -115,8 +114,26 @@ Markdown marker는
   치환해 양쪽에 생성한다.
 - 관리 원본만 없고 루트 실행본만 있으면 자동 승격하지 않는다. 실행본에서 관리 원본을
   복구할 diff를 보여주고 별도 승인을 받은 뒤 생성한다.
-- `CLAUDE.md`도 bridge 관리 블록만 동기화하고 각 위치의 블록 밖 Claude 전용
-  차이를 보존한다.
+
+### 기존 Claude bridge 이관
+
+`detection.md`의 Claude instruction 선점 검사 결과를 다음과 같이 처리한다.
+
+1. 먼저 새 `AGENTS.md` 관리 블록에 기존 harness bridge의 portable routing manifest,
+   앱별 routing instruction, Claude host hook 승인·신뢰 규칙이 모두 반영됐는지 검증한다.
+2. 프로젝트 루트 `CLAUDE.md`가 알려진 harness 관리 marker 한 쌍만 포함하고 marker 밖에
+   공백만 있으면 current hash와 삭제 diff를 계획에 넣는다. 사용자 승인과 쓰기 직전 hash
+   재검증 뒤에만 제거한다.
+3. 복수 앱의 `.ai-docs/root-context/CLAUDE.md`도 같은 조건을 만족할 때만 같은 승인
+   계획에서 제거한다. Git 이력으로 복구할 수 있으므로 별도 사본을 만들지 않는다.
+4. marker 밖 사용자 내용, marker가 없는 파일, malformed marker, `.claude/CLAUDE.md`,
+   `CLAUDE.local.md`, 상위 경로의 Claude instruction 파일은 자동 이동·수정·삭제하지 않고
+   갱신을 중단한다. `AGENTS.md`로 수동 이관할 내용과 정확한 경로를 보고한다.
+5. 제거 뒤 프로젝트 루트부터 파일시스템 루트까지 다시 검사해 `CLAUDE.md`,
+   `.claude/CLAUDE.md`, `CLAUDE.local.md`가 0건일 때만 AGENTS-only 이관 성공으로 보고한다.
+
+이 이관은 반복 실행해도 추가 삭제나 내용 변경이 없어야 한다. 제거된 관리 bridge는
+이전 Harness Kit release의 template 또는 Git 이력으로 복구할 수 있다.
 
 ---
 
@@ -126,9 +143,9 @@ Markdown marker는
 
 ### 5-1. 루트 컨텍스트 갱신
 
-`.ai-docs/root-context/AGENTS.md`, `.ai-docs/root-context/CLAUDE.md`를 다시 읽어
-관리 블록을 검증한 뒤, 루트 파일의 같은 관리 블록에만 반영한다. 파일 전체를
-복사하지 않으며 관리 원본과 루트 실행본 각각의 블록 밖 사용자 확장을 보존한다.
+`.ai-docs/root-context/AGENTS.md`를 다시 읽어 관리 블록을 검증한 뒤, 루트 파일의
+같은 관리 블록에만 반영한다. 파일 전체를 복사하지 않으며 관리 원본과 루트 실행본
+각각의 블록 밖 사용자 확장을 보존한다.
 
 > 만약 `.ai-docs/root-context/` 파일이 존재하지 않으면 (다른 스킬에 의해 아직 안 만들어졌거나 삭제된 경우),
 > 갱신하지 않고 사용자에게 알린다.
@@ -179,7 +196,7 @@ Step 2 감지 결과에서 `.ai-docs/{앱}-context.md`가 없는 새 앱 폴더�
 ## 갱신 결과
 
 - `.ai-docs/` 안내·정책: README/.gitignore 관리 블록 갱신됨 / 사용자 확장 보존 / `_inbox/` 유지(또는 신규 생성)
-- 루트 컨텍스트: AGENTS 관리 블록 갱신됨 / CLAUDE bridge 갱신됨 / 사용자 확장 보존 / 변경 없음
+- 루트 컨텍스트: AGENTS 관리 블록 갱신됨 / 기존 관리 bridge 제거됨 / 사용자 파일로 중단 / 변경 없음
 - (복수앱) 신규 앱 감지: {앱명} (구조 추가됨)
 - legacy local skill copy: 읽기 전용 report N건 / 없음
 - local skill projection 변경: 없음 (`.agents/skills`, `.claude/skills`, `skills`)
@@ -187,10 +204,11 @@ Step 2 감지 결과에서 `.ai-docs/{앱}-context.md`가 없는 새 앱 폴더�
 
 ## 8. 실행 후 불변조건 검증
 
-이번 실행의 변경 목록이 `.ai-docs/**`, 루트 `AGENTS.md`, 루트 `CLAUDE.md` 안에만
+이번 실행의 변경 목록이 `.ai-docs/**`, 루트 `AGENTS.md` 안에만
 있는지 확인한다. `.agents/skills/**`, `.claude/skills/**`, `skills/**` 변경이
 하나라도 있으면 성공으로 보고하지 않는다. 템플릿 placeholder와
-`CLAUDE.md` bridge도 함께 검증한다. 갱신 전후 사용자 관리 블록 밖 내용과
+Claude instruction 선점 파일 0건도 함께 검증한다. 승인된 legacy 관리 bridge 삭제는
+예외 변경으로 별도 보고한다. 갱신 전후 사용자 관리 블록 밖 내용과
 legacy local skill copy의 hash가 동일한지 확인하고, backup을 만든 경우 대상
 목록과 복구 경로를 결과에 포함한다.
 
@@ -204,3 +222,35 @@ host-local file을 `created`/`modified`/`unchanged`, `local-only`/`shared`로 �
 `-Plan`/`-Check`은 읽기 전용이고, manual portable adoption의 `-Apply`/`-Uninstall`은
 G10 승인 뒤 `-ApproveHostInstall`과 함께만 실행한다. Codex hook은 `/hooks` 신뢰
 증적 전까지 `pending-trust`이며 active로 변경하지 않는다.
+
+갱신 때는 다음 portability migration을 같은 계획에 포함한다.
+
+1. 공유 `.ai-docs/**`, 루트 컨텍스트, `.claude/settings.json`, `.codex/hooks.json`에서
+   현재 PC의 사용자 홈·드라이브 절대경로가 생성 템플릿에 의해 들어간 부분을 찾는다.
+2. `artifact-routing.json.project_root`는 `.`으로 바꾸고, host의 `status`, `trust`,
+   `config_sha256`은 공유 manifest에서 제거한다. 기존 값은 존재할 때만 Git 무시 대상인
+   `.ai-docs/.harness/routing-state.local.json`으로 옮긴다.
+3. Codex managed hook command는 현재 session cwd의 상위에서 `.codex/hooks/`를 찾는
+   portable command로 교체한다. 사용자 hook entry는 보존한다.
+4. root context의 제목과 프로젝트 루트 표기는 체크아웃 폴더명·절대경로가 아니라
+   일반 제목과 `./`로 갱신한다. 단일 앱 id는 기존 안정 id를 우선하며 폴더명으로
+   다시 계산하지 않는다.
+5. `_inbox` manifest는 원본의 basename과 hash만 기록하고 절대 `source_path`를 남기지
+   않는다. 기존 manifest에 `source_path`가 있으면 basename인 `source_name`으로 바꾼다.
+6. `.ai-docs/.harness/humanize-handoffs.json`의 기존 `artifact_bundle_id`에 절대
+   프로젝트 루트가 들어 있으면 producer와 `artifact_fingerprint` 앞 16자를 사용한
+   `{producer}:migrated-{fingerprint}`로 바꾼다. fingerprint·artifacts·events는 보존한다.
+7. 현재 `managed_files`에 없어진 `.ai-docs/harness/settings.json`과
+   `.ai-docs/harness/hooks/artifact-route-guard.ps1`이 알려진 구버전 생성물 signature와
+   일치하면 승인된 update 계획에서 제거한다. 사용자가 수정했거나 출처를 확정할 수
+   없으면 보존하고 해당 절대경로 위치를 보고한다.
+8. 새 root context template으로 기존 `CLAUDE.md`의 portable routing·Claude host trust
+   규칙을 `AGENTS.md` 관리 블록에 반영한 뒤, 알려진 관리 bridge만 위 Section 4의
+   승인형 이관으로 제거한다.
+9. 변경 뒤 공유 대상 전체에서 기존 절대 프로젝트 루트와 사용자 홈 문자열이 0건인지,
+   다른 위치로 checkout한 fixture에서도 공유 산출물이 byte-identical인지 검증한다.
+10. 프로젝트 루트부터 파일시스템 루트까지 Claude instruction 선점 파일이 0건인지 다시
+    검사한다. 사용자 또는 상위 경로 파일이 남아 있으면 성공으로 보고하지 않는다.
+
+이 migration은 반복 실행해도 추가 변경이 없어야 한다. 출처를 확정할 수 없는 사용자
+작성 절대경로는 자동 치환하지 않고 정확한 파일과 값을 보고한다.

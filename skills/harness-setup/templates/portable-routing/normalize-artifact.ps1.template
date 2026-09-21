@@ -50,7 +50,7 @@ function Merge-ManagedBlock([string]$Current, [string]$Incoming) {
 
 $proposal = [ordered]@{
     schema_version = '1.0.0'; artifact_bundle_id = $ArtifactBundleId; producer = 'external'; source_hash = $sourceHash
-    media_type = if ($isText) { 'text' } else { 'fixed-format' }; source_path = (Resolve-Path -LiteralPath $InputPath).Path
+    media_type = if ($isText) { 'text' } else { 'fixed-format' }; source_name = [IO.Path]::GetFileName($InputPath)
     proposed_target_path = $relativeTarget; required_format = if ($isText) { 'UTF-8 normalized text; marker-aware merge proposal' } else { 'inbox-only; no lossy automatic conversion' }
     approval_gate = 'G12'; status = if ($Promote) { 'promotion-requested' } else { 'proposal-only' }
 }

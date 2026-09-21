@@ -417,7 +417,7 @@ def validate_manual_surface_contract(root: Path, errors: list[str]) -> None:
     if template.count("A·B·C·D") < 4:
         error(errors, "all four direct surfaces must execute scenarios A-D")
 
-    for relative in (Path("AGENTS.md"), Path("CLAUDE.md")):
+    for relative in (Path("AGENTS.md"),):
         content = (root / relative).read_text(encoding="utf-8")
         if "@.docs/" in content:
             error(errors, f"{relative.as_posix()} contains the retired routed document root")

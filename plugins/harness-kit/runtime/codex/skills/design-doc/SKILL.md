@@ -268,7 +268,7 @@ OUTPUT 초안을 대화창에 출력하고 사용자에게 확인을 요청한�
 새로 만들지 않고 그대로 보존한다.
 
 ```text
-artifact_bundle_id = design-doc:{정규화한 프로젝트 루트}:{이번 실행의 고유 ID}
+artifact_bundle_id = design-doc:{이번 실행의 고유 ID}
 handoff_owner = design-doc
 suppress_child_handoff = false
 handoff_completed = false

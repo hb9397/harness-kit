@@ -13,8 +13,8 @@
   정본이다. 특정 producer 이름을 사용 조건으로 삼지 않는다.
 - Harness Kit의 사용자 스킬을 프로젝트에 복사하지 않는 배포 규칙은 다른 설치 스킬,
   플러그인 또는 일반 Agent의 사용을 금지한다는 뜻이 아니다.
-- `AGENTS.md`는 아래 instruction을 `@`로 참조하고, `CLAUDE.md`는 `@AGENTS.md`
-  bridge만 유지한다.
+- Claude Code 2.1.277 이상과 Codex는 `AGENTS.md`가 아래 instruction을 `@`로 참조한
+  공통 routing 규칙을 직접 읽는다.
 - 복수 앱에서는 `{앱}`을 실제 애플리케이션 식별자로 치환한다. 앱 식별자나 source
   root가 모호하면 파일을 만들거나 수정하지 않고 사용자에게 확인한다.
 - manager 스킬의 `maintainer/**`, `plugins/**` 산출물과 사용자 프로젝트의 `.ai-docs/**`
@@ -24,7 +24,7 @@
 
 | 범위 | 설계·context | 구현 계획 | prototype | design system |
 |---|---|---|---|---|
-| 단일 앱 | `.ai-docs/context-base/DESIGN.md`, root `AGENTS.md`·`CLAUDE.md` | `.ai-docs/impl-doc/{사용자}/` | `.ai-docs/prototype/{사용자}/{식별자}/` | `.ai-docs/design-system/{project-slug}/` |
+| 단일 앱 | `.ai-docs/context-base/DESIGN.md`, root `AGENTS.md` | `.ai-docs/impl-doc/{사용자}/` | `.ai-docs/prototype/{사용자}/{식별자}/` | `.ai-docs/design-system/{project-slug}/` |
 | 복수 앱 | `.ai-docs/{앱}/context-base/DESIGN.md`, `.ai-docs/{앱}-context.md` | `.ai-docs/{앱}/impl-doc/{사용자}/` | `.ai-docs/{앱}/prototype/{사용자}/{식별자}/` | `.ai-docs/{앱}/design-system/{project-slug}/` |
 
 복수 앱 root에 앱별 산출물을 평평하게 쓰지 않는다. 이미 공통 경로에 있는 문서를
@@ -38,7 +38,7 @@
 
 - 설계 기준 → `context-base/DESIGN.md` (`design-doc`) → 앱 context와 instruction
   (`context-doc`). 이 기반 문서 흐름은 유지한다.
-- 하네스·컨텍스트 → AGENTS/CLAUDE bridge와 instruction files
+- 하네스·컨텍스트 → AGENTS와 instruction files
   (`harness-setup`, `harness-bootstrap`, `context-doc`). 이 routing instruction은 항상
   생성한다.
 - 구현 계획 → 앱별 `impl-doc/{사용자}/`와 공유 `*-roadmap-impl-index.md`

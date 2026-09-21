@@ -45,7 +45,7 @@
         "claude-memory"
       ],
       "direct_import": false,
-      "evidence": "Phase 2 converted context output to AGENTS.md canonical plus CLAUDE.md @AGENTS.md bridge using official documentation concepts."
+      "evidence": "Context output uses AGENTS.md as the only canonical instruction entry point; the earlier bridge was retired after Claude Code added native AGENTS.md support."
     },
     {
       "name": "create-prototype",
@@ -127,7 +127,7 @@
         "claude-memory"
       ],
       "direct_import": false,
-      "evidence": "Combines a local scan workflow with official AGENTS.md and CLAUDE.md context contracts."
+      "evidence": "Combines a local scan workflow with the official AGENTS.md context contracts for Codex and Claude Code."
     },
     {
       "name": "harness-setup",
@@ -138,7 +138,7 @@
         "claude-memory"
       ],
       "direct_import": false,
-      "evidence": "Project context setup follows AGENTS.md and CLAUDE.md import docs; templates are local."
+      "evidence": "Project context setup follows native AGENTS.md loading for Codex and Claude Code; templates are local and setup blocks preempting Claude instruction files."
     },
     {
       "name": "humanize-korean",

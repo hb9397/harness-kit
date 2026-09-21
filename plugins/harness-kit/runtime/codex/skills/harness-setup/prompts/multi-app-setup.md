@@ -8,7 +8,7 @@
 - SKILL.md Step 2에서 **복수 애플리케이션** 확정, Step 3에서 **초기 세팅** 판정.
 - 프로젝트 최상위 폴더는 사용자가 직접 만든 컨테이너이며 **`git init` 조차 하지 않는다.**
 - 그 하위의 `.ai-docs`(별도 git 레포), 각 애플리케이션(별도 git 레포)만 각각 독립 git으로 관리된다.
-- 프로젝트 최상위에 생성되는 `AGENTS.md`/`CLAUDE.md`는 **어떤 git에도 속하지 않으며** `harness-setup`이 단독 관리한다.
+- 프로젝트 최상위에 생성되는 `AGENTS.md`는 **어떤 git에도 속하지 않으며** `harness-setup`이 단독 관리한다.
 - 사용자 스킬은 local copy가 아니라 `harness-kit` 플러그인으로 사용한다.
 
 ---
@@ -88,21 +88,20 @@ Step 2에서 확인된 각 `{앱}` 폴더에 대해 현재 플랫폼의 파일 �
 
 ---
 
-## 3. 루트 `AGENTS.md`/`CLAUDE.md` 생성
+## 3. 루트 `AGENTS.md` 생성
 
 프로젝트 최상위에 **통합 인덱스 역할**의 컨텍스트 파일을 생성한다.
-이 파일들은 **어떤 git에도 속하지 않으며**, `harness-setup`이 단독 관리한다.
+이 파일은 **어떤 git에도 속하지 않으며**, `harness-setup`이 단독 관리한다.
 
 번들 리소스 `templates/root-context.template`을 읽어 `AGENTS.md`를 생성한다.
-번들 리소스 `templates/claude-bridge.template`을 읽어 `CLAUDE.md` bridge를
-생성한다. 리소스는 관리 저장소나 별도 clone이 아니라 현재 로드된 스킬 번들에서
-해석한다.
+리소스는 관리 저장소나 별도 clone이 아니라 현재 로드된 스킬 번들에서 해석한다.
+Claude Code는 2.1.277 이상에서 이 `AGENTS.md`를 직접 읽는다. `detection.md`의 Claude
+instruction 선점 검사를 통과하지 못하면 생성하지 않는다.
 
 ### 생성 시 변수 치환
 
 | 변수 | 값 |
 |------|-----|
-| `{{PROJECT_NAME}}` | 프로젝트 최상위 폴더명 |
 | `{{APP_LIST}}` | Step 2에서 확인된 앱 폴더 목록 |
 | `{{APP_CONTEXT_ENTRIES}}` | 앱별 `.ai-docs/{앱}-context.md` 참조 목록 |
 | `{{APP_INSTRUCTION_ENTRIES}}` | 앱별 `.ai-docs/{앱}/instruction/` 참조 목록 |
@@ -110,11 +109,11 @@ Step 2에서 확인된 각 `{앱}` 폴더에 대해 현재 플랫폼의 파일 �
 ### `.ai-docs/root-context/`에 Git 관리 원본 보관
 
 확정한 관리 블록을 현재 플랫폼의 파일 도구로
-`.ai-docs/root-context/AGENTS.md`, `.ai-docs/root-context/CLAUDE.md`에 먼저 쓴 뒤,
-같은 관리 블록을 프로젝트 루트의 실행용 `AGENTS.md`와 `CLAUDE.md`에 반영한다.
+`.ai-docs/root-context/AGENTS.md`에 먼저 쓴 뒤, 같은 관리 블록을 프로젝트 루트의
+실행용 `AGENTS.md`에 반영한다.
 
 > **원칙**: 다른 스킬(context-doc 등)이 `.ai-docs/` 내부의 앱별 컨텍스트를 변경해도,
-> 프로젝트 최상위 `AGENTS.md`/`CLAUDE.md`는 **이 스킬(harness-setup) 재실행**으로만 갱신한다.
+> 프로젝트 최상위 `AGENTS.md`는 **이 스킬(harness-setup) 재실행**으로만 갱신한다.
 > `.ai-docs/root-context/`가 형상관리되는 관리 원본이며 프로젝트 최상위 파일은 실행본이다.
 
 ---
@@ -139,14 +138,12 @@ Step 2에서 확인된 각 `{앱}` 폴더에 대해 현재 플랫폼의 파일 �
 
 ```
 {프로젝트 최상위 폴더}/          ← git 관리 안 함 (사용자 직접 생성 컨테이너)
-├── CLAUDE.md                    ← harness-setup 단독 관리 (git 미소속)
 ├── AGENTS.md                    ← harness-setup 단독 관리 (git 미소속)
 ├── .ai-docs/                       ← 별도 git 레포 (팀 공유용)
 │   ├── README.md               ← harness-setup 생성 (구조·산출물 안내)
 │   ├── .gitignore              ← harness-setup 생성 (로컬 전용 영역 지정)
 │   ├── _inbox/                 ← 에이전트 임시 입력 공간 (내용 git 미추적)
 │   ├── root-context/
-│   │   ├── CLAUDE.md            ← bridge의 Git 관리 원본
 │   │   └── AGENTS.md            ← 루트 컨텍스트의 Git 관리 원본
 │   ├── {앱1}-context.md
 │   ├── {앱1}/
@@ -166,7 +163,7 @@ Step 2에서 확인된 각 `{앱}` 폴더에 대해 현재 플랫폼의 파일 �
 > 📌 복수 애플리케이션 프로젝트에서는:
 > - 프로젝트 최상위 폴더에는 `git init`을 하지 않는다.
 > - `.ai-docs`, 각 애플리케이션이 **각각 독립 git 레포**로 관리된다.
-> - 루트 `AGENTS.md`/`CLAUDE.md`는 어떤 git에도 속하지 않으며 harness-setup이 단독 관리한다.
+> - 루트 `AGENTS.md`는 어떤 git에도 속하지 않으며 harness-setup이 단독 관리한다.
 > - `.ai-docs/root-context/`를 Git 관리 원본으로 두고 루트 실행본은 여기서 갱신한다.
 > - 사용자 스킬은 `harness-kit` 플러그인으로 사용한다.
 > - `.agents/skills/`, `.claude/skills/`, `skills/`에는 사용자 스킬을 생성하거나
@@ -176,11 +173,11 @@ Step 2에서 확인된 각 `{앱}` 폴더에 대해 현재 플랫폼의 파일 �
 
 이번 실행의 생성·변경 목록을 확인한다.
 
-- 허용 경로: `.ai-docs/**`, 루트 `AGENTS.md`, 루트 `CLAUDE.md`
+- 허용 경로: `.ai-docs/**`, 루트 `AGENTS.md`
 - 금지 경로: `.agents/skills/**`, `.claude/skills/**`, `skills/**`
 - `AGENTS.md`와 `.ai-docs/root-context/AGENTS.md`에 `{{...}}` placeholder가 남지
   않았는지 확인
-- 루트와 `.ai-docs/root-context/CLAUDE.md`가 모두 `@AGENTS.md` bridge인지 확인
+- 프로젝트·상위 경로에 Claude instruction 선점 파일이 없는지 확인
 
 금지 경로 변경이나 미치환 placeholder가 있으면 세팅 성공으로 보고하지 않는다.
 

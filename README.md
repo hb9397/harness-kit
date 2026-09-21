@@ -3,7 +3,7 @@
 > 이 저장소는 하네스를 개발·검증·배포하는 **관리 저장소**다.
 > 실제 프로젝트에서는 이 저장소를 clone하거나 스킬을 복사하지 않고, Codex 또는 Claude에 사용자용 `harness-kit` 플러그인을 설치해서 사용한다.
 
-플러그인을 설치한 프로젝트 수행자는 `harness-setup`으로 `.ai-docs/**`, `AGENTS.md`, `CLAUDE.md`를 만든 뒤 설계·구현·검증 흐름을 수행한다.
+플러그인을 설치한 프로젝트 수행자는 `harness-setup`으로 `.ai-docs/**`와 `AGENTS.md`를 만든 뒤 설계·구현·검증 흐름을 수행한다.
 관리자는 이 저장소에서 사용자 스킬, 외부 upstream, 플러그인 패키지를 유지한다.
 
 ## 문서 안내
@@ -147,10 +147,15 @@ flowchart TD
 3. 단일·복수 repo의 모든 참여자는 자기 PC에서 `git-scoped-account`를 최초 1회 명시 호출한다. `user.name`·`user.email`의 공통 config 출처와 저장소별 provider·host·login 표식을 확인한다. 새 PC·새 clone, 계정 변경이나 1단계 repo 추가 때 다시 실행한다.
 4. 문서 쓰기 권한을 분리한다면 원격 Git provider와 저장소, 참여자 계정이 먼저 준비돼야 한다. 관리자는 `project-write-access`를 명시 호출해 공유 정책을 설정한다. `harness-setup`과 Git 계정 등록을 마친 뒤, `design-doc`, `context-doc`, 앱 핵심 문서를 만드는 `harness-bootstrap`보다 먼저 수행한다.
 5. 공유 정책이 생긴 뒤에는 각 참여자가 자기 PC에서 `git-scoped-account`의 로컬 등록 분기를 수행한다. 이 단계는 관리자 키 없이 현재 clone의 Git 훅과 AI 쓰기 가드만 연결하며 공유 정책·CODEOWNERS·원격 설정은 바꾸지 않는다.
-6. 생성·갱신 범위가 `.ai-docs/**`, 루트 `AGENTS.md`, `CLAUDE.md`뿐인지 확인한다.
+6. 생성·갱신 범위가 `.ai-docs/**`, 루트 `AGENTS.md`뿐인지 확인한다. Claude를 함께 쓸 때는 프로젝트부터 파일시스템 루트까지 `CLAUDE.md`, `.claude/CLAUDE.md`, `CLAUDE.local.md`가 없어야 한다.
 7. `harness-setup`이 플러그인의 사용자 스킬 복사본을 `.agents/skills/`, `.claude/skills/`, `skills/`에 만들지 않았는지 확인한다.
 
 `harness-setup`은 플러그인을 설치하는 스킬이 아니다. 설치된 플러그인을 사용해 프로젝트 문서 골격과 루트 컨텍스트를 만드는 스킬이다.
+
+공유되는 `.ai-docs/**`, 루트 컨텍스트와 host managed 설정에는 사용자 홈이나 checkout
+절대경로를 기록하지 않는다. routing의 프로젝트 루트는 `.`이고, PC별 설치·신뢰 상태는
+Git에서 제외되는 `.ai-docs/.harness/routing-state.local.json`에 둔다. 기존 하네스는
+업데이트된 `harness-setup`을 다시 실행하면 이 portable 형식으로 갱신된다.
 
 `.ai-docs/_inbox/`의 참고 파일은 기본적으로 `.gitignore`에 따라 로컬에서만 보관한다.
 다만 설계·instruction에 계속 참고해야 하는 원문을 팀과 공유하려면 사용자가 정확한
@@ -287,7 +292,6 @@ my-app/
 │   ├── prototype/
 │   └── .harness/
 ├── AGENTS.md            ← 공용 컨텍스트 정본
-├── CLAUDE.md            ← AGENTS.md bridge
 └── src/
 ```
 
@@ -303,18 +307,17 @@ my-project/
 │   ├── app-frontend/
 │   ├── app-backend/
 │   └── root-context/
-├── AGENTS.md            ← 실행용
-└── CLAUDE.md            ← AGENTS.md bridge
+└── AGENTS.md            ← 실행용
 ```
 
-복수 앱 구성에서는 루트 폴더를 보통 git으로 관리하지 않으므로, `.ai-docs/root-context/AGENTS.md`가 루트 정본 내용을 형상관리하는 실제 원본 역할을 한다. 실행용 루트 `AGENTS.md`와 `CLAUDE.md`는 `harness-setup`이 이 관리 원본을 기준으로 갱신한다. 이미 별도 `.ai-docs` repo를 운영하고 있다면 먼저 올바른 위치에 clone/pull한 뒤 `harness-setup`을 실행해 기존 문서를 기준으로 갱신한다.
+복수 앱 구성에서는 루트 폴더를 보통 git으로 관리하지 않으므로, `.ai-docs/root-context/AGENTS.md`가 루트 정본 내용을 형상관리하는 실제 원본 역할을 한다. 실행용 루트 `AGENTS.md`는 `harness-setup`이 이 관리 원본을 기준으로 갱신한다. 이미 별도 `.ai-docs` repo를 운영하고 있다면 먼저 올바른 위치에 clone/pull한 뒤 `harness-setup`을 실행해 기존 문서를 기준으로 갱신한다. Claude Code는 2.1.277 이상에서 `AGENTS.md`를 직접 읽으며, 선점하는 Claude instruction 파일이 있으면 setup이 중단된다.
 
 ## 6. 주요 산출물과 형상관리
 
 | 산출물 | 기본 위치 | 관리 기준 |
 |--------|-----------|-----------|
 | 설계 문서 | 단일 `.ai-docs/context-base/DESIGN.md`, 복수 `.ai-docs/{앱}/context-base/DESIGN.md` | 프로젝트 문서로 commit |
-| 에이전트 규칙 | `AGENTS.md`, `CLAUDE.md`, `.ai-docs/**/instruction/` | `AGENTS.md` 정본, `CLAUDE.md` bridge |
+| 에이전트 규칙 | `AGENTS.md`, `.ai-docs/**/instruction/` | `AGENTS.md` 단일 정본 |
 | 화면 설계 | 단일 `.ai-docs/prototype/{사용자}/{식별자}/design-doc.md`, 복수 `.ai-docs/{앱}/prototype/{사용자}/{식별자}/design-doc.md` | 프로젝트 문서로 commit |
 | 프로토타입 | 단일 `.ai-docs/prototype/{사용자}/{식별자}/`, 복수 `.ai-docs/{앱}/prototype/{사용자}/{식별자}/` | 검증용 산출물, 프로젝트 정책에 따라 commit |
 | 디자인 시스템 | 단일 `.ai-docs/design-system/{project-slug}/MASTER.md`·`pages/{page-slug}.md`, 복수 `.ai-docs/{앱}/design-system/{project-slug}/MASTER.md`·`pages/{page-slug}.md` | `ui-ux-pro-max` 산출물, 명시적 저장 요청 시 프로젝트 정책에 따라 commit |
@@ -407,7 +410,7 @@ reduced-motion 대체안과 성능 검증 기준도 포함해줘.
 | inventory·plugin metadata | `maintainer/inventory/`, `maintainer/plugin/` | 하네스 관리자 |
 | 관리자 projection | `.agents/skills/`, `.claude/skills/` | repo-local 생성물 |
 | 사용자 플러그인 후보 | `plugins/harness-kit/` | 빌드·검증 산출물 |
-| 실제 프로젝트 | `.ai-docs/**`, `AGENTS.md`, `CLAUDE.md`, 코드 | 프로젝트 수행자 |
+| 실제 프로젝트 | `.ai-docs/**`, `AGENTS.md`, 코드 | 프로젝트 수행자 |
 
 별도의 관리자용 플러그인은 만들지 않는다. 관리자는 `maintainer/skills/`의 정본을 관리하고, 이 저장소의 로컬 관리자 동기화본(projection)으로 작업 환경을 유지한다. 사용자 경험을 검증할 때는 일반 사용자와 같은 조건에서 `harness-kit` 플러그인을 분리된 Codex·Claude CLI·앱 설정에 설치해 직접 사용해 본다.
 

@@ -30,7 +30,7 @@ def main() -> int:
         "권한을 상속하지 않는다",
         "다른 스킬이 `context-doc`을 선택한 경우에도",
         "앱 컨텍스트와 작업 지침 편집 확인",
-        "루트 `AGENTS.md`/`CLAUDE.md`와 `.ai-docs/root-context/**`는 생성하지 않는다",
+        "루트 `AGENTS.md`와 `.ai-docs/root-context/**`는 생성하지 않는다",
         "`agent-instruction.md`와 `artifact-output-routing-instruction.md`",
         "confirmed_scope",
         "prompts/design-sync.md",
@@ -175,10 +175,8 @@ def main() -> int:
         "## 10. 구축 대상 기능 분류",
         "Markdown 상대 링크",
     )
-    require(
-        SKILL_ROOT / "templates" / "CLAUDE.md.template",
-        "plugin 이름 기반 경로를 만들지 않는다",
-    )
+    if (SKILL_ROOT / "templates" / "CLAUDE.md.template").exists():
+        raise AssertionError("retired CLAUDE.md template still exists")
     for prompt in ("analysis-instruction.md", "parallel-setup.md"):
         require(SKILL_ROOT / "prompts" / prompt, "artifact 의미", "대상 앱")
 
@@ -188,8 +186,8 @@ def main() -> int:
         raise AssertionError(f"unexpected eval ids: {ids}")
     if "_inbox" not in evals["evals"][3]["expected_output"]:
         raise AssertionError("external producer eval must require inbox-only proposal")
-    if any("CLAUDE.md는 bridge" in case["expected_output"] for case in evals["evals"]):
-        raise AssertionError("context-doc eval still assigns root bridge ownership")
+    if any("CLAUDE.md" in case["expected_output"] for case in evals["evals"]):
+        raise AssertionError("context-doc eval still assigns CLAUDE.md output ownership")
 
     print("context-doc portable routing evals passed")
     return 0

@@ -5,8 +5,8 @@ format. It remains readable after any setup tool or plugin has been removed.
 
 ## Read in this order
 
-1. `artifact-routing.json` identifies the project mode, applications, ownership
-   roots and the two host-local adapter states.
+1. `artifact-routing.json` identifies the project mode, applications and
+   ownership roots using project-relative paths only.
 2. `artifact-format-contract.json` defines the required metadata and path rules
    for a generated artifact.
 3. The application routing instruction at `{{ROUTING_INSTRUCTION}}` is the
@@ -20,11 +20,13 @@ separate:
 - Claude: `.claude/settings.json` and `.claude/hooks/claude-pre-tool-use.ps1`
 - Codex: `.codex/hooks.json` and `.codex/hooks/codex-pre-tool-use.ps1`
 
-Both remain `pending-trust` until an administrator approves host installation
-and the host-specific trust step. `install-routing.ps1 -Plan` is safe to run:
-it emits the identical proposed local targets and does not write files.
+Host status is stored only in the Git-ignored
+`.ai-docs/.harness/routing-state.local.json`. Each user runs the installer on
+their own checkout, so shared files never contain a user profile or checkout
+path. `install-routing.ps1 -Plan` is safe to run: it emits project-relative
+targets and does not write files.
 
-The manifest `pending-trust`/`active` state records trust evidence only. Codex
+The local `pending-trust`/`active` state records trust evidence only. Codex
 decides execution from its own `/hooks` trusted hash (or a per-invocation
 `--dangerously-bypass-hook-trust`), so a `pending-trust` hook may already run.
 Re-running `-Apply` keeps `active` only while the host config hash is unchanged.

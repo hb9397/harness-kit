@@ -100,5 +100,5 @@ Code에서는 `/harness-kit:git-scoped-account`를 호출하고 적용 또는 �
 
 정책이 아직 없으면 로컬 계정 표식만 남긴다. 관리자가 나중에 권한 정책을 최초 설정할
 때 이 표식이 필수 사전 조건이 된다. 정책이 이미 있는데 이 단계까지 완료하지 않은
-PC에서는 `.ai-docs/**`와 Git에 포함된 루트 `AGENTS.md`·`CLAUDE.md` 쓰기를 fail closed
+PC에서는 `.ai-docs/**`와 Git에 포함된 루트 `AGENTS.md` 쓰기를 fail closed
 한다. 애플리케이션 소스코드는 이 조건으로 막지 않는다.

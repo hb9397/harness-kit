@@ -3,7 +3,7 @@ name: harness-bootstrap
 description: >
   AI 하네스 문서가 전혀 없는 기존 코드베이스에 처음으로 하네스를 부팅할 때 사용한다.
   '하네스 부팅', '기존 코드 분석해서 문서 만들어줘', '레거시 프로젝트 문서화',
-  'CLAUDE.md 없는데 생성', '설계 문서 역추출', 'AI 문서 부트스트랩',
+  'AGENTS.md 없는데 생성', '설계 문서 역추출', 'AI 문서 부트스트랩',
   '기존 프로젝트에 하네스 도입' 요청이 오면 이 스킬을 사용한다.
   기존 코드베이스에 harness-setup의 프로젝트 문서 골격을 먼저 적용한 뒤 design-doc PROJECT_DESIGN 형식 설계 문서 + context-doc 결과물(앱별 *-context.md + .ai-docs/instruction/*)을 자동 도출한다.
   프레임워크 자동 감지. 최소 인터뷰(3회 이하)로 코드에서 추출 불가능한 도메인 맥락·아키텍처 선택·배포 환경만 보충.
@@ -12,7 +12,7 @@ allowed-tools: Read, Glob, Grep, Write
 
 # 하네스 부트스트랩 (harness-bootstrap)
 
-기존 코드베이스만 있고 AI 하네스 문서(CLAUDE.md, AGENTS.md, 설계 문서, instruction 등)가 전혀 없을 때,
+기존 코드베이스만 있고 AI 하네스 문서(AGENTS.md, 설계 문서, instruction 등)가 전혀 없을 때,
 코드를 직접 분석해서 다음 두 산출물을 한 번에 도출한다.
 
 1. **`design-doc` PROJECT_DESIGN 형식 설계 문서** (확장 가능한 앱 설계 기준)
@@ -59,7 +59,7 @@ check-path`로 단계별 정확한 파일을 검사한다.
 ```text
 [하네스 단계]
 admin
-  └─ 루트 AGENTS.md·CLAUDE.md, .ai-docs/root-context/**, .ai-docs/harness/**
+  └─ 루트 AGENTS.md, .ai-docs/root-context/**, .ai-docs/harness/**
 
 [앱 문서 단계]
 pm-pl 또는 해당 앱 app-doc-lead
@@ -88,7 +88,7 @@ Markdown 문체 개선까지 명시했는지에 따라 `true` 또는 `false`로 
 `false`면 자식 workflow를 포함해 `humanize-korean`을 제안하거나 호출하지 않는다.
 
 ```text
-artifact_bundle_id = harness-bootstrap:{정규화한 프로젝트 루트}:{이번 실행의 고유 ID}
+artifact_bundle_id = harness-bootstrap:{이번 실행의 고유 ID}
 handoff_owner = harness-bootstrap
 suppress_child_handoff = false
 handoff_completed = false
@@ -236,7 +236,7 @@ confirmed_scope.user_approved = true
 > - 프로젝트 유형: **단일 / 복수** 애플리케이션
 > - 부트스트랩 대상 애플리케이션(폴더): `{폴더명}`
 > - 문서 하네스 골격 상태: `{없음 / 부분 존재 / 설정됨}`
-> - `harness-setup` 적용 예정 경로: `.ai-docs/**`, 루트 `AGENTS.md`, `CLAUDE.md`
+> - `harness-setup` 적용 예정 경로: `.ai-docs/**`, 루트 `AGENTS.md`
 > - 사용자 local skill 디렉터리 생성: **없음**
 >
 > 맞습니까? **(승인 / 수정 / 취소)**
@@ -257,9 +257,9 @@ Step 0-B 승인 뒤 다음 기준으로 공개 스킬 이름 `harness-setup`에 
 부트스트랩 산출물을 만들지 않는다. 이전 경로에 서명 권한 정책이 있으면 관리자용
 별도 이관이 필요하다는 중단 결과를 그대로 사용자에게 전달한다.
 
-- `.ai-docs/`, `AGENTS.md`, `CLAUDE.md` 중 하나라도 없으면 초기 설정 또는
+- `.ai-docs/`, `AGENTS.md` 중 하나라도 없으면 초기 설정 또는
   복구 workflow를 실행한다.
-- 모두 있어도 `.ai-docs/README.md`, `.ai-docs/.gitignore`, `@AGENTS.md` bridge의
+- 모두 있어도 `.ai-docs/README.md`, `.ai-docs/.gitignore`, `AGENTS.md` 직접 로드 계약의
   계약을 읽기 전용으로 확인하고, 갱신이 필요하면 관리 블록 diff를 반환받는다.
 - Step 0-B에서 확정한 프로젝트 루트·단일/복수 앱 판정·적용 경로 승인을
   전달하므로 같은 질문을 반복하지 않는다. 새 overwrite 또는 backup 판단이
@@ -273,7 +273,7 @@ handoff_owner = harness-bootstrap
 suppress_child_handoff = true
 ```
 
-`harness-setup`은 `.ai-docs/**`, 루트 `AGENTS.md`, `CLAUDE.md`만 생성·갱신하고
+`harness-setup`은 `.ai-docs/**`, 루트 `AGENTS.md`만 생성·갱신하고
 변경 목록과 금지 경로 불변조건 검증을 반환해야 한다. `.agents/skills/`,
 `.claude/skills/`, `skills/`는 생성·복사·동기화하지 않는다. 기존 local skill
 copy는 읽기 전용 report만 반환한다.
@@ -509,7 +509,7 @@ proposal만 기록하고 G12 승인 전 canonical artifact를 만들지 않는�
 - 설계 문서 저장 폴더(`.ai-docs/context-base/`)가 없으면 생성
 - `DESIGN.md`, `.ai-docs/{앱}-context.md`, instruction 파일 일괄 저장
 - 앱 context의 `@.ai-docs/instruction/*` 참조가 실제 파일과 1:1 일치하는지 검증
-- 루트 `AGENTS.md`·`CLAUDE.md`와 `.ai-docs/root-context/**`를 수정하지 않았는지 검증
+- 루트 `AGENTS.md`와 `.ai-docs/root-context/**`를 수정하지 않았는지 검증
 
 **복수 애플리케이션:**
 - `.ai-docs/{앱}/instruction/` 디렉토리가 없으면 생성
@@ -518,7 +518,7 @@ proposal만 기록하고 G12 승인 전 canonical artifact를 만들지 않는�
 - 컨텍스트 문서: `.ai-docs/{앱}-context.md` 저장
 - instruction: `.ai-docs/{앱}/instruction/*-instruction.md` 저장
 - `.ai-docs/{앱}-context.md`의 instruction 참조가 `.ai-docs/{앱}/instruction/` 내 실제 파일과 1:1 일치하는지 검증
-- 루트 `AGENTS.md`·`CLAUDE.md`와 `.ai-docs/root-context/**`를 수정하지 않았는지 검증
+- 루트 `AGENTS.md`와 `.ai-docs/root-context/**`를 수정하지 않았는지 검증
 
 **공통:**
 - 이미 존재하는 파일이 있으면 덮어쓰기 전에 사용자에게 알림

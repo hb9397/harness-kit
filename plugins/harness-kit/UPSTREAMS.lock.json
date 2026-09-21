@@ -1,6 +1,6 @@
 {
   "schema_version": "1.1.0",
-  "generated_at": "2026-08-05",
+  "generated_at": "2026-09-21",
   "behavior_contracts": [
     {
       "id": "commit-workflow",
@@ -52,9 +52,9 @@
       },
       "packaged": {
         "plugin_id": "harness-kit",
-        "version": "0.6.5",
+        "version": "0.8.0",
         "packaged_at": "2026-08-01",
-        "artifact_manifest_sha256": "168cdf74377bb1d624813b300d0483b338097b98592be2a8ba131c2934697b50"
+        "artifact_manifest_sha256": "680acd4adcb43edf92f7eed9526722a8c48888a9f053effd59fa1ac314bec767"
       },
       "released": null
     },
@@ -403,10 +403,10 @@
       "id": "claude-memory",
       "observed": {
         "source_url": "https://code.claude.com/docs/en/memory",
-        "checked_at": "2026-07-29",
+        "checked_at": "2026-09-21",
         "ref": "documentation",
         "sha": null,
-        "note": "Documentation reference only; supports @AGENTS.md bridge pattern."
+        "note": "Documentation reference only; Claude Code 2.1.277+ can load AGENTS.md directly when no CLAUDE.md, .claude/CLAUDE.md, or CLAUDE.local.md exists from the project directory through its ancestors. Native support is unavailable in documented exception environments."
       },
       "accepted": null,
       "embedded": null,
@@ -512,9 +512,9 @@
       },
       "packaged": {
         "plugin_id": "harness-kit",
-        "version": "0.6.5",
+        "version": "0.8.0",
         "packaged_at": "2026-08-01",
-        "artifact_manifest_sha256": "168cdf74377bb1d624813b300d0483b338097b98592be2a8ba131c2934697b50"
+        "artifact_manifest_sha256": "680acd4adcb43edf92f7eed9526722a8c48888a9f053effd59fa1ac314bec767"
       },
       "released": null
     },
@@ -554,9 +554,9 @@
       },
       "packaged": {
         "plugin_id": "harness-kit",
-        "version": "0.6.5",
+        "version": "0.8.0",
         "packaged_at": "2026-08-01",
-        "artifact_manifest_sha256": "168cdf74377bb1d624813b300d0483b338097b98592be2a8ba131c2934697b50"
+        "artifact_manifest_sha256": "680acd4adcb43edf92f7eed9526722a8c48888a9f053effd59fa1ac314bec767"
       },
       "released": null
     },
@@ -626,9 +626,9 @@
       },
       "packaged": {
         "plugin_id": "harness-kit",
-        "version": "0.6.5",
+        "version": "0.8.0",
         "packaged_at": "2026-08-01",
-        "artifact_manifest_sha256": "168cdf74377bb1d624813b300d0483b338097b98592be2a8ba131c2934697b50"
+        "artifact_manifest_sha256": "680acd4adcb43edf92f7eed9526722a8c48888a9f053effd59fa1ac314bec767"
       },
       "released": null
     },

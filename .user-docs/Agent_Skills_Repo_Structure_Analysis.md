@@ -23,7 +23,7 @@
 
 > **⚠ 과거 스냅샷 문서** — 2026-05-27 시점 분석이며, 이후 리팩토링(D-7 파일 생성 폐지, `.instruction` → `.docs/root-context` 전환 등)으로 일부 내용이 현행과 다릅니다.
 >
-> 특히 이 문서의 `18개`, `skill-designer`, `skill-design`, `model:` 예시는 당시 조사 기록입니다. 현재 운영 기준은 `README.md`, `.user-docs/Harness_Engineering.md`, `CLAUDE.md`, `AGENTS.md`를 따릅니다.
+> 특히 이 문서의 `18개`, `skill-designer`, `skill-design`, `model:` 예시는 당시 조사 기록입니다. 현재 운영 기준은 `README.md`, `.user-docs/Harness_Engineering.md`, `AGENTS.md`를 따릅니다.
 
 > 작성일: 2026-05-27
 >
@@ -783,7 +783,7 @@ cd ~/.codex/skills/gstack
 
 gstack README와 `setup` script는 Codex host의 설치 원본 위치로 `~/.codex/skills/gstack`을 사용한다. Codex 최신 문서의 일반 사용자 skill discovery 위치는 `$HOME/.agents/skills`지만, gstack은 `setup --host codex`가 Codex용 산출물을 생성/등록하므로 먼저 gstack 공식 설치 흐름을 따른다. 설치 후 Codex App/CLI에서 gstack skill이 보이지 않으면 재시작하고, 그래도 보이지 않을 때만 `~/.codex/skills/gstack`의 setup 결과물을 `$HOME/.agents/skills`에 mirror 또는 symlink하는 방식을 검토한다.
 
-전역 설치의 의미는 "모든 드라이브"가 아니라 "현재 사용자 계정 전체"다. 예를 들어 Windows에서 `~`가 `C:\Users\lhb93`이면 gstack 원본은 C 드라이브 홈에 있어도, `D:\Dev_Workspace\project-a`에서 Claude/Codex를 실행하면 현재 프로젝트인 `project-a`를 대상으로 `/review`, `/qa`, `gstack-review` 같은 흐름이 동작한다.
+전역 설치의 의미는 "모든 드라이브"가 아니라 "현재 사용자 계정 전체"다. 예를 들어 Windows에서 `~`가 `%USERPROFILE%`이면 gstack 원본이 사용자 홈에 있어도, 다른 드라이브의 `project-a`에서 Claude/Codex를 실행하면 현재 프로젝트인 `project-a`를 대상으로 `/review`, `/qa`, `gstack-review` 같은 흐름이 동작한다.
 
 팀 모드:
 

@@ -72,13 +72,15 @@
 단일 앱에서 루트 `AGENTS.md`는 공통 컨텍스트 정본이다.
 
 - 없으면 번들 리소스 `templates/root-context-single.template`을 읽고
-  `{{PROJECT_NAME}}`, `{{PROJECT_ROOT}}`, `{{APP_ID}}`를 확정값으로 치환해 생성한다.
+  `{{APP_ID}}`만 확정값으로 치환해 생성한다. 앱 식별자는 기존 routing/context의 id,
+  package·build metadata, Git remote 저장소명 순서로 재사용하고, 모두 없을 때는 `application`을
+  사용한다. 체크아웃 최상위 폴더명은 앱 식별자로 사용하지 않는다.
 - 이미 있으면 사용자 내용을 보존한다. setup 관리 뼈대가 누락됐다는 이유로 기존
   프로젝트 규칙을 덮어쓰지 않으며, `harness-setup` 관리 블록 갱신 후보로 보고한다.
 
-루트 `CLAUDE.md`는 `@AGENTS.md` bridge만 둔다. 없으면 번들 리소스
-`templates/claude-bridge.template`을 읽어 생성한다. 이미 존재하지만 bridge가
-아니면 차이를 먼저 보여주고 사용자 승인 후 갱신한다.
+Claude Code는 2.1.277 이상에서 루트 `AGENTS.md`를 직접 읽는다. `detection.md`의
+Claude instruction 선점 검사를 통과하지 못하면 파일을 쓰지 않는다. 새
+`CLAUDE.md`·`CLAUDE.local.md`는 만들지 않는다.
 
 ## 4. legacy local skill copy 읽기 전용 report
 
@@ -105,7 +107,6 @@
 │   ├── .gitignore          ← harness-setup 생성 (로컬 전용 영역 지정)
 │   └── _inbox/             ← 에이전트 임시 입력 공간 (내용 git 미추적)
 ├── AGENTS.md               ← harness-setup이 프로젝트 전체 읽기 지도 관리
-├── CLAUDE.md               ← @AGENTS.md bridge
 └── (기존 소스코드)
 ```
 
@@ -113,7 +114,7 @@
 > - `AGENTS.md` 뼈대는 `harness-setup`이 만들고, 프로젝트 팩트와 instruction
 > - `context-doc`은 `.ai-docs/{앱}-context.md`와 instruction을 만들고, 루트 읽기 지도
 >   반영은 `harness-setup`이 관리한다.
-> - `CLAUDE.md`는 `@AGENTS.md` bridge다.
+> - Claude Code 2.1.277 이상과 Codex는 루트 `AGENTS.md`를 직접 읽는다.
 > - `.ai-docs/` 이하 산출물은 소스코드와 함께 동일 git 레포에서 형상관리한다.
 > - 사용자 스킬은 프로젝트 local copy가 아니라 `harness-kit` 플러그인으로 사용한다.
 > - `.agents/skills/`, `.claude/skills/`, `skills/`에는 사용자 스킬을 생성하거나
@@ -123,9 +124,10 @@
 
 이번 실행의 생성·변경 목록을 확인한다.
 
-- 허용 경로: `.ai-docs/**`, `AGENTS.md`, `CLAUDE.md`
+- 허용 경로: `.ai-docs/**`, `AGENTS.md`
 - 금지 경로: `.agents/skills/**`, `.claude/skills/**`, `skills/**`
-- 모든 템플릿 placeholder가 치환됐고 `CLAUDE.md`가 `@AGENTS.md` bridge인지 확인
+- 모든 템플릿 placeholder가 치환됐고 프로젝트·상위 경로에 Claude instruction
+  선점 파일이 없는지 확인
 
 금지 경로가 변경됐거나 placeholder가 남아 있으면 세팅 성공으로 보고하지 않는다.
 

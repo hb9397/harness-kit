@@ -33,7 +33,7 @@ AI Agent Harness는 Codex, Claude Code처럼 서로 다른 에이전트가 같�
 | 사용자 스킬 정본 20종 | 관리 저장소 `skills/` | 다음 plugin build의 입력 |
 | 현재 stable `0.6.0` runtime 20종 | 설치된 `harness-kit` 플러그인 | local copy를 남기지 않음 |
 | `project-write-access` | `0.6.0` runtime에 포함된 명시 호출 전용 스킬 | 관리자는 공유 정책 설정·변경, 각 참여자는 PC별 로컬 등록 |
-| 프로젝트 문서 골격 | 프로젝트 수행자가 `harness-setup`으로 생성 | `.ai-docs/**`, `AGENTS.md`, `CLAUDE.md` |
+| 프로젝트 문서 골격 | 프로젝트 수행자가 `harness-setup`으로 생성 | `.ai-docs/**`, `AGENTS.md` |
 | 설계·구현 계획·프로토타입 | 프로젝트 수행자와 사용자 스킬 | `.ai-docs/**` |
 | 코드·테스트 산출물 | 프로젝트 수행자 | 각 앱 repo |
 | 리뷰·검증 보고 | 프로젝트 수행자와 사용자 스킬 | 기본은 대화 보고, 스킬이 별도 파일 생성을 금지하면 repo에 저장하지 않음 |
@@ -41,7 +41,7 @@ AI Agent Harness는 Codex, Claude Code처럼 서로 다른 에이전트가 같�
 
 관리 저장소의 사용자 스킬 정본, `0.6.0`의 Codex·Claude runtime과 capability inventory는 모두 20종으로 같다. 게시된 최신 stable은 [`v0.6.0`](https://github.com/hb9397/harness-kit/releases/tag/v0.6.0)이다.
 
-`harness-setup`의 쓰기 allowlist는 `.ai-docs/**`, 루트 `AGENTS.md`, `CLAUDE.md`다. `.agents/skills/**`, `.claude/skills/**`, `skills/**`를 생성·복사·동기화하지 않는다. 실행 전에 존재하던 local skill 경로는 읽기 전용으로 분류·보고하고 승인 없이 변경하지 않는다.
+`harness-setup`의 쓰기 allowlist는 `.ai-docs/**`, 루트 `AGENTS.md`다. `.agents/skills/**`, `.claude/skills/**`, `skills/**`를 생성·복사·동기화하지 않는다. 실행 전에 존재하던 local skill 경로는 읽기 전용으로 분류·보고하고 승인 없이 변경하지 않는다. Claude 대상 setup은 프로젝트 루트부터 파일시스템 루트까지 `CLAUDE.md`, `.claude/CLAUDE.md`, `CLAUDE.local.md`를 검사한다. 관리 중인 구형 루트 bridge만 승인된 갱신에서 제거하고, 사용자 내용 또는 상위 경로 파일은 보존한 채 중단한다.
 
 새 하네스의 문서 루트는 `.ai-docs/` 하나뿐이다. 이전 이름 `.docs/`만 있는 프로젝트는 일반 초기 설정·갱신이 아니라 이관 모드로 분류한다. 서명 정책이 없으면 `harness-setup`이 전체 이동 계획과 바뀔 참조를 보여주고 별도 승인을 받는다. 서명 정책이 있으면 `admin`이 `project-write-access`의 `migrate-root-plan`과 `migrate-root`로 정책·Git 훅·AI 가드 경로까지 함께 이관한다. `.docs/`와 `.ai-docs/`가 함께 있으면 자동 병합하지 않는다.
 
@@ -71,7 +71,6 @@ RFP는 별도의 중간 스킬을 거치지 않고 RFP 원문 해석을 지원�
 my-app/
 ├── .ai-docs/
 ├── AGENTS.md
-├── CLAUDE.md
 └── src/
 ```
 
@@ -82,11 +81,10 @@ my-project/              ← 보통 git 미관리
 ├── app-frontend/        ← 별도 git repo
 ├── app-backend/         ← 별도 git repo
 ├── .ai-docs/            ← 별도 git repo 권장
-├── AGENTS.md            ← 실행용
-└── CLAUDE.md            ← AGENTS.md bridge
+└── AGENTS.md            ← 실행용
 ```
 
-복수 앱에서 `.ai-docs/root-context/AGENTS.md`가 루트 컨텍스트의 관리 원본이다. 루트 `AGENTS.md`와 `CLAUDE.md`는 실행용이다. 기존 `.ai-docs` repo가 있다면 빈 골격을 새로 만들기 전에 올바른 위치에 clone/pull해서 복원한다.
+복수 앱에서 `.ai-docs/root-context/AGENTS.md`가 루트 컨텍스트의 관리 원본이고 루트 `AGENTS.md`는 실행용이다. 기존 `.ai-docs` repo가 있다면 빈 골격을 새로 만들기 전에 올바른 위치에 clone/pull해서 복원한다.
 
 ### 3.3 작업 규모
 
@@ -190,8 +188,7 @@ Codex는 설치 후 새 task를 열고 필요하면 앱을 재시작한다. Clau
 │   ├── instruction/
 │   └── impl-doc/
 ├── root-context/
-│   ├── AGENTS.md
-│   └── CLAUDE.md
+│   └── AGENTS.md
 └── .harness/
     └── humanize-handoffs.json
 ```
@@ -257,8 +254,8 @@ Agent도 같은 산출물 유형의 정규 경로·owner·승인·형식·eviden
    PROJECT_DESIGN 본문은 변경 이력을 누적하지 않고 현재 기준 사실만 유지한다.
 5. 후속 workflow에서 쓸 경우 저장을 승인한다.
 6. 저장된 설계를 같은 역할·앱 범위에서 `context-doc`에 입력한다.
-7. `{앱}-context.md`와 필요한 instruction 파일을 검토하고 저장한다. 루트 `AGENTS.md`와
-   `CLAUDE.md` 갱신이 필요하면 `harness-setup` 후속 작업으로 분리한다.
+7. `{앱}-context.md`와 필요한 instruction 파일을 검토하고 저장한다. 루트 `AGENTS.md`
+   갱신이 필요하면 `harness-setup` 후속 작업으로 분리한다.
 
 `design-doc`의 기본 저장 경로:
 
@@ -316,7 +313,7 @@ harness-setup 골격 확인
 
 단일 앱은 instruction을 `.ai-docs/instruction/`, 복수 앱은 `.ai-docs/{앱}/instruction/`에
 저장한다. 두 유형 모두 앱 컨텍스트는 `.ai-docs/{앱}-context.md`에 저장한다.
-루트 폴더는 보통 git으로 관리하지 않으므로 `.ai-docs/root-context/AGENTS.md`가 루트 정본 내용을 형상관리하는 실제 원본이며, `.ai-docs/root-context/CLAUDE.md`는 그 bridge의 형상관리 사본이다. 루트 실행용 `AGENTS.md`와 `CLAUDE.md`의 최종 갱신은 `harness-setup` 계약이 담당한다.
+루트 폴더는 보통 git으로 관리하지 않으므로 `.ai-docs/root-context/AGENTS.md`가 루트 정본 내용을 형상관리하는 실제 원본이다. 루트 실행용 `AGENTS.md`의 최종 갱신은 `harness-setup` 계약이 담당한다.
 
 #### 화면을 먼저 검증할 때
 
@@ -552,7 +549,7 @@ flowchart TD
 | 산출물 | 기본 위치 | 소유와 형상관리 |
 |--------|-----------|----------------|
 | 설계 | `.ai-docs/**/context-base/DESIGN.md` | 프로젝트 문서 |
-| 루트 컨텍스트 | `AGENTS.md`, `CLAUDE.md` | 단일 앱은 루트 `AGENTS.md` 정본, 복수 앱은 `.ai-docs/root-context/AGENTS.md` Git 관리 원본과 루트 실행본, `CLAUDE.md` bridge |
+| 루트 컨텍스트 | `AGENTS.md` | 단일 앱은 루트 `AGENTS.md` 정본, 복수 앱은 `.ai-docs/root-context/AGENTS.md` Git 관리 원본과 루트 실행본 |
 | 세부 규칙 | `.ai-docs/**/instruction/*-instruction.md` | 프로젝트 문서 |
 | 화면 설계 | 단일 `.ai-docs/prototype/{사용자}/{식별자}/design-doc.md`, 복수 `.ai-docs/{앱}/prototype/{사용자}/{식별자}/design-doc.md` | `design-prototype-docs`가 관리하는 프로젝트 문서 |
 | 프로토타입 | 단일 `.ai-docs/prototype/{사용자}/{식별자}/`, 복수 `.ai-docs/{앱}/prototype/{사용자}/{식별자}/` | `create-prototype`이 만드는 폐기 가능한 검증 산출물 |
@@ -563,7 +560,7 @@ flowchart TD
 | 코드·테스트 | 각 앱 repo | 앱별 형상관리 |
 | 사용자 스킬 | 설치된 플러그인 | 프로젝트 repo에 복사하지 않음 |
 
-복수 앱에서 `.ai-docs`가 별도 repo라면 코드 commit과 문서 commit의 연결을 이슈, 작업 ID, 구현 계획 링크 등으로 남긴다. 루트 `AGENTS.md`와 `CLAUDE.md`가 git 미관리 파일이어도 `.ai-docs/root-context/AGENTS.md`는 관리한다.
+복수 앱에서 `.ai-docs`가 별도 repo라면 코드 commit과 문서 commit의 연결을 이슈, 작업 ID, 구현 계획 링크 등으로 남긴다. 루트 `AGENTS.md`가 git 미관리 파일이어도 `.ai-docs/root-context/AGENTS.md`는 관리한다.
 
 ## 9. 병렬화와 hook 전략
 
@@ -685,7 +682,7 @@ flowchart TD
 - [ ] 기존 `.ai-docs` repo가 있다면 먼저 복원했다.
 - [ ] `harness-setup` 출력이 allowlist 안에만 있다.
 - [ ] local user skill directory가 새로 생기지 않았다.
-- [ ] `AGENTS.md`가 정본이고 `CLAUDE.md`가 bridge다.
+- [ ] `AGENTS.md`가 Codex·Claude의 단일 정본이고 선점하는 Claude instruction 파일이 없다.
 
 ### 기능 시작
 
@@ -911,7 +908,7 @@ python maintainer/skills/skill-portfolio-maintainer/scripts/validate_registry.py
 
 ## Portable routing lifecycle
 
-`harness-setup`은 `.ai-docs/harness/`에 경로·형식·host 상태 정본을 남긴다. `-Plan`/`-Check`은 읽기 전용이며, Claude/Codex host-local hook의 `-Apply`/`-Uninstall`은 host별 diff와 별도 승인 뒤에만 수행한다. Codex hook은 `/hooks` 신뢰 증적 전까지 `pending-trust`이며 plugin runtime 비종속 상태로 기록하지 않는다.
+`harness-setup`은 `.ai-docs/harness/`에 프로젝트 상대경로 기반 경로·형식 계약을 남긴다. 공유 manifest의 `project_root`는 `.`이며 사용자 홈·checkout 절대경로와 host 상태를 넣지 않는다. PC별 설치·신뢰·config hash는 Git에서 제외되는 `.ai-docs/.harness/routing-state.local.json`에 둔다. `-Plan`/`-Check`은 읽기 전용이며, Claude/Codex host-local hook의 `-Apply`/`-Uninstall`은 host별 diff와 별도 승인 뒤에만 수행한다. Codex hook은 `/hooks` 신뢰 증적 전까지 로컬 상태를 `pending-trust`로 기록한다.
 따라서 이후 다른 플러그인이나 일반 AI 도구를 사용해도 bundle과 앱별 routing instruction만으로 산출물 위치를 해석할 수 있다.
 
 G10 뒤 선택 host에 설치하는 `PreToolUse` adapter는 공통 write guard를 호출한다. guard는 경로를 project containment 기준으로 정규화하고, 기존 canonical 문서·승인된 앱 source·`.ai-docs/_inbox/**`·manifest exception만 통과시킨다. 새 관리 문서는 target path, operation, content SHA-256, TTL을 함께 묶은 1회성 approval marker가 정확히 일치할 때만 통과하며 성공 뒤 marker를 소비한다.
@@ -919,8 +916,8 @@ Codex는 deny JSON을, Claude는 exit 2/stderr를 사용하며 두 host 모두 a
 
 이는 관찰 가능한 local write surface의 best-effort guard다. 동적 shell target, hosted tool, opt-out path, 명령 실행 후의 redirect, 외부 process는 완전 차단을 주장하지 않고 bypass evidence로 남긴다. 실제 Codex `/hooks` trust는 여전히 별도의 사용자 증적이다.
 
-사용자가 Codex `/hooks` 또는 해당 host의 신뢰 검토를 마친 뒤에는 `install-routing.ps1 -ActivateTrust -TargetHost codex -ApproveTrustEvidence`처럼 증적을 명시해 manifest 상태만 `active`로 갱신한다. 이 명령은 신뢰 검토를 실행하거나 자동으로 증명하지 않는다. manifest 상태는 hook 실행 스위치가 아니므로 `/hooks` 신뢰나 `--dangerously-bypass-hook-trust`로 hook이 먼저 실행될 수 있으며, hook 정의가 바뀐 뒤 `-Apply`하면 다시 `pending-trust`가 된다.
-외부 Markdown 계열은 `normalize-artifact.ps1 -Plan`으로 UTF-8·managed marker 병합안을 보고 G12 승인 뒤에만 promotion한다. JSON/YAML·이미지·PDF는 source hash와 proposal을 `_inbox`에 보관할 뿐 손실 가능 자동 변환이나 canonical promotion을 하지 않는다.
+사용자가 Codex `/hooks` 또는 해당 host의 신뢰 검토를 마친 뒤에는 `install-routing.ps1 -ActivateTrust -TargetHost codex -ApproveTrustEvidence`처럼 증적을 명시해 로컬 상태만 `active`로 갱신한다. 이 명령은 신뢰 검토를 실행하거나 자동으로 증명하지 않는다. 로컬 상태는 hook 실행 스위치가 아니므로 `/hooks` 신뢰나 `--dangerously-bypass-hook-trust`로 hook이 먼저 실행될 수 있으며, hook 정의가 바뀐 뒤 `-Apply`하면 다시 `pending-trust`가 된다.
+외부 Markdown 계열은 `normalize-artifact.ps1 -Plan`으로 UTF-8·managed marker 병합안을 보고 G12 승인 뒤에만 promotion한다. JSON/YAML·이미지·PDF는 source basename·hash와 proposal만 `_inbox`에 보관하고 원본 PC 절대경로, 손실 가능 자동 변환이나 canonical promotion은 남기지 않는다.
 
 ## 결론
 

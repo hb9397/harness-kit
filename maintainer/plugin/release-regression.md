@@ -5,8 +5,8 @@
 ## 요약
 
 - 전체 상태: `not-release-ready`
-- 플러그인: `harness-kit` `0.6.5`
-- 아카이브 SHA-256: `22e0f98637cacf9c3eef94b439711deed34e4f8aacaa2eb08250ab64f6a4b3ab`
+- 플러그인: `harness-kit` `0.8.0`
+- 아카이브 SHA-256: `ec4b29879bd0a4c1c144323ef50bbc866cb96ea53d41d5543a7ab8a941146899`
 - 릴리스 게이트: `not-release-ready`
 - push/tag/release 생성: `false`
 
@@ -24,7 +24,7 @@
 
 ## 릴리스 결정
 
-`codex-cli, codex-desktop-app, claude-code-cli, claude-desktop-code`에 대한 대화형 증적이 아직 필요하므로 이 후보는 `not-release-ready` 상태를 유지한다. Phase 10은 publish하지 않는다. 현재 후보의 격리 Codex·Claude CLI 설치 smoke는 통과했다; 다음 수동 증적이 남아 있다: codex-cli, codex-desktop-app, claude-code-cli, claude-desktop-code. 이 스크립트는 `released` 잠금 상태를 갱신하지 않으며 태그 또는 릴리스를 생성하지 않는다.
+`codex-cli, codex-desktop-app, claude-code-cli, claude-desktop-code`에 대한 대화형 증적이 아직 필요하므로 이 후보는 `not-release-ready` 상태를 유지한다. Phase 10은 publish하지 않는다. 현재 후보의 CLI 설치 smoke는 검증되지 않아 이전 버전 증적을 승계하지 않는다; 다음 수동 증적이 남아 있다: codex-cli, codex-desktop-app, claude-code-cli, claude-desktop-code. 이 스크립트는 `released` 잠금 상태를 갱신하지 않으며 태그 또는 릴리스를 생성하지 않는다.
 
 ## 롤백
 

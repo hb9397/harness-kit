@@ -416,7 +416,7 @@ Harness Kit 제공 선택지로 `impl-reuse-scan`과 `impl-verify`가 있다. �
 producer가 전달한 실행 컨텍스트가 있으면 새 ID나 owner를 만들지 않는다.
 
 ```text
-artifact_bundle_id = impl-doc:{정규화한 프로젝트 루트}:{이번 실행의 고유 ID}
+artifact_bundle_id = impl-doc:{이번 실행의 고유 ID}
 handoff_owner = impl-doc
 suppress_child_handoff = false
 handoff_completed = false

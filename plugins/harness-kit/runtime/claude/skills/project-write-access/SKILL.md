@@ -1,6 +1,6 @@
 ---
 name: project-write-access
-description: "사용자가 프로젝트 문서 쓰기 권한 설정·변경·검증·제거·관리자 교체를 명시적으로 요청할 때만 사용한다. `.ai-docs/**`와 루트 AGENTS.md·CLAUDE.md를 관리자, 전역 PM·PL, 앱별 문서 책임자, 등록 없는 팀 작성 범위에 연결하고 GitHub·GitLab·Gitea CODEOWNERS, 표준 Git 훅, Codex·Claude 쓰기 가드를 하나의 서명 정책에서 계획·적용한다. 일반 문서 생성·편집·커밋 요청에는 사용하지 않는다."
+description: "사용자가 프로젝트 문서 쓰기 권한 설정·변경·검증·제거·관리자 교체를 명시적으로 요청할 때만 사용한다. `.ai-docs/**`와 루트 AGENTS.md를 관리자, 전역 PM·PL, 앱별 문서 책임자, 등록 없는 팀 작성 범위에 연결하고 GitHub·GitLab·Gitea CODEOWNERS, 표준 Git 훅, Codex·Claude 쓰기 가드를 하나의 서명 정책에서 계획·적용한다. 일반 문서 생성·편집·커밋 요청에는 사용하지 않는다."
 allowed-tools: Read, Write, Glob, Grep
 disable-model-invocation: true
 ---
@@ -88,7 +88,7 @@ disable-model-invocation: true
 - 복수 앱·복수 저장소: `.ai-docs`가 별도 저장소이고 컨테이너 루트는 Git 밖
 
 프로젝트 루트, `.ai-docs` 저장소 경계, 애플리케이션 목록, 보호할 루트
-`AGENTS.md`·`CLAUDE.md`의 Git 포함 여부를 보여주고 확인받는다. 소스코드는 보호
+`AGENTS.md`의 Git 포함 여부를 보여주고 확인받는다. 소스코드는 보호
 범위에 넣지 않는다.
 
 최초 설정·정책 변경·문서 루트 이관 전에 현재 Git 경계에
@@ -266,7 +266,7 @@ CODEOWNERS만 생성된 상태나 로컬 훅만 설치된 상태를 완전한 �
 - Claude `PreToolUse`는 지원 도구 호출을 막지만 사람의 편집과 별도 프로세스는 못 막는다.
 - Codex 프로젝트 훅은 설치 후 사용자가 host의 훅 목록과 신뢰 상태를 확인하기 전까지
   `pending-trust`다.
-- 복수 저장소 구조에서 Git 밖의 루트 `AGENTS.md`·`CLAUDE.md`는 CODEOWNERS와 Git
+- 복수 저장소 구조에서 Git 밖의 루트 `AGENTS.md`는 CODEOWNERS와 Git
   훅으로 보호할 수 없다. AI 훅·운영체제 파일 권한·형상관리 구조 변경이 필요하다.
 
 서명 정책이 활성화된 프로젝트에서는 현재 PC의 `git-scoped-account` 표식과 로컬

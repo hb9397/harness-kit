@@ -14,7 +14,7 @@
 - 이 저장소는 관리자용 원본 저장소다.
 - 실제 프로젝트에는 `plugins/harness-kit` 또는 배포된 marketplace source를 통해 플러그인을 설치한다.
 - 설치 후 새 task/session 또는 reload가 필요하다.
-- 프로젝트에서는 `harness-setup`을 호출해 `.ai-docs/**`, 루트 `AGENTS.md`, `CLAUDE.md`만 만든다.
+- 프로젝트에서는 `harness-setup`을 호출해 `.ai-docs/**`와 루트 `AGENTS.md`만 만든다.
 - `harness-setup`은 사용자 프로젝트에 `.agents/skills/`, `.claude/skills/`, `skills/`를 생성하거나 스킬을 복사·동기화하지 않는다.
 - 모든 참여자는 자기 작업 환경에서 `harness-setup`을 최초 1회 실행하고, 단일·복수 repo 구분 없이 `git-scoped-account`로 각 repo의 Git 작성자와 provider 계정을 등록한다.
 - 문서 쓰기 권한을 나눌 때만 관리자가 `project-write-access`를 명시 호출해 공유 정책을 설정한다. 정책 생성 뒤에는 각 참여자가 관리자 키 없이 자기 PC의 로컬 Git·AI 가드를 등록한다. 권한 기능이 없어도 나머지 하네스 흐름은 그대로 사용할 수 있다.
@@ -214,7 +214,7 @@ harness-setup 명시 호출
 → 단일/복수 앱 확인
 → .ai-docs 생성 또는 갱신
 → AGENTS.md 생성 또는 갱신
-→ CLAUDE.md bridge 생성 또는 갱신
+→ 프로젝트부터 파일시스템 루트까지 Claude instruction 선점 파일 없음 확인
 → .agents/skills·.claude/skills·skills 미생성 확인
 → 단일·복수 repo: 모든 참여자가 자기 PC에서 git-scoped-account 최초 1회
 → 문서 권한을 분리하면 원격 Git provider·저장소·참여자 계정 준비
@@ -230,7 +230,7 @@ harness-setup 명시 호출
 
 `project-write-access`가 활성화되면 `pm-pl`은 모든 앱, `app-doc-lead`는 배정된 앱에서 `design-doc`과 `context-doc`을 사용한다. 두 역할이 AI로 앱 핵심 문서를 쓰기 전에도 대상 문서의 역할과 변경 이유를 설명받고 한 번 더 확인한다. `admin`은 앱 문서 권한을 상속하지 않고 루트 컨텍스트·하네스·권한 정책만 관리한다. `developer`는 일반 참여자를 명시하는 역할이며, 구현 계획·프로토타입·`_inbox` 같은 팀 문서와 애플리케이션 소스코드 작업은 기존 저장소 권한을 따른다. 정책이 있는데 현재 PC의 `git-scoped-account` 또는 로컬 등록이 없거나 계정이 다르면 지원되는 AI 가드는 `.ai-docs/**` 쓰기를 거부한다.
 
-복수 앱에서는 `.ai-docs/root-context/AGENTS.md`가 루트 컨텍스트의 관리 원본이다. 루트 `CLAUDE.md`는 `AGENTS.md`를 읽도록 하는 bridge로 둔다.
+복수 앱에서는 `.ai-docs/root-context/AGENTS.md`가 루트 컨텍스트의 관리 원본이다. Claude Code 2.1.277 이상은 루트 `AGENTS.md`를 직접 읽는다. 프로젝트 또는 상위 경로에 `CLAUDE.md`, `.claude/CLAUDE.md`, `CLAUDE.local.md`가 있으면 선점되므로 setup이 중단된다.
 
 플랫폼별 명시 호출:
 
@@ -321,7 +321,7 @@ harness-setup 명시 호출
 | Claude CLI가 없음 | 공식 Claude Code CLI를 설치하거나 격리된 npm package 실행으로 명령 surface 재검증 |
 | `humanize-korean`이 원본을 바꾸려 함 | 중단. proposal-only 계약 위반으로 보고 |
 | local copy와 plugin skill이 중복됨 | inventory 후 승인형 backup/remove 절차 수행 |
-| setup 후 새 skill 디렉터리가 생김 | 중단. `.ai-docs/**`, `AGENTS.md`, `CLAUDE.md` 출력 allowlist 위반으로 보고 |
+| setup 후 새 skill 디렉터리가 생김 | 중단. `.ai-docs/**`, `AGENTS.md` 출력 allowlist 위반으로 보고 |
 
 ---
 
@@ -331,7 +331,7 @@ harness-setup 명시 호출
 
 1. 실제 플러그인 설치·활성 버전
 2. 새 task/session에서 명시 호출
-3. `.ai-docs/**`, `AGENTS.md`, `CLAUDE.md` 생성
+3. `.ai-docs/**`, `AGENTS.md` 생성과 Claude instruction 선점 파일 부재 확인
 4. `.agents/skills`, `.claude/skills`, `skills` 미생성
 5. 재실행 시 managed block 밖 사용자 확장 보존
 6. 새 task/session에서 같은 artifact fingerprint의 문서 개선안 재제안 없음

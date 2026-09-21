@@ -39,10 +39,10 @@
 .ai-docs/_inbox/README.md
 .ai-docs/_inbox/.gitkeep
 AGENTS.md
-CLAUDE.md
 ```
 
-6. 다음 경로가 생성되지 않았음을 확인한다.
+6. fixture부터 파일시스템 루트까지 `CLAUDE.md`, `.claude/CLAUDE.md`,
+   `CLAUDE.local.md`가 없고, 다음 경로가 생성되지 않았음을 확인한다.
 
 ```text
 .agents/skills
@@ -80,11 +80,13 @@ done
    `<!-- harness-kit:managed:end -->` 뒤에 `TEAM-README-SENTINEL`을
    추가한다.
 2. `AGENTS.md`의 관리 블록 뒤에 `TEAM-AGENT-SENTINEL`을 추가한다.
-3. `CLAUDE.md`의 관리 블록 뒤에 `TEAM-CLAUDE-SENTINEL`을 추가한다.
-4. 같은 인터페이스에서 `harness-setup`을 다시 실행하고 관리 블록 diff를 승인한다.
-5. 세 sentinel이 그대로 남고 관리 블록만 갱신됐는지 확인한다.
-6. 쓰기 전후에 `.agents/skills`, `.claude/skills`, `skills`가 계속 없음을
+3. 같은 인터페이스에서 `harness-setup`을 다시 실행하고 관리 블록 diff를 승인한다.
+4. 두 sentinel이 그대로 남고 관리 블록만 갱신됐는지 확인한다.
+5. 쓰기 전후에 `.agents/skills`, `.claude/skills`, `skills`가 계속 없음을
    다시 확인한다.
+6. 별도 fixture에 관리 중인 구형 루트 `CLAUDE.md` bridge를 두고 갱신하면,
+   `AGENTS.md`가 먼저 갱신된 뒤 별도 승인으로 bridge만 제거되는지 확인한다.
+   사용자 내용을 섞은 파일과 상위 경로 파일은 삭제하지 않고 중단해야 한다.
 
 marker가 없는 구버전 파일을 시험할 때는 자동 overwrite가 일어나지 않고 diff와
 merge/backup 선택지가 제시되는지 확인한다. 전체 교체를 승인하지 않은 상태에서는
@@ -106,11 +108,11 @@ ledger JSON 자체는 `humanize-korean`의 대상 파일 목록에 들어가면 
 
 ### D. 중단 시 원본 보존
 
-1. `.ai-docs/README.md`, `AGENTS.md`, `CLAUDE.md`의 hash를 기록한다.
+1. `.ai-docs/README.md`, `AGENTS.md`의 hash를 기록한다.
 2. marker 하나가 누락된 구버전 파일 fixture를 별도로 준비한다.
 3. `harness-setup`이 overwrite 대신 diff와 merge/backup 선택지를 제시하는지
    확인하고, 쓰기 직전에 취소한다.
-4. 세 원본 hash와 사용자 sentinel이 그대로인지 확인한다.
+4. 두 원본 hash와 사용자 sentinel이 그대로인지 확인한다.
 5. 실제 쓰기 실패를 재현했다면 생성된 임시 파일이 남지 않고, backup이 만들어진
    경우 복구 가능한지 확인한다. 실패를 인위적으로 만들지 못했으면 `not-tested`와
    이유를 기록하고 성공으로 간주하지 않는다.

@@ -1,6 +1,6 @@
 # 복수 애플리케이션 프로젝트의 AI 문서 흐름과 문서 소유권
 
-> 여러 명이 함께 쓰는 프로젝트에서 `CLAUDE.md` / `AGENTS.md` / `.ai-docs`가 어떤 순서로 만들어지고 어떤 순서로 읽히는지, 그리고 그 문서들을 누가 관리해야 하는지 정리한 문서
+> 여러 명이 함께 쓰는 프로젝트에서 `AGENTS.md` / `.ai-docs`가 어떤 순서로 만들어지고 어떤 순서로 읽히는지, 그리고 그 문서들을 누가 관리해야 하는지 정리한 문서
 
 ## 목차
 
@@ -63,7 +63,7 @@ project-write-access        관리자가 최초 설정과 이후 공유 정책 �
 
 | 필수 스킬 | 생성·수정하는 핵심 파일 | 이 구조에서 필요한 이유 |
 |---|---|---|
-| `harness-setup` | 루트 `AGENTS.md`·`CLAUDE.md`, `.ai-docs/README.md`, `.ai-docs/.gitignore`, `.ai-docs/root-context/**`, `.ai-docs/harness/**`, 앱별 빈 문서 디렉토리 | AI가 프로젝트와 앱 경계를 찾고 어떤 문서를 어떤 순서로 읽을지 알 수 있는 공통 지도를 먼저 고정한다 |
+| `harness-setup` | 루트 `AGENTS.md`, `.ai-docs/README.md`, `.ai-docs/.gitignore`, `.ai-docs/root-context/AGENTS.md`, `.ai-docs/harness/**`, 앱별 빈 문서 디렉토리 | AI가 프로젝트와 앱 경계를 찾고 어떤 문서를 어떤 순서로 읽을지 알 수 있는 공통 지도를 먼저 고정한다 |
 | `git-scoped-account` | 프로젝트의 공통 계정 파일(예: `.gitconfig-scoped`)과 단일·복수 대상 repo의 `.git/config` 내 `include.path`·provider 계정 표식 | 코드·문서 산출물의 Git 이력이 실제 사용자 계정으로 남게 하고, 권한 정책이 있으면 현재 PC의 로컬 Git·AI 가드 계정을 같은 출처로 연결한다 |
 | `design-doc` | `.ai-docs/{앱}/context-base/DESIGN.md` | 도메인·범위·아키텍처·데이터·연동 결정을 앱별 설계 정본으로 만든다. 이 기준이 없으면 이후 지침이 추측으로 채워진다 |
 | `context-doc` | `.ai-docs/{앱}-context.md`, `.ai-docs/{앱}/instruction/**` | 설계 정본을 고정 컨텍스트와 주제별 지침으로 나눠, AI가 대상 앱에 필요한 규칙만 찾아 반복해서 읽게 한다. 루트 지도 갱신은 `harness-setup` 후속 작업으로 분리한다 |
@@ -113,8 +113,6 @@ exam/                                          ← 컨테이너 폴더.
 │
 ├── AGENTS.md                                  ← [관리자] 세션 시작 때 자동으로 읽는 공통 컨텍스트 정본.
 │                                                 AI가 어떤 앱의 문서를 어떤 순서로 읽을지 정하는 탐색 지도다.
-├── CLAUDE.md                                  ← [관리자] 첫 줄에서 @AGENTS.md를 참조하는 브리지 파일.
-│                                                 내용을 복제하지 않는다.
 ├── .gitconfig-scoped                          ← [공통] git-scoped-account가 만든 로컬 공통 계정 설정.
 │                                                 앱 레포의 include.path가 이 파일을 참조한다.
 │                                                 각 개발자가 자기 작업 환경에서 따로 만들며 공유하지 않는다.
@@ -150,20 +148,20 @@ exam/                                          ← 컨테이너 폴더.
      ├── .harness/                              ← 점(.)이 붙는 내부 상태 폴더.
      │   │                                        모든 스킬의 실행 로그가 아니라 문서 개선 handoff와 쓰기 승인 상태만 저장한다.
      │   ├── humanize-handoffs.json               어떤 문서에 개선 제안을 이미 했는지 기록한다.
+     │   ├── routing-state.local.json              현재 PC의 host 설치·신뢰 상태다. Git에는 올리지 않는다.
      │   └── artifact-approvals/                  쓰기 1회용 승인 표식이 잠시 머무는 곳이다.
      │
      ├── root-context/                          ← [관리자] 루트 컨텍스트의 Git 관리 원본.
      │   │                                        갱신할 때 이 사본이 원본 역할을 한다.
-     │   ├── AGENTS.md                            담는 것 — 앱 목록·git 경계, 앱별 컨텍스트와 instruction 위치, 산출물 위치 표, 운영 규칙.
-     │   │                                        담지 않는 것 — 기술 스택·도메인·코딩 규칙.
-     │   │                                        그건 앱별 {앱}-context.md 담당이다.
-     │   └── CLAUDE.md                            @AGENTS.md bridge 사본.
+     │   └── AGENTS.md                            담는 것 — 앱 목록·git 경계, 앱별 컨텍스트와 instruction 위치, 산출물 위치 표, 운영 규칙.
+     │                                            담지 않는 것 — 기술 스택·도메인·코딩 규칙.
+     │                                            그건 앱별 {앱}-context.md 담당이다.
      │
      ├── harness/                               ← 점 없는 쪽.
      │   │                                        [관리자]가 관리하는 규칙과 도구다.
      │   │                                        어떤 도구가 만든 산출물이든 설계·컨텍스트·계획·프로토타입·코드 중 무엇인지 식별해 이 구조의 정해진 자리로 보낸다.
      │   ├── README.md                            번들 읽는 순서 안내
-     │   ├── artifact-routing.json                앱 id·source_root·docs_root·host 상태 정본
+     │   ├── artifact-routing.json                앱 id·상대 source_root·docs_root의 공유 계약 정본
      │   ├── artifact-format-contract.json        산출물 metadata·경로·정규화 규칙
      │   ├── install-routing.ps1                  host hook 설치 계획·확인·승인형 적용
      │   ├── normalize-artifact.ps1               외부 문서를 정본에 반영하기 전 제안 생성
@@ -257,7 +255,7 @@ exam/                                          ← 컨테이너 폴더.
      │           └── 260711-1.news-schema-impl-pipeline.md
      │
      └── prototype/                             ← [공통] 네 앱이 공유하는 화면 검증용 산출물.
-         └── {사용자}/                            예: lhb9397/
+         └── {사용자}/                            예: example-user/
              └── {식별자}/                        예: SFR-019/ (요구사항 번호·화면 id)
                  ├── design-doc.md                design-prototype-docs 산출물.
                  │                                        화면 구성·배치 명세
@@ -272,7 +270,7 @@ exam/                                          ← 컨테이너 폴더.
 
 | 표기 | 담당 | 대상 |
 |---|---|---|
-| `[관리자]` | 하네스 세팅 관리자 | 루트 `AGENTS.md`·`CLAUDE.md`, `.ai-docs/README.md`, `.ai-docs/.gitignore`, `.ai-docs/root-context/`, `.ai-docs/harness/` |
+| `[관리자]` | 하네스 세팅 관리자 | 루트 `AGENTS.md`, `.ai-docs/README.md`, `.ai-docs/.gitignore`, `.ai-docs/root-context/`, `.ai-docs/harness/` |
 | `[PM·PL/앱 문서 책임자]` | 전체 앱의 PM·PL 또는 배정된 앱의 문서 책임자 | `{앱}-context.md`, `{앱}/context-base/`, `{앱}/instruction/` |
 | `[공통]` | 기존 저장소 쓰기 권한이 있는 참여자 | 자기 로컬의 `.gitconfig-scoped`와 대상 repo Git 계정 설정, `{앱}/impl-doc/{사용자}/`, `prototype/{사용자}/`, 앱 소스 레포 |
 
@@ -290,7 +288,7 @@ exam/                                          ← 컨테이너 폴더.
 | 대상 | git |
 |---|---|
 | `exam/` 컨테이너 | git으로 관리하지 않는다 |
-| `exam/AGENTS.md`, `exam/CLAUDE.md` | 어떤 레포에도 속하지 않는다. `harness-setup`이 단독 관리한다 |
+| `exam/AGENTS.md` | 어떤 레포에도 속하지 않는다. `harness-setup`이 단독 관리한다 |
 | `exam/.ai-docs/` | 별도 git 레포. 팀 전체가 clone해서 공유한다 |
 | 각 애플리케이션 폴더 | 각자 독립 git 레포 |
 
@@ -298,15 +296,17 @@ exam/                                          ← 컨테이너 폴더.
 
 - 작업은 항상 컨테이너 루트(`exam/`)에서 세션을 연다는 전제다.
 
-    - 애플리케이션 폴더 안에는 `AGENTS.md`나 `CLAUDE.md`를 두지 않는다.
+    - 애플리케이션 폴더 안에는 별도 `AGENTS.md`를 두지 않는다.
     - 앱 폴더에서 세션을 열면 루트 컨텍스트가 잡히지 않는다.
     - 앱 레포 안에 컨텍스트를 따로 두면 정본이 둘로 갈라진다.
 
 ```text
 [세션 시작 — 자동 로드]
-  Claude Code  → exam/CLAUDE.md
-                  └─ 첫 줄의 @AGENTS.md가 인라인으로 확장되어 함께 로드된다.
+  Claude Code  → exam/AGENTS.md를 직접 로드한다. (2.1.277 이상)
   Codex        → exam/AGENTS.md를 그대로 로드한다.
+
+  전제         → exam/부터 파일시스템 루트까지 CLAUDE.md,
+                  .claude/CLAUDE.md, CLAUDE.local.md가 없어야 한다.
 
 [루트 AGENTS.md의 역할 — AI가 프로젝트를 찾아 읽는 방법을 정하는 안내 지도]
   · 프로젝트 경계             → 컨테이너·앱 4개·.ai-docs의 위치와 git 경계
@@ -354,7 +354,7 @@ exam/                                          ← 컨테이너 폴더.
 - 스킬을 실행하기 전에 사람이 먼저 준비해야 할 항목은 다음과 같다.
 
 1. 컨테이너 폴더를 만든다.
-   - 예: `D:\Dev_Workspace\exam\`
+   - 예: `C:\workspace\sample-suite\`
    - **이 폴더에는 `git init`을 하지 않는다.**
 2. 이번 작업에 필요한 애플리케이션을 컨테이너 바로 아래에 둔다.
    - 기존 레포가 있으면 `git clone`한다.
@@ -421,8 +421,7 @@ exam/
 | 관리 대상 | 무엇을 정하는가 | 왜 필요한가 |
 |---|---|---|
 | `.ai-docs/**` | 설계·컨텍스트·지침·임시 입력·산출물 계약이 놓일 공용 구조 | 문서가 앱 레포와 개인 작업 폴더에 흩어지는 것을 막는다 |
-| 루트 `AGENTS.md` | 앱 목록, 문서 위치, 산출물 경로를 가리키는 공통 컨텍스트 정본 | 에이전트가 어느 앱을 작업하든 같은 문서 지도를 읽게 한다 |
-| 루트 `CLAUDE.md` | `@AGENTS.md`를 불러오는 bridge와 Claude 전용 차이 | 공통 내용을 복제하지 않고 플랫폼 차이만 분리한다 |
+| 루트 `AGENTS.md` | 앱 목록, 문서 위치, 산출물 경로와 Claude 전용 routing·trust 차이를 담는 공통 컨텍스트 정본 | Codex와 Claude Code가 어느 앱을 작업하든 같은 문서 지도를 읽게 한다 |
 | `.ai-docs/harness/**` | 산출물 위치·형식·소유권·승인·인계에 관한 프로젝트 계약 | 산출물을 만든 플러그인과 관계없이 같은 프로젝트 규칙을 적용한다 |
 
 - 필수 네 스킬이 담당하는 골격·계정·설계 정본·컨텍스트는 `harness-kit`의 계약으로 만든다.
@@ -505,7 +504,6 @@ Claude Code  : /harness-kit:git-scoped-account
 ```text
 exam/                                     ← 컨테이너 폴더 (git init 하지 않음)
 ├── AGENTS.md                             ← 공통 AI 컨텍스트 정본
-├── CLAUDE.md                             ← @AGENTS.md 를 참조하는 Claude bridge
 ├── .gitconfig-scoped                     ← git-scoped-account가 만든 공통 계정 설정
 │
 ├── fe-exam-portal/                       ← 프론트엔드 앱 레포 (로컬 config에 include.path 주입됨)
@@ -522,12 +520,11 @@ exam/                                     ← 컨테이너 폴더 (git init 하�
     │   └── README.md
     │
     ├── root-context/                     ← 루트 컨텍스트의 Git 관리 원본
-    │   ├── AGENTS.md
-    │   └── CLAUDE.md
+    │   └── AGENTS.md
     │
     ├── harness/                          ← 프로젝트 소유 artifact routing bundle
     │   ├── README.md
-    │   ├── artifact-routing.json         ← 앱·경로·host 상태 정본
+    │   ├── artifact-routing.json         ← 앱·상대경로 공유 계약 정본
     │   ├── artifact-format-contract.json ← 산출물 metadata·경로·정규화 규칙
     │   ├── install-routing.ps1           ← Plan/Check(읽기 전용) + 승인형 Apply/Uninstall
     │   ├── normalize-artifact.ps1        ← 외부 문서 정본 반영 제안
@@ -657,7 +654,7 @@ cd .ai-docs && git init && git add -A && git commit -m "init: 프로젝트 AI �
 - **하네스 루트 컨텍스트**는 "현재 프로젝트에 어떤 앱이 있고, AI가 대상 앱의 컨텍스트와 지침을 어디서 어떤 순서로 읽어야 하는가?"에 답한다.
 
     - 하네스 세팅 관리자가 관리하는 탐색 지도다.
-    - `.ai-docs/root-context/AGENTS.md`와 `CLAUDE.md`는 `harness-setup`이 생성·갱신한다.
+    - `.ai-docs/root-context/AGENTS.md`와 루트 `AGENTS.md`는 `harness-setup`이 생성·갱신한다.
 
 - 애플리케이션 컨텍스트는 앱 구현에 필요한 현재 상세 사실과 지침 위치를 제공한다.
 
@@ -666,7 +663,7 @@ cd .ai-docs && git init && git add -A && git commit -m "init: 프로젝트 AI �
     - 세부 규칙만 instruction으로 분리한다.
     - 에이전트가 작업과 무관한 규칙까지 매번 읽는 일과 같은 규칙의 중복을 줄인다.
 
-- `context-doc`은 복수 앱 프로젝트의 루트 `AGENTS.md`와 `CLAUDE.md`를 직접 덮어쓰지 않는다.
+- `context-doc`은 복수 앱 프로젝트의 루트 `AGENTS.md`를 직접 덮어쓰지 않는다.
 
     - 애플리케이션 컨텍스트와 instruction을 만든다.
     - `.ai-docs/root-context/**`도 수정하지 않는다.
@@ -727,8 +724,7 @@ cd .ai-docs && git init && git add -A && git commit -m "init: 프로젝트 AI �
 ├── .harness/                             ← 문서 개선·쓰기 승인 내부 상태 (사람이 편집 안 함)
 │   └── humanize-handoffs.json            ← 문서 개선 제안 이력
 ├── root-context/                         ← 하네스 탐색 지도 복사본. 앱 설계·기술 규칙 본문은 담지 않음
-│   ├── AGENTS.md                         ← harness-setup이 생성·갱신하고 루트에 반영
-│   └── CLAUDE.md
+│   └── AGENTS.md                         ← harness-setup이 생성·갱신하고 루트에 반영
 ├── harness/
 │   └── ...
 │
@@ -819,7 +815,7 @@ cd .ai-docs && git init && git add -A && git commit -m "init: 프로젝트 AI �
 
     - `context-doc`이 이 instruction을 항상 만든다.
     - instruction은 `.ai-docs/harness/artifact-routing.json`과 `.ai-docs/harness/artifact-format-contract.json`을 함께 읽도록 지시한다.
-    - `artifact-routing.json`은 앱·소유권·정본 경로와 host 상태를 제공한다.
+    - `artifact-routing.json`은 앱·소유권·상대 정본 경로와 host capability를 제공한다.
     - `artifact-format-contract.json`은 산출물 종류·필수 metadata·경로 형식을 제공한다.
     - 루트 `AGENTS.md`는 산출물을 만들기 전에 대상 앱의 instruction으로 이동하도록 안내하는 지도 역할만 한다.
 
@@ -837,7 +833,7 @@ cd .ai-docs && git init && git add -A && git commit -m "init: 프로젝트 AI �
 | | `.ai-docs/harness/` (점 없음) | `.ai-docs/.harness/` (점 있음) |
 |---|---|---|
 | 무엇인가 | 규칙과 도구 | 문서 개선·쓰기 승인의 내부 상태 |
-| 담긴 것 | 경로 계약(`artifact-routing.json`), 형식 계약, 설치·정규화 스크립트, hook 원본 | 개선 제안 이력(`humanize-handoffs.json`), 일회용 쓰기 승인 표식 |
+| 담긴 것 | 상대경로 계약(`artifact-routing.json`), 형식 계약, 설치·정규화 스크립트, hook 원본 | 개선 제안 이력(`humanize-handoffs.json`), PC별 설치 상태(`routing-state.local.json`, Git 미추적), 일회용 쓰기 승인 표식 |
 | 누가 만드나 | `harness-setup`이 세팅할 때 | 최외곽 문서 producer가 첫 handoff를 기록하거나 승인 스크립트가 표식을 만들 때 |
 | 누가 편집하나 | 하네스 세팅 관리자 | 관련 스킬과 hook이 자동 갱신한다. 사람이 직접 편집하지 않는다 |
 | 읽을 일이 있나 | 있다. 산출물 위치가 헷갈릴 때 사람이 확인한다 | 관련 스킬과 hook이 읽는다. 사람은 보통 확인하지 않는다 |
@@ -894,7 +890,7 @@ cd .ai-docs && git init && git add -A && git commit -m "init: 프로젝트 AI �
 
 | 층 | 대상 | 강제력 |
 |---|---|---|
-| 1층 | 루트 `AGENTS.md` / `CLAUDE.md`의 참조 | 에이전트가 문서를 읽고 따르는 수준 |
+| 1층 | 루트 `AGENTS.md`의 참조 | 에이전트가 문서를 읽고 따르는 수준 |
 | 2층 | 앱별 `artifact-output-routing-instruction.md` | 에이전트가 문서를 읽고 따르는 수준 |
 | 3층 | host별 write hook (`.claude/`, `.codex/`) | 실제 쓰기 시점의 경로 검사 |
 
@@ -910,7 +906,8 @@ cd .ai-docs && git init && git add -A && git commit -m "init: 프로젝트 AI �
 
 - `.ai-docs/harness/artifact-routing.json`은 기계 판독용 정본이다.
 
-    - 앱 식별자, `source_root`, `docs_root`, `prototype_owner`, 앱별 컨텍스트 경로와 host 상태를 담는다.
+    - 앱 식별자, 상대 `source_root`, `docs_root`, `prototype_owner`, 앱별 컨텍스트 경로와 host capability를 담는다.
+    - PC별 설치·신뢰 상태는 Git에서 제외되는 `.ai-docs/.harness/routing-state.local.json`에 둔다.
     - 프로젝트 단위 예외도 이 파일에서 확정한다.
     - 프로토타입의 기본값은 앱별 디렉토리다.
     - `exam`처럼 네 앱이 하나의 `.ai-docs/prototype/`을 공유하면 `prototype_owner`와 라우팅 instruction의 프로젝트 적용 절을 우선한다.
@@ -967,7 +964,7 @@ cd .ai-docs && git init && git add -A && git commit -m "init: 프로젝트 AI �
 | 상태 | 뜻 |
 |---|---|
 | `not-installed` | host 설정과 adapter 파일이 없다. 기계적 write hook은 동작하지 않는다 |
-| `pending-trust` | 공유 번들은 준비됐지만 host 신뢰 절차가 끝나지 않았다. 활성 보호 장치로 보지 않는다 |
+| `pending-trust` | 현재 PC에 설치됐지만 host 신뢰 절차가 끝나지 않았다. 활성 보호 장치로 보지 않는다 |
 | `active` | 관리자가 host별 hook 검토를 마치고 신뢰 증적을 승인했다 |
 | `uninstalled` | 승인된 절차로 해제했다 |
 
@@ -1006,12 +1003,12 @@ cd .ai-docs && git init && git add -A && git commit -m "init: 프로젝트 AI �
 - 예시는 다음과 같다.
 
 ```text
-.ai-docs/be-exam-collector/impl-doc/lhb9397/
+.ai-docs/sample-api/impl-doc/example-user/
 ├── 260629-0.be-exam-collector-roadmap-impl-index.md   ← 로드맵 인덱스 (순번 0 고정)
 ├── 260629-1.healthcheck-batch-impl-batch.md
 └── 260711-1.collector-news-schema-impl-pipeline.md
 
-.ai-docs/prototype/lhb9397/SFR-019/
+.ai-docs/prototype/example-user/SFR-019/
 ├── index.html
 └── ...
 ```
@@ -1067,7 +1064,7 @@ cd .ai-docs && git init && git add -A && git commit -m "init: 프로젝트 AI �
 
 - **(A) AI가 문서를 읽는 흐름을 정하는 문서**
 
-    - 루트 `AGENTS.md`, 루트 `CLAUDE.md`, `.ai-docs/root-context/` 복사본, `.ai-docs/README.md`, `.ai-docs/.gitignore`, `.ai-docs/harness/**`가 해당한다.
+    - 루트 `AGENTS.md`, `.ai-docs/root-context/AGENTS.md` 복사본, `.ai-docs/README.md`, `.ai-docs/.gitignore`, `.ai-docs/harness/**`가 해당한다.
     - 개발 지식이 아니라 앱 목록, 앱별 컨텍스트 위치, 산출물 위치, 자동 로드와 참조 범위를 정한다.
     - 즉 하네스의 배선도다.
 
@@ -1100,8 +1097,8 @@ cd .ai-docs && git init && git add -A && git commit -m "init: 프로젝트 AI �
 
 | 계층 | 대상 경로 | 소유자 | 근거 |
 |---|---|---|---|
-| 배선 | 루트 `AGENTS.md`, 루트 `CLAUDE.md` | 하네스 세팅 관리자 | 자동 로드 진입점. 여기가 깨지면 전체 문서 흐름이 멈춘다 |
-| 배선 | `.ai-docs/root-context/AGENTS.md`, `.ai-docs/root-context/CLAUDE.md` | 하네스 세팅 관리자 | 루트 파일의 원본. 갱신은 `harness-setup` 재실행으로만 |
+| 배선 | 루트 `AGENTS.md` | 하네스 세팅 관리자 | 자동 로드 진입점. 여기가 깨지면 전체 문서 흐름이 멈춘다 |
+| 배선 | `.ai-docs/root-context/AGENTS.md` | 하네스 세팅 관리자 | 루트 파일의 원본. 갱신은 `harness-setup` 재실행으로만 |
 | 배선 | `.ai-docs/README.md`, `.ai-docs/.gitignore` | 하네스 세팅 관리자 | `.ai-docs` 구조·추적 정책의 정본 |
 | 배선 | `.ai-docs/harness/**` | 하네스 세팅 관리자 | 경로·형식·host 설치 상태 계약. 승인 절차 자체를 정의한다 |
 | 권한 | `.ai-docs/{앱}/instruction/*.md` 안의 `project-write-access` 관리 블록 | 권한 관리자·`project-write-access` | 서명된 경로 정책을 AI 지침에 반영한다. `pm-pl`과 해당 앱의 `app-doc-lead`가 관리하는 본문과 분리한다 |
@@ -1116,7 +1113,7 @@ cd .ai-docs && git init && git add -A && git commit -m "init: 프로젝트 AI �
 
 ## 11. 왜 루트 컨텍스트를 관리자만 만지는가
 
-- 루트 `AGENTS.md`와 `CLAUDE.md`, `.ai-docs/root-context/` 복사본은 다음 성질을 가진다.
+- 루트 `AGENTS.md`와 `.ai-docs/root-context/AGENTS.md` 복사본은 다음 성질을 가진다.
 
 1. 모든 세션에 무조건 로드된다.
    - 잘못된 경로나 불필요한 규칙은 모든 사람의 모든 작업에 영향을 준다.
@@ -1234,7 +1231,7 @@ cd .ai-docs && git init && git add -A && git commit -m "init: 프로젝트 AI �
 | `app-doc` | `.ai-docs/{앱}/context-base/**`, `.ai-docs/{앱}-context.md`, `.ai-docs/{앱}/instruction/**` 본문 | `pm-pl`은 모든 앱, `app-doc-lead`는 배정된 앱만 쓴다. `admin` 역할만으로는 쓰지 못한다 |
 | `team` | `.ai-docs/{앱}/impl-doc/**`, 승인된 `.ai-docs/prototype/**`, `.ai-docs/_inbox/**` | 역할 등록 없이도 저장소 쓰기 권한이 있는 일반 기여자가 쓸 수 있다 |
 
-- `project-write-access`의 보호 대상은 `.ai-docs/**`와 같은 저장소에서 함께 관리하는 루트 `AGENTS.md`·`CLAUDE.md`다.
+- `project-write-access`의 보호 대상은 `.ai-docs/**`와 같은 저장소에서 함께 관리하는 루트 `AGENTS.md`다. 구형 `CLAUDE.md`는 승인된 setup 이관이 끝날 때까지 보호 대상으로만 인식한다.
 
     - 애플리케이션 소스코드의 쓰기 권한은 기존 저장소 정책에 맡긴다.
     - 이 스킬은 애플리케이션 소스코드 쓰기를 새로 제한하지 않는다.
@@ -1442,12 +1439,12 @@ cd .ai-docs && git init && git add -A && git commit -m "init: 프로젝트 AI �
     - 적용 후에는 CODEOWNERS, 로컬 Git 훅과 AI 지침이 같은 정책 해시와 계정 연결을 가리키는지 확인한다.
     - 원격 PR·MR 정책은 하네스가 만들지 않으므로 별도 상태로 확인하고, 설정되지 않았다면 세 계층 전체가 활성화됐다고 표현하지 않는다.
 
-- 복수 레포 구조의 루트 `AGENTS.md`와 `CLAUDE.md`는 어떤 저장소에도 속하지 않는다.
+- 복수 레포 구조의 루트 `AGENTS.md`는 어떤 저장소에도 속하지 않는다.
 
     - CODEOWNERS나 Git 훅으로 보호할 수 없다.
     - AI 쓰기 훅과 운영 규약으로 관리한다.
     - 더 강한 통제가 필요하면 운영체제 파일 권한을 사용하거나 루트 파일도 형상관리되는 구조로 바꾼다.
-    - 단일 레포에서는 두 파일이 저장소 안에 있으므로 세 계층을 모두 적용할 수 있다.
+    - 단일 레포에서는 이 파일이 저장소 안에 있으므로 세 계층을 모두 적용할 수 있다.
 
 ---
 
@@ -1508,7 +1505,6 @@ exam/                                     ← 단일 git 레포 (루트에서 gi
 ├── .gitlab/CODEOWNERS                    ← [선택·관리자] GitLab용 문서 소유자 규칙
 ├── .gitea/CODEOWNERS                     ← [선택·관리자] Gitea용 문서 소유자 규칙
 ├── AGENTS.md                             ← 공통 AI 컨텍스트 정본 (레포에 커밋됨)
-├── CLAUDE.md                             ← @AGENTS.md bridge (레포에 커밋됨)
 │
 ├── fe-exam-portal/                       ← 프론트엔드 앱 폴더 (별도 레포 아님)
 ├── fe-exam-mobile/                       ← 모바일 앱 폴더
@@ -1521,8 +1517,7 @@ exam/                                     ← 단일 git 레포 (루트에서 gi
     ├── _inbox/
     ├── .harness/                         ← 문서 개선·쓰기 승인 내부 상태
     ├── root-context/
-    │   ├── AGENTS.md
-    │   └── CLAUDE.md
+    │   └── AGENTS.md
     ├── harness/
     │   ├── README.md
     │   ├── artifact-routing.json
@@ -1563,7 +1558,7 @@ exam/                                     ← 단일 git 레포 (루트에서 gi
 
 | 항목 | 복수 레포 | 단일 레포 |
 |---|---|---|
-| 루트 `AGENTS.md` / `CLAUDE.md` | 어떤 git에도 속하지 않음 | 레포에 커밋됨. 브랜치·리뷰·이력이 남는다 |
+| 루트 `AGENTS.md` | 어떤 git에도 속하지 않음 | 레포에 커밋됨. 브랜치·리뷰·이력이 남는다 |
 | `.ai-docs` | 별도 git 레포. 따로 clone·push | 같은 레포 안. 코드와 함께 커밋된다 |
 | git 계정 | 앱 레포마다 설정 필요 | 레포 하나에만 설정하면 된다 |
 
@@ -1573,7 +1568,7 @@ exam/                                     ← 단일 git 레포 (루트에서 gi
 
 ```text
 [세션 시작 — 자동 로드]
-  Claude Code : exam/CLAUDE.md → @AGENTS.md 인라인 확장
+  Claude Code : exam/AGENTS.md (2.1.277 이상에서 직접 로드)
   Codex       : exam/AGENTS.md
 
 [작업 대상 앱 확정 후]
@@ -1586,7 +1581,7 @@ exam/                                     ← 단일 git 레포 (루트에서 gi
 
 - 단일 레포에서도 세션은 레포 루트(`exam/`)에서 연다.
 
-    - 앱 폴더에서 세션을 열면 루트 `CLAUDE.md`와 `AGENTS.md`가 자동으로 로드되지 않을 수 있다.
+    - 앱 폴더에서 세션을 열면 루트 `AGENTS.md`가 자동으로 로드되지 않을 수 있다.
     - 앱 폴더 기준으로 컨텍스트가 잡히면 일부 문서가 빠진 채 작업을 시작할 수 있다.
     - **세션은 레포 루트에서 연다**는 규칙을 팀 규약에 명시한다.
 
@@ -1693,15 +1688,13 @@ Claude Code  : /harness-kit:harness-setup
 ```text
 exam/
 ├── AGENTS.md                             ← 앱 목록·경로 지도 (레포에 커밋)
-├── CLAUDE.md                             ← @AGENTS.md bridge (레포에 커밋)
 ├── fe-exam-portal/
 ├── fe-exam-mobile/
 ├── be-exam-portal/
 ├── be-exam-collector/
 └── .ai-docs/
     ├── root-context/
-    │   ├── AGENTS.md                     ← harness-setup이 생성·갱신하고 루트에 반영
-    │   └── CLAUDE.md
+    │   └── AGENTS.md                     ← harness-setup이 생성·갱신하고 루트에 반영
     ├── harness/
     │
     ├── fe-exam-portal-context.md
@@ -1759,7 +1752,7 @@ exam/
 
 - 기본 내용은 제1부 7절과 같다.
 
-    - `artifact-routing.json`의 `project_root`와 `mode` 값이 단일 레포 구조를 반영한다.
+    - `artifact-routing.json`의 `project_root`는 모든 checkout에서 `.`이고 `mode` 값이 단일 레포 구조를 반영한다.
     - 앱별 `source_root`는 레포 루트 기준 상대 경로가 된다.
 
 - 단일 레포에서는 앱 경계를 넘는 쓰기에 특히 주의한다.

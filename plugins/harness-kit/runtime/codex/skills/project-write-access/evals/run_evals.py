@@ -434,7 +434,6 @@ def make_single_fixture(root: Path) -> Path:
     project = root / "single"
     init_repo(project)
     write(project / "AGENTS.md", "# Agent map\n")
-    write(project / "CLAUDE.md", "@AGENTS.md\n")
     for app in ("web", "api"):
         write(project / ".ai-docs" / app / "instruction" / "agent-instruction.md", f"# {app} rules\n\nTEAM-{app}\n")
         (project / ".ai-docs" / app / "impl-doc").mkdir(parents=True)
@@ -507,6 +506,30 @@ def test_single_repository(root: Path) -> None:
     assert git(project, "config", "--local", "--get", "harness.writeAccess.host").stdout.strip() == "github.com"
     provider_state = json.loads((project / ".ai-docs" / "harness" / "access-control" / "provider-state.json").read_text(encoding="utf-8"))
     assert {item["id"] for item in provider_state["providers"]["github"]["repositories"]} == {"docs-repo", "web-source"}
+    codex_hooks = json.loads((project / ".codex" / "hooks.json").read_text(encoding="utf-8"))
+    codex_command = next(
+        hook["commandWindows"]
+        for entry in codex_hooks["hooks"]["PreToolUse"]
+        for hook in entry["hooks"]
+        if "write_access_guard.py" in hook.get("commandWindows", "")
+    )
+    assert str(project.resolve()) not in codex_command
+    assert "pathlib.Path.cwd()" in codex_command
+    nested_cwd = project / "src" / "nested"
+    nested_cwd.mkdir(parents=True)
+    portable_hook = subprocess.run(
+        codex_command,
+        shell=True,
+        cwd=nested_cwd,
+        env=CHILD_ENV,
+        input=json.dumps({"cwd": str(nested_cwd), "tool_input": {"file_path": str(project / "src" / "app.py"), "content": "proposed"}}),
+        text=True,
+        encoding="utf-8",
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    assert portable_hook.returncode == 0 and portable_hook.stdout == "", portable_hook.stderr
 
     guard = project / ".ai-docs" / "harness" / "access-control" / "hooks" / "write_access_guard.py"
     policy_before_enrollment = (project / ".ai-docs" / "harness" / "access-control" / "policy.json").read_bytes()
@@ -825,7 +848,6 @@ def test_single_application_defaults(root: Path) -> None:
     project = root / "single-application"
     init_repo(project)
     write(project / "AGENTS.md", "# Agent map\n")
-    write(project / "CLAUDE.md", "@AGENTS.md\n")
     write(project / ".ai-docs" / "instruction" / "agent-instruction.md", "# App rules\n")
     write(project / ".ai-docs" / "README.md", "# Docs\n")
     commit_all(project, "baseline")
@@ -891,7 +913,6 @@ def test_explicit_developer_and_multiple_roles(root: Path) -> None:
     project = root / "role-model"
     init_repo(project)
     write(project / "AGENTS.md", "# Agent map\n")
-    write(project / "CLAUDE.md", "@AGENTS.md\n")
     config = base_config(root / "role-model-config.json")
     value = json.loads(config.read_text(encoding="utf-8"))
     value["role_assignments"].append({"subject_id": "owner", "role": "pm-pl"})
@@ -905,7 +926,6 @@ def test_signed_legacy_root_migration(root: Path) -> None:
     single = root / "signed-legacy-single"
     init_repo(single)
     write(single / "AGENTS.md", "# Agent map\n")
-    write(single / "CLAUDE.md", "@AGENTS.md\n")
     for app in ("web", "api"):
         write(single / ".ai-docs" / app / "instruction" / "agent-instruction.md", f"# {app}\n")
     write(single / ".ai-docs" / "README.md", "# Docs\n")
@@ -976,7 +996,6 @@ def test_signed_legacy_root_migration(root: Path) -> None:
     multi.mkdir()
     init_repo(docs)
     write(multi / "AGENTS.md", "# Root map\n")
-    write(multi / "CLAUDE.md", "@AGENTS.md\n")
     for app in ("web", "api"):
         write(docs / app / "instruction" / "agent-instruction.md", f"# {app}\n")
     write(docs / "README.md", "# Docs\n")
@@ -1011,7 +1030,6 @@ def test_legacy_root_migration_rolls_back(root: Path) -> None:
     project = root / "legacy-migration-rollback"
     init_repo(project)
     write(project / "AGENTS.md", "# Agent map\n")
-    write(project / "CLAUDE.md", "@AGENTS.md\n")
     write(project / ".ai-docs" / "web" / "instruction" / "agent-instruction.md", "# Web\n")
     write(project / ".ai-docs" / "api" / "instruction" / "agent-instruction.md", "# API\n")
     write(project / ".ai-docs" / "README.md", "# Docs\n")
@@ -1091,7 +1109,6 @@ def test_multi_repository(root: Path) -> None:
     project.mkdir()
     init_repo(docs)
     write(project / "AGENTS.md", "# Untracked root map\n")
-    write(project / "CLAUDE.md", "@AGENTS.md\n")
     write(docs / "web" / "instruction" / "agent-instruction.md", "# Web\n")
     write(docs / "api" / "instruction" / "agent-instruction.md", "# API\n")
     write(docs / "README.md", "# Docs repo\n")
@@ -1113,7 +1130,9 @@ def test_multi_repository(root: Path) -> None:
     assert git(docs, "config", "--local", "--get", "core.hooksPath").stdout.strip() == "harness/access-control/hooks/git"
     policy = json.loads((docs / "harness" / "access-control" / "policy.json").read_text(encoding="utf-8"))
     assert policy["root_context_tracked"] is False
-    assert {rule["pattern"] for rule in policy["path_rules"]} >= {"AGENTS.md", "CLAUDE.md"}
+    patterns = {rule["pattern"] for rule in policy["path_rules"]}
+    assert "AGENTS.md" in patterns
+    assert "CLAUDE.md" not in patterns
     assert "AGENTS" not in gitea_owners and "CLAUDE" not in gitea_owners
 
 
@@ -1121,7 +1140,6 @@ def test_failed_apply_removes_new_keys(root: Path) -> None:
     project = root / "rollback"
     init_repo(project)
     write(project / "AGENTS.md", "# Agent map\n")
-    write(project / "CLAUDE.md", "@AGENTS.md\n")
     write(project / ".ai-docs" / "web" / "instruction" / "agent-instruction.md", "# Web\n")
     write(project / ".ai-docs" / "api" / "instruction" / "agent-instruction.md", "# API\n")
     write(project / ".ai-docs" / "README.md", "# Docs\n")

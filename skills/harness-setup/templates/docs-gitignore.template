@@ -15,6 +15,7 @@
 # 개인 로컬 메모·임시 산출물 (파일명에 .local 포함 시 무시)
 *.local.md
 *.local.*
+/.harness/routing-state.local.json
 
 # OS·에디터 부산물
 .DS_Store

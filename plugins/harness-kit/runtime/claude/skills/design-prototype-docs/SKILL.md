@@ -416,7 +416,7 @@ STEP 0-C에서 확인한 식별자를 폴더명에 사용한다.
 그 값과 소유권을 그대로 사용한다.
 
 ```text
-artifact_bundle_id = design-prototype-docs:{정규화한 프로젝트 루트}:{이번 실행의 고유 ID}
+artifact_bundle_id = design-prototype-docs:{이번 실행의 고유 ID}
 handoff_owner = design-prototype-docs
 suppress_child_handoff = false
 handoff_completed = false

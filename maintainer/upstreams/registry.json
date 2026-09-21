@@ -1018,11 +1018,16 @@
         "license_sha256": null,
         "notice_path": null,
         "classification_evidence_url": "https://code.claude.com/docs/en/memory",
-        "classification_checked_at": "2026-07-30",
+        "classification_checked_at": "2026-09-21",
         "file_map": [
           {
             "upstream_path": null,
-            "local_path": "skills/harness-setup/templates/claude-bridge.template",
+            "local_path": "skills/harness-setup/templates/root-context-single.template",
+            "treatment": "reference-only"
+          },
+          {
+            "upstream_path": null,
+            "local_path": "skills/harness-setup/templates/root-context.template",
             "treatment": "reference-only"
           }
         ]
@@ -1035,7 +1040,8 @@
       },
       "validation": {
         "structure_checks": [
-          "CLAUDE.md bridge imports AGENTS.md with @AGENTS.md syntax"
+          "Claude Code 2.1.277+ loads AGENTS.md directly when no project or ancestor CLAUDE.md, .claude/CLAUDE.md, or CLAUDE.local.md preempts it",
+          "harness-setup scans project root through filesystem root and blocks unmanaged Claude instruction files"
         ],
         "behavior_fixtures": [],
         "codex_smoke_prompts": [],

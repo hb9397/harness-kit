@@ -3,15 +3,15 @@
   "recorded_at": "2026-08-05",
   "purpose": "Read-only Phase B0 baseline for portable artifact routing. It captures host facts and known failure modes without installing, trusting, or enabling hooks.",
   "case_study": {
-    "id": "keai-e-life-check",
+    "id": "sample-suite",
     "inspection_mode": "read-only",
     "external_project_mutations": 0,
     "topology": {
       "root_is_git": false,
       "docs_git": true,
       "applications": [
-        {"path": "be-keai-e-life-check", "is_git": true},
-        {"path": "fe-keai-e-life-check", "is_git": true}
+        {"path": "sample-api", "is_git": true},
+        {"path": "sample-web", "is_git": true}
       ]
     },
     "managed_bridge": {
@@ -62,7 +62,7 @@
     {"asset": "skills/harness-setup/templates and prompts", "decision": "extend", "reason": "existing project setup/update and managed-block contracts are the portable bundle input"},
     {"asset": "skills/harness-setup/evals/run_evals.py", "decision": "extend", "reason": "existing deterministic setup fixture runner can validate the baseline without external project writes"},
     {"asset": "skills/harness-bootstrap", "decision": "reuse", "reason": "existing instruction and routing handoff contract remains the initial-project input"},
-    {"asset": "keai-e-life-check Claude hooks", "decision": "reuse", "reason": "read-only topology and failure-mode specimen only; do not copy its case-specific implementation"},
+    {"asset": "sample-suite Claude hooks", "decision": "reuse", "reason": "read-only topology and failure-mode specimen only; do not copy its case-specific implementation"},
     {"asset": "project-owned Codex hook adapter", "decision": "new", "reason": "no canonical adapter or trust workflow exists in this repository; defer to Phase B1/B4"}
   ],
   "failure_fixtures": [

@@ -49,7 +49,7 @@ def main() -> int:
         "앱 문서 단계",
         "`design-doc`과 `context-doc`이 자동 handoff된 실행에서도",
         "앱 설계·컨텍스트 문서 쓰기 확인",
-        "루트 `AGENTS.md`·`CLAUDE.md`와 `.ai-docs/root-context/**`를 수정하지 않았는지 검증",
+        "루트 `AGENTS.md`와 `.ai-docs/root-context/**`를 수정하지 않았는지 검증",
         "## 문서 루트 계약",
         "`.docs/`만 있거나 두 경로가 공존하면",
         "`harness-setup`의 명시적 문서 루트 이관·충돌 해결",

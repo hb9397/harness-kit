@@ -3,15 +3,15 @@
   "files": [
     {
       "path": ".claude-plugin/plugin.json",
-      "sha256": "d85fc3d337cf11afa9bd64a0dd14eb1fc343fd4fbb34ec32a1573e8cc6b17175"
+      "sha256": "e936e677bf6e0ffc13a9a4c0ffa0f841f674dfbe23a1d651eea9f8c1710996e9"
     },
     {
       "path": ".codex-plugin/plugin.json",
-      "sha256": "81209aff87b1578ae10a97543a37e3dd62025f6c5c917d7488284d99598b56f2"
+      "sha256": "a3881c966fedd7d665b11dd01f5f9df4b5ab14a896a127e318622336cbe3d9c9"
     },
     {
       "path": "CAPABILITIES.json",
-      "sha256": "168cdf74377bb1d624813b300d0483b338097b98592be2a8ba131c2934697b50"
+      "sha256": "680acd4adcb43edf92f7eed9526722a8c48888a9f053effd59fa1ac314bec767"
     },
     {
       "path": "LICENSE",
@@ -27,7 +27,7 @@
     },
     {
       "path": "UPSTREAMS.lock.json",
-      "sha256": "8b292acefb264a819df0054f8f2de575cb1fda505338139cd8bcaea9b036b5c1"
+      "sha256": "03de4b7c546cc8df659aa95271876031dfe7533c8e7cb988b8922c05c0dd7459"
     },
     {
       "path": "licenses/anthropic-frontend-design-LICENSE",
@@ -67,31 +67,31 @@
     },
     {
       "path": "runtime/claude/skills/commit/SKILL.md",
-      "sha256": "8967222e549d8a37ab31ca7de0dc0bd1040270451cb7dcca8a82d605d7f9ef10"
+      "sha256": "11b2667e575c65a3af302b017fd9f3d98feed0e88e1dba5941b030914c1462c3"
     },
     {
       "path": "runtime/claude/skills/commit/evals/run_evals.py",
-      "sha256": "c2777b6b2485323100286428f7859648351c873d0a275cafdd739367b906aabd"
+      "sha256": "200d9986adf7bb20b8b29ced52f27e1793c3270f75c0bfe0800a06c44dea1ee9"
     },
     {
       "path": "runtime/claude/skills/commit/examples/commit-messages.md",
-      "sha256": "1f9583692818dd54b2a6e3aab523bc7480755b43c724f93d069eced67946d1d2"
+      "sha256": "b2d417716ed8a4400d0dd9f7b4c397315965c94858ab422b26e0920d02b13a94"
     },
     {
       "path": "runtime/claude/skills/context-doc/SKILL.md",
-      "sha256": "621265e7ee74cdcd959f99b85642ea7c37c01d6b9f6ed252f992c3afff8a482c"
+      "sha256": "0778d550f71591a0c8a021b1abac16c2e569f897a302a7d480af012e36d62267"
     },
     {
       "path": "runtime/claude/skills/context-doc/evals/evals.json",
-      "sha256": "b9adaf6563140a603d7a35a8f4db914e1ffe17480f6aa953e11ca48179d45b47"
+      "sha256": "3fa3cbf7a9d8e821c6d1a86cf2120707ab133b865ff4bc835047bc89eb9cb8b3"
     },
     {
       "path": "runtime/claude/skills/context-doc/evals/run_evals.py",
-      "sha256": "795de8b3fc28430cd63eb12372e1ecffde71769a61a0ef175fe87a99446527bf"
+      "sha256": "7cedadc8f0b014995471319bccced9344608473c5be5d06a9f2364e3bfa022a3"
     },
     {
       "path": "runtime/claude/skills/context-doc/prompts/analysis-claude.md",
-      "sha256": "35eb311cb78f430d8bac2d78f6cfc429e2953dea6150e04271b591c217e97c63"
+      "sha256": "ec79421b6269b90d286acbdd16c63d6d00f1cafff274aee748d8c3bfc6e8cbb7"
     },
     {
       "path": "runtime/claude/skills/context-doc/prompts/analysis-instruction.md",
@@ -114,10 +114,6 @@
       "sha256": "9ea6e479266ad604b664e6abbb57177f77dafe7f321fcc57907c498c86faf8d3"
     },
     {
-      "path": "runtime/claude/skills/context-doc/templates/CLAUDE.md.template",
-      "sha256": "33bc0fa66fd1ec45e595740ed671729356378407d761379fd9955657ae363871"
-    },
-    {
       "path": "runtime/claude/skills/context-doc/templates/agent-instruction.md.template",
       "sha256": "613c066c3046ddcfa1a42901e4c836a1c653542379574736b73bafabfa26322b"
     },
@@ -131,7 +127,7 @@
     },
     {
       "path": "runtime/claude/skills/context-doc/templates/artifact-output-routing-instruction.md.template",
-      "sha256": "a3ad27da2a53c0bf40885270aacc139b6bb76c010b6087b4b693b838aa0eb417"
+      "sha256": "c18f08055c958a4bf090630bf1ecbc05fa382e01b7f2ebf03d5985583f539cbc"
     },
     {
       "path": "runtime/claude/skills/context-doc/templates/code-style-instruction.md.template",
@@ -179,7 +175,7 @@
     },
     {
       "path": "runtime/claude/skills/design-doc/SKILL.md",
-      "sha256": "fc39d1ac6527bc0823bdb3b38948c04acd0519a160ec8a2e970d9fcf0f65101a"
+      "sha256": "d32b055ce5832319887e67c67959e494df24382f53165c7f6af93fc9d854f569"
     },
     {
       "path": "runtime/claude/skills/design-doc/prompts/interview.md",
@@ -227,7 +223,7 @@
     },
     {
       "path": "runtime/claude/skills/design-prototype-docs/SKILL.md",
-      "sha256": "b4416f979e5890266a0c57f47333ddf3e6fd858d47fbf6227eff8bc6fa6e3557"
+      "sha256": "4d953953cf0a0d3d54cb5154fe17659af8911be437deab199e823ad52890f073"
     },
     {
       "path": "runtime/claude/skills/design-prototype-docs/evals/run_evals.py",
@@ -239,7 +235,7 @@
     },
     {
       "path": "runtime/claude/skills/doc-audit/SKILL.md",
-      "sha256": "ebe6d4cfd8291dc7c9ec865db959a8c0b44d3bc44a6c85824082eb15e802a4a3"
+      "sha256": "64ca3b5f7ab3921eabe7f8ba39321c5a9577ba336ab82480dc31f1cea2783a16"
     },
     {
       "path": "runtime/claude/skills/doc-audit/audit-report.md",
@@ -259,11 +255,11 @@
     },
     {
       "path": "runtime/claude/skills/doc-audit/prompts/rulecheck-audit.md",
-      "sha256": "3caedb8cc98d6d9f1b091b1f134eedf62dd922d12ff96643d43ba56894593989"
+      "sha256": "f31920967c15401c42b13711906666339d4f5d356567f073864fc91b0f97eafd"
     },
     {
       "path": "runtime/claude/skills/doc-audit/templates/audit-report.md",
-      "sha256": "0b5bfac379be37ee97d1e489fa3bd165ce360922ff974126b5b9518854e83a02"
+      "sha256": "d76141f79f089e4ebe83a0abe3cd32528383dabe3ea1a466e015ab6b432985d6"
     },
     {
       "path": "runtime/claude/skills/frontend-design/SKILL.md",
@@ -275,7 +271,7 @@
     },
     {
       "path": "runtime/claude/skills/git-scoped-account/SKILL.md",
-      "sha256": "a5a5b5125f6afca7d3db5dacfbc777b9cf9a01a480bc8c6dabeed3fd9e603e55"
+      "sha256": "c23671e7bcb57afea157b86ab7bade70bc97f1b10ad15cfcfb2d380b8b4cbc64"
     },
     {
       "path": "runtime/claude/skills/git-scoped-account/evals/evals.json",
@@ -299,15 +295,15 @@
     },
     {
       "path": "runtime/claude/skills/harness-bootstrap/SKILL.md",
-      "sha256": "a412dde015ff1873be55ad3d9e15f90ae0ba09074c80b8a4932736da9e7fb8e0"
+      "sha256": "0fce1df752ffbb9b966c8844a0d93975f686f63b36fdd9d2902580aa1ae1c887"
     },
     {
       "path": "runtime/claude/skills/harness-bootstrap/evals/evals.json",
-      "sha256": "4163026417a501f2b3174b3cc1d3a8c10389523398bf88c82a6a8a6fbf1dccde"
+      "sha256": "3bd3d630ed962ffbeee9e39f9865c2e5fb7ad7585491ced578c23869532d61f6"
     },
     {
       "path": "runtime/claude/skills/harness-bootstrap/evals/run_evals.py",
-      "sha256": "0720f83ba7321c71fe7e283fd67df464852fa2e43f75e3a1db550cf80d940804"
+      "sha256": "e6d51bfa38dab099e2527da8c165f8defc993448801ceb33aed386b014a8d7e7"
     },
     {
       "path": "runtime/claude/skills/harness-bootstrap/prompts/code-scan.md",
@@ -331,15 +327,15 @@
     },
     {
       "path": "runtime/claude/skills/harness-setup/SKILL.md",
-      "sha256": "3e2ed69bb1d9da02a633508048bad70c7e924be2f3fd7ff4d97a4a3aa870a402"
+      "sha256": "3f3e3bedd704b3137754708793c893af958bda48e950e8c753436a7a6d573abf"
     },
     {
       "path": "runtime/claude/skills/harness-setup/evals/fixtures/portable-routing-baseline.json",
-      "sha256": "9a615cc53f73d9fec33749dafefc2bf7a28d0d3af669a20b8e82fb6eaa56b369"
+      "sha256": "1d02b301f70e50ac292d0448d58eccd34147c9cbd06be444961ab93c0942a8a4"
     },
     {
       "path": "runtime/claude/skills/harness-setup/evals/fixtures/portable-routing-bundle.json",
-      "sha256": "424656f40b95116710fee1f3f34bba57a793aff1075d7516488b03151fe6a07f"
+      "sha256": "fffdcfee9a4086f22b9a697a388210430c5d11e87427cc0a0900f065bdd31a84"
     },
     {
       "path": "runtime/claude/skills/harness-setup/evals/fixtures/portable-routing-coverage.json",
@@ -347,39 +343,35 @@
     },
     {
       "path": "runtime/claude/skills/harness-setup/evals/run_evals.py",
-      "sha256": "0f428b568e0a8769a0fe8b4d07c1137e9fc669099253e01e50efcf829c6c3bd5"
+      "sha256": "49877a4a39191128caf390550f8bed23e896bb375104ee6841fde72a4225a88f"
     },
     {
       "path": "runtime/claude/skills/harness-setup/prompts/detection.md",
-      "sha256": "a7ce52845eac3a0487ce96132428055c44246f1bef25d66cc19472d070e5e1eb"
+      "sha256": "b96e218479b24035cd3b24bf5975911d2f348a00c5512acbd9629cfacf543767"
     },
     {
       "path": "runtime/claude/skills/harness-setup/prompts/multi-app-setup.md",
-      "sha256": "9a9384808793bd527f448182100a927294052663301bbc994b96b791064c74d4"
+      "sha256": "2dc8b29c670952341c921acd67b418aee63c4ee9a4f3d1952cbfd03b8c463156"
     },
     {
       "path": "runtime/claude/skills/harness-setup/prompts/single-app-setup.md",
-      "sha256": "83b9f669813c08869dc66bc60edba0dd80c1d378db584ad01b5d9d7ed8deb095"
+      "sha256": "ee8d5778c26a24c13ab8620198f4375681063053bfd2d99340a9767013032f73"
     },
     {
       "path": "runtime/claude/skills/harness-setup/prompts/update-mode.md",
-      "sha256": "cdf220d9eeb564bcef7849a5a27f40226cd3d3f637ac735e08a440c464fddb1e"
-    },
-    {
-      "path": "runtime/claude/skills/harness-setup/templates/claude-bridge.template",
-      "sha256": "91cd88c16e1e36029f022571a7e46235213cfdc947573d3d8704e5fd4913135d"
+      "sha256": "d91ad9dcb175944201b9e842f2ce844635e4bd8b2046d930038f3e93a9b547f7"
     },
     {
       "path": "runtime/claude/skills/harness-setup/templates/docs-gitignore.template",
-      "sha256": "1a9fd47d6fa2871d21d86c4fef6efac31b6cdb0b12040e67e6f5f1af726062d8"
+      "sha256": "47d9b05dccc4e8fc396d2d323b8c9b3bfd96725823c3c5dbfa57547678a538ce"
     },
     {
       "path": "runtime/claude/skills/harness-setup/templates/docs-readme-multi.template",
-      "sha256": "5624af07c7d6d6a8e77b3951af2538b68a71afdd606d5e8ac4607965b080d0b1"
+      "sha256": "0680870f8e08fca53b5c9b5fed4270e59289bf65e2e2a62c88f3ca71546b15b0"
     },
     {
       "path": "runtime/claude/skills/harness-setup/templates/docs-readme-single.template",
-      "sha256": "225a7ac38135b3b76627a97e19db24642bc8f5d9a6ab9a54d9348becd719f934"
+      "sha256": "9fc01107b8f93fa80e573e070f9f20c34b2135c79e82684132924376bb431832"
     },
     {
       "path": "runtime/claude/skills/harness-setup/templates/inbox-readme.template",
@@ -387,7 +379,7 @@
     },
     {
       "path": "runtime/claude/skills/harness-setup/templates/portable-routing/README.md.template",
-      "sha256": "cd8bf5c7f6ab5cc7c14fe08dffbcb664e37625def0de1723ff2882611b713a78"
+      "sha256": "ac24dacd3f9b1a712b8c7e3bbafbe58b7937a19dedc2d2108fff0ced0fb712dd"
     },
     {
       "path": "runtime/claude/skills/harness-setup/templates/portable-routing/artifact-format-contract.json.template",
@@ -395,7 +387,7 @@
     },
     {
       "path": "runtime/claude/skills/harness-setup/templates/portable-routing/artifact-routing.json.template",
-      "sha256": "87f2f7fd20dc560a94082a8991dfbe41e4ba3b5074d7fe72821300d5f6e6e8e0"
+      "sha256": "d3dac9b46b75c429d500f9473a95970f952eccc362fcb3ef889b7bc201cd2a54"
     },
     {
       "path": "runtime/claude/skills/harness-setup/templates/portable-routing/claude-settings-hook.json.template",
@@ -403,7 +395,7 @@
     },
     {
       "path": "runtime/claude/skills/harness-setup/templates/portable-routing/codex-hooks.json.template",
-      "sha256": "29be51d8975ca56c3653a6b9b611eff20b7d55be43c38fdaf01108063becaebb"
+      "sha256": "425f112a38da733b57b7221b616a9667e96f4ea2614b4ffe515f8d8607a0fdd3"
     },
     {
       "path": "runtime/claude/skills/harness-setup/templates/portable-routing/hooks/approve-artifact.ps1.template",
@@ -411,7 +403,7 @@
     },
     {
       "path": "runtime/claude/skills/harness-setup/templates/portable-routing/hooks/artifact-route-core.ps1.template",
-      "sha256": "3f99c1d5f17d23a546e1bf0633cef3c8dbe4dd381cc64514c01f825133be6821"
+      "sha256": "508f2440186c67f56fdb5458193511157e1af568801c49d0f54347d1cc090637"
     },
     {
       "path": "runtime/claude/skills/harness-setup/templates/portable-routing/hooks/claude-pre-tool-use.ps1.template",
@@ -427,19 +419,19 @@
     },
     {
       "path": "runtime/claude/skills/harness-setup/templates/portable-routing/install-routing.ps1.template",
-      "sha256": "a309731b60336927955a34c6c11b1a63e30c0897d6214241bf25cc800d611545"
+      "sha256": "bea44bf8526d31a1a562e32637893429e86eabbef9ba8a8c91b77dc6253fd671"
     },
     {
       "path": "runtime/claude/skills/harness-setup/templates/portable-routing/normalize-artifact.ps1.template",
-      "sha256": "4dcfbf93f83640abe2301a656e484d239a4ffe49cdb51d31551d577d75cbab2e"
+      "sha256": "2eccdc53bd9526c8d2f91fd7977d484c11d1f28d909ba84f2db3d4540e105c81"
     },
     {
       "path": "runtime/claude/skills/harness-setup/templates/root-context-single.template",
-      "sha256": "70d2415d544302f1b49208cb4fad9795484add97c9c0d8374ad1cb2d4a1cf5fc"
+      "sha256": "feebcded7e60a7fa179e86a110d285ba5042735da288803b9e983bcedd0657ba"
     },
     {
       "path": "runtime/claude/skills/harness-setup/templates/root-context.template",
-      "sha256": "7b2301946ca0c2f2ed08d1475ffe8c01eecc7754eafc0a8d7ff74f117957cbec"
+      "sha256": "af4f5b87926febc7c1f02eeb4bdf06fb8de31bdfcb560152b3bfa45f74a52798"
     },
     {
       "path": "runtime/claude/skills/humanize-korean/SKILL.md",
@@ -467,7 +459,7 @@
     },
     {
       "path": "runtime/claude/skills/impl-doc/SKILL.md",
-      "sha256": "817d23d3d9263af58025ff28171907d6bde9272f488e78eedf9b28da078389b7"
+      "sha256": "5a30aee5eeccfaebb8a00ae77aa42f2585808d96be82bece8c347a2ef116f96b"
     },
     {
       "path": "runtime/claude/skills/impl-doc/prompts/analysis.md",
@@ -495,7 +487,7 @@
     },
     {
       "path": "runtime/claude/skills/impl-fe-be-doc/SKILL.md",
-      "sha256": "d0260e095555664b8c00072b70f4479bba2a1919a522b754084a358f65a2568f"
+      "sha256": "59213cb4e7f1a92ba9dcff793cf38acacf61f81348e987a2f5f4f63b526aed17"
     },
     {
       "path": "runtime/claude/skills/impl-fe-be-doc/prompts/analysis.md",
@@ -703,7 +695,7 @@
     },
     {
       "path": "runtime/claude/skills/project-write-access/SKILL.md",
-      "sha256": "e235edb5fc0a35aee104ce400885b6b3ea950ade3be10edd401562954a3c501b"
+      "sha256": "c32ed5ce81f9832a77fcf66412bb9862dc304be1b9a17f19ac9fade37c723c15"
     },
     {
       "path": "runtime/claude/skills/project-write-access/agents/openai.yaml",
@@ -727,7 +719,7 @@
     },
     {
       "path": "runtime/claude/skills/project-write-access/evals/run_evals.py",
-      "sha256": "bcbe73b9032b6d4b8af9ad506d23b73384212729a1484ff255c57b33fd1f211c"
+      "sha256": "993889c4577a41a881e5dc5bf268b218371aea52e2e25ef9731d40a6b6943e0c"
     },
     {
       "path": "runtime/claude/skills/project-write-access/prompts/workflow.md",
@@ -735,7 +727,7 @@
     },
     {
       "path": "runtime/claude/skills/project-write-access/references/policy-schema.md",
-      "sha256": "4cf8bdb58606ec9abb0937fdda7f22b4b255fd18fb793c13e22b21fc5d24cc47"
+      "sha256": "40e3dd171ca9b3009afab5ff2d0fb71ad9ddf1c799cc63aef00a390d02f41b5c"
     },
     {
       "path": "runtime/claude/skills/project-write-access/references/provider-capabilities.md",
@@ -743,11 +735,11 @@
     },
     {
       "path": "runtime/claude/skills/project-write-access/references/security-contract.md",
-      "sha256": "915bcc095a52b502d84e3d6e072ef73b2344279a234e80fd7347e280575c2f9a"
+      "sha256": "bcc84c4d907913b80bd1df72aad5bb1f7e0374057e1648fd5c57137756740b3f"
     },
     {
       "path": "runtime/claude/skills/project-write-access/scripts/project_write_access.py",
-      "sha256": "f4e1fa9f171eb23a670b6345bab94de105a0921fa75f07e8896fdc7522c09252"
+      "sha256": "475e84de45b5024d7c135aacf29ecf13af5dac5a2e8033b3bbc727140c8d3901"
     },
     {
       "path": "runtime/claude/skills/ui-ux-pro-max/SKILL.md",
@@ -951,31 +943,31 @@
     },
     {
       "path": "runtime/codex/skills/commit/SKILL.md",
-      "sha256": "8967222e549d8a37ab31ca7de0dc0bd1040270451cb7dcca8a82d605d7f9ef10"
+      "sha256": "11b2667e575c65a3af302b017fd9f3d98feed0e88e1dba5941b030914c1462c3"
     },
     {
       "path": "runtime/codex/skills/commit/evals/run_evals.py",
-      "sha256": "c2777b6b2485323100286428f7859648351c873d0a275cafdd739367b906aabd"
+      "sha256": "200d9986adf7bb20b8b29ced52f27e1793c3270f75c0bfe0800a06c44dea1ee9"
     },
     {
       "path": "runtime/codex/skills/commit/examples/commit-messages.md",
-      "sha256": "1f9583692818dd54b2a6e3aab523bc7480755b43c724f93d069eced67946d1d2"
+      "sha256": "b2d417716ed8a4400d0dd9f7b4c397315965c94858ab422b26e0920d02b13a94"
     },
     {
       "path": "runtime/codex/skills/context-doc/SKILL.md",
-      "sha256": "621265e7ee74cdcd959f99b85642ea7c37c01d6b9f6ed252f992c3afff8a482c"
+      "sha256": "0778d550f71591a0c8a021b1abac16c2e569f897a302a7d480af012e36d62267"
     },
     {
       "path": "runtime/codex/skills/context-doc/evals/evals.json",
-      "sha256": "b9adaf6563140a603d7a35a8f4db914e1ffe17480f6aa953e11ca48179d45b47"
+      "sha256": "3fa3cbf7a9d8e821c6d1a86cf2120707ab133b865ff4bc835047bc89eb9cb8b3"
     },
     {
       "path": "runtime/codex/skills/context-doc/evals/run_evals.py",
-      "sha256": "795de8b3fc28430cd63eb12372e1ecffde71769a61a0ef175fe87a99446527bf"
+      "sha256": "7cedadc8f0b014995471319bccced9344608473c5be5d06a9f2364e3bfa022a3"
     },
     {
       "path": "runtime/codex/skills/context-doc/prompts/analysis-claude.md",
-      "sha256": "35eb311cb78f430d8bac2d78f6cfc429e2953dea6150e04271b591c217e97c63"
+      "sha256": "ec79421b6269b90d286acbdd16c63d6d00f1cafff274aee748d8c3bfc6e8cbb7"
     },
     {
       "path": "runtime/codex/skills/context-doc/prompts/analysis-instruction.md",
@@ -998,10 +990,6 @@
       "sha256": "9ea6e479266ad604b664e6abbb57177f77dafe7f321fcc57907c498c86faf8d3"
     },
     {
-      "path": "runtime/codex/skills/context-doc/templates/CLAUDE.md.template",
-      "sha256": "33bc0fa66fd1ec45e595740ed671729356378407d761379fd9955657ae363871"
-    },
-    {
       "path": "runtime/codex/skills/context-doc/templates/agent-instruction.md.template",
       "sha256": "613c066c3046ddcfa1a42901e4c836a1c653542379574736b73bafabfa26322b"
     },
@@ -1015,7 +1003,7 @@
     },
     {
       "path": "runtime/codex/skills/context-doc/templates/artifact-output-routing-instruction.md.template",
-      "sha256": "a3ad27da2a53c0bf40885270aacc139b6bb76c010b6087b4b693b838aa0eb417"
+      "sha256": "c18f08055c958a4bf090630bf1ecbc05fa382e01b7f2ebf03d5985583f539cbc"
     },
     {
       "path": "runtime/codex/skills/context-doc/templates/code-style-instruction.md.template",
@@ -1063,7 +1051,7 @@
     },
     {
       "path": "runtime/codex/skills/design-doc/SKILL.md",
-      "sha256": "fc39d1ac6527bc0823bdb3b38948c04acd0519a160ec8a2e970d9fcf0f65101a"
+      "sha256": "d32b055ce5832319887e67c67959e494df24382f53165c7f6af93fc9d854f569"
     },
     {
       "path": "runtime/codex/skills/design-doc/prompts/interview.md",
@@ -1111,7 +1099,7 @@
     },
     {
       "path": "runtime/codex/skills/design-prototype-docs/SKILL.md",
-      "sha256": "b4416f979e5890266a0c57f47333ddf3e6fd858d47fbf6227eff8bc6fa6e3557"
+      "sha256": "4d953953cf0a0d3d54cb5154fe17659af8911be437deab199e823ad52890f073"
     },
     {
       "path": "runtime/codex/skills/design-prototype-docs/evals/run_evals.py",
@@ -1123,7 +1111,7 @@
     },
     {
       "path": "runtime/codex/skills/doc-audit/SKILL.md",
-      "sha256": "ebe6d4cfd8291dc7c9ec865db959a8c0b44d3bc44a6c85824082eb15e802a4a3"
+      "sha256": "64ca3b5f7ab3921eabe7f8ba39321c5a9577ba336ab82480dc31f1cea2783a16"
     },
     {
       "path": "runtime/codex/skills/doc-audit/audit-report.md",
@@ -1143,11 +1131,11 @@
     },
     {
       "path": "runtime/codex/skills/doc-audit/prompts/rulecheck-audit.md",
-      "sha256": "3caedb8cc98d6d9f1b091b1f134eedf62dd922d12ff96643d43ba56894593989"
+      "sha256": "f31920967c15401c42b13711906666339d4f5d356567f073864fc91b0f97eafd"
     },
     {
       "path": "runtime/codex/skills/doc-audit/templates/audit-report.md",
-      "sha256": "0b5bfac379be37ee97d1e489fa3bd165ce360922ff974126b5b9518854e83a02"
+      "sha256": "d76141f79f089e4ebe83a0abe3cd32528383dabe3ea1a466e015ab6b432985d6"
     },
     {
       "path": "runtime/codex/skills/frontend-design/SKILL.md",
@@ -1159,7 +1147,7 @@
     },
     {
       "path": "runtime/codex/skills/git-scoped-account/SKILL.md",
-      "sha256": "a5a5b5125f6afca7d3db5dacfbc777b9cf9a01a480bc8c6dabeed3fd9e603e55"
+      "sha256": "c23671e7bcb57afea157b86ab7bade70bc97f1b10ad15cfcfb2d380b8b4cbc64"
     },
     {
       "path": "runtime/codex/skills/git-scoped-account/evals/evals.json",
@@ -1183,15 +1171,15 @@
     },
     {
       "path": "runtime/codex/skills/harness-bootstrap/SKILL.md",
-      "sha256": "a412dde015ff1873be55ad3d9e15f90ae0ba09074c80b8a4932736da9e7fb8e0"
+      "sha256": "0fce1df752ffbb9b966c8844a0d93975f686f63b36fdd9d2902580aa1ae1c887"
     },
     {
       "path": "runtime/codex/skills/harness-bootstrap/evals/evals.json",
-      "sha256": "4163026417a501f2b3174b3cc1d3a8c10389523398bf88c82a6a8a6fbf1dccde"
+      "sha256": "3bd3d630ed962ffbeee9e39f9865c2e5fb7ad7585491ced578c23869532d61f6"
     },
     {
       "path": "runtime/codex/skills/harness-bootstrap/evals/run_evals.py",
-      "sha256": "0720f83ba7321c71fe7e283fd67df464852fa2e43f75e3a1db550cf80d940804"
+      "sha256": "e6d51bfa38dab099e2527da8c165f8defc993448801ceb33aed386b014a8d7e7"
     },
     {
       "path": "runtime/codex/skills/harness-bootstrap/prompts/code-scan.md",
@@ -1215,15 +1203,15 @@
     },
     {
       "path": "runtime/codex/skills/harness-setup/SKILL.md",
-      "sha256": "3e2ed69bb1d9da02a633508048bad70c7e924be2f3fd7ff4d97a4a3aa870a402"
+      "sha256": "3f3e3bedd704b3137754708793c893af958bda48e950e8c753436a7a6d573abf"
     },
     {
       "path": "runtime/codex/skills/harness-setup/evals/fixtures/portable-routing-baseline.json",
-      "sha256": "9a615cc53f73d9fec33749dafefc2bf7a28d0d3af669a20b8e82fb6eaa56b369"
+      "sha256": "1d02b301f70e50ac292d0448d58eccd34147c9cbd06be444961ab93c0942a8a4"
     },
     {
       "path": "runtime/codex/skills/harness-setup/evals/fixtures/portable-routing-bundle.json",
-      "sha256": "424656f40b95116710fee1f3f34bba57a793aff1075d7516488b03151fe6a07f"
+      "sha256": "fffdcfee9a4086f22b9a697a388210430c5d11e87427cc0a0900f065bdd31a84"
     },
     {
       "path": "runtime/codex/skills/harness-setup/evals/fixtures/portable-routing-coverage.json",
@@ -1231,39 +1219,35 @@
     },
     {
       "path": "runtime/codex/skills/harness-setup/evals/run_evals.py",
-      "sha256": "0f428b568e0a8769a0fe8b4d07c1137e9fc669099253e01e50efcf829c6c3bd5"
+      "sha256": "49877a4a39191128caf390550f8bed23e896bb375104ee6841fde72a4225a88f"
     },
     {
       "path": "runtime/codex/skills/harness-setup/prompts/detection.md",
-      "sha256": "a7ce52845eac3a0487ce96132428055c44246f1bef25d66cc19472d070e5e1eb"
+      "sha256": "b96e218479b24035cd3b24bf5975911d2f348a00c5512acbd9629cfacf543767"
     },
     {
       "path": "runtime/codex/skills/harness-setup/prompts/multi-app-setup.md",
-      "sha256": "9a9384808793bd527f448182100a927294052663301bbc994b96b791064c74d4"
+      "sha256": "2dc8b29c670952341c921acd67b418aee63c4ee9a4f3d1952cbfd03b8c463156"
     },
     {
       "path": "runtime/codex/skills/harness-setup/prompts/single-app-setup.md",
-      "sha256": "83b9f669813c08869dc66bc60edba0dd80c1d378db584ad01b5d9d7ed8deb095"
+      "sha256": "ee8d5778c26a24c13ab8620198f4375681063053bfd2d99340a9767013032f73"
     },
     {
       "path": "runtime/codex/skills/harness-setup/prompts/update-mode.md",
-      "sha256": "cdf220d9eeb564bcef7849a5a27f40226cd3d3f637ac735e08a440c464fddb1e"
-    },
-    {
-      "path": "runtime/codex/skills/harness-setup/templates/claude-bridge.template",
-      "sha256": "91cd88c16e1e36029f022571a7e46235213cfdc947573d3d8704e5fd4913135d"
+      "sha256": "d91ad9dcb175944201b9e842f2ce844635e4bd8b2046d930038f3e93a9b547f7"
     },
     {
       "path": "runtime/codex/skills/harness-setup/templates/docs-gitignore.template",
-      "sha256": "1a9fd47d6fa2871d21d86c4fef6efac31b6cdb0b12040e67e6f5f1af726062d8"
+      "sha256": "47d9b05dccc4e8fc396d2d323b8c9b3bfd96725823c3c5dbfa57547678a538ce"
     },
     {
       "path": "runtime/codex/skills/harness-setup/templates/docs-readme-multi.template",
-      "sha256": "5624af07c7d6d6a8e77b3951af2538b68a71afdd606d5e8ac4607965b080d0b1"
+      "sha256": "0680870f8e08fca53b5c9b5fed4270e59289bf65e2e2a62c88f3ca71546b15b0"
     },
     {
       "path": "runtime/codex/skills/harness-setup/templates/docs-readme-single.template",
-      "sha256": "225a7ac38135b3b76627a97e19db24642bc8f5d9a6ab9a54d9348becd719f934"
+      "sha256": "9fc01107b8f93fa80e573e070f9f20c34b2135c79e82684132924376bb431832"
     },
     {
       "path": "runtime/codex/skills/harness-setup/templates/inbox-readme.template",
@@ -1271,7 +1255,7 @@
     },
     {
       "path": "runtime/codex/skills/harness-setup/templates/portable-routing/README.md.template",
-      "sha256": "cd8bf5c7f6ab5cc7c14fe08dffbcb664e37625def0de1723ff2882611b713a78"
+      "sha256": "ac24dacd3f9b1a712b8c7e3bbafbe58b7937a19dedc2d2108fff0ced0fb712dd"
     },
     {
       "path": "runtime/codex/skills/harness-setup/templates/portable-routing/artifact-format-contract.json.template",
@@ -1279,7 +1263,7 @@
     },
     {
       "path": "runtime/codex/skills/harness-setup/templates/portable-routing/artifact-routing.json.template",
-      "sha256": "87f2f7fd20dc560a94082a8991dfbe41e4ba3b5074d7fe72821300d5f6e6e8e0"
+      "sha256": "d3dac9b46b75c429d500f9473a95970f952eccc362fcb3ef889b7bc201cd2a54"
     },
     {
       "path": "runtime/codex/skills/harness-setup/templates/portable-routing/claude-settings-hook.json.template",
@@ -1287,7 +1271,7 @@
     },
     {
       "path": "runtime/codex/skills/harness-setup/templates/portable-routing/codex-hooks.json.template",
-      "sha256": "29be51d8975ca56c3653a6b9b611eff20b7d55be43c38fdaf01108063becaebb"
+      "sha256": "425f112a38da733b57b7221b616a9667e96f4ea2614b4ffe515f8d8607a0fdd3"
     },
     {
       "path": "runtime/codex/skills/harness-setup/templates/portable-routing/hooks/approve-artifact.ps1.template",
@@ -1295,7 +1279,7 @@
     },
     {
       "path": "runtime/codex/skills/harness-setup/templates/portable-routing/hooks/artifact-route-core.ps1.template",
-      "sha256": "3f99c1d5f17d23a546e1bf0633cef3c8dbe4dd381cc64514c01f825133be6821"
+      "sha256": "508f2440186c67f56fdb5458193511157e1af568801c49d0f54347d1cc090637"
     },
     {
       "path": "runtime/codex/skills/harness-setup/templates/portable-routing/hooks/claude-pre-tool-use.ps1.template",
@@ -1311,19 +1295,19 @@
     },
     {
       "path": "runtime/codex/skills/harness-setup/templates/portable-routing/install-routing.ps1.template",
-      "sha256": "a309731b60336927955a34c6c11b1a63e30c0897d6214241bf25cc800d611545"
+      "sha256": "bea44bf8526d31a1a562e32637893429e86eabbef9ba8a8c91b77dc6253fd671"
     },
     {
       "path": "runtime/codex/skills/harness-setup/templates/portable-routing/normalize-artifact.ps1.template",
-      "sha256": "4dcfbf93f83640abe2301a656e484d239a4ffe49cdb51d31551d577d75cbab2e"
+      "sha256": "2eccdc53bd9526c8d2f91fd7977d484c11d1f28d909ba84f2db3d4540e105c81"
     },
     {
       "path": "runtime/codex/skills/harness-setup/templates/root-context-single.template",
-      "sha256": "70d2415d544302f1b49208cb4fad9795484add97c9c0d8374ad1cb2d4a1cf5fc"
+      "sha256": "feebcded7e60a7fa179e86a110d285ba5042735da288803b9e983bcedd0657ba"
     },
     {
       "path": "runtime/codex/skills/harness-setup/templates/root-context.template",
-      "sha256": "7b2301946ca0c2f2ed08d1475ffe8c01eecc7754eafc0a8d7ff74f117957cbec"
+      "sha256": "af4f5b87926febc7c1f02eeb4bdf06fb8de31bdfcb560152b3bfa45f74a52798"
     },
     {
       "path": "runtime/codex/skills/humanize-korean/SKILL.md",
@@ -1351,7 +1335,7 @@
     },
     {
       "path": "runtime/codex/skills/impl-doc/SKILL.md",
-      "sha256": "817d23d3d9263af58025ff28171907d6bde9272f488e78eedf9b28da078389b7"
+      "sha256": "5a30aee5eeccfaebb8a00ae77aa42f2585808d96be82bece8c347a2ef116f96b"
     },
     {
       "path": "runtime/codex/skills/impl-doc/prompts/analysis.md",
@@ -1379,7 +1363,7 @@
     },
     {
       "path": "runtime/codex/skills/impl-fe-be-doc/SKILL.md",
-      "sha256": "d0260e095555664b8c00072b70f4479bba2a1919a522b754084a358f65a2568f"
+      "sha256": "59213cb4e7f1a92ba9dcff793cf38acacf61f81348e987a2f5f4f63b526aed17"
     },
     {
       "path": "runtime/codex/skills/impl-fe-be-doc/prompts/analysis.md",
@@ -1587,7 +1571,7 @@
     },
     {
       "path": "runtime/codex/skills/project-write-access/SKILL.md",
-      "sha256": "e235edb5fc0a35aee104ce400885b6b3ea950ade3be10edd401562954a3c501b"
+      "sha256": "c32ed5ce81f9832a77fcf66412bb9862dc304be1b9a17f19ac9fade37c723c15"
     },
     {
       "path": "runtime/codex/skills/project-write-access/agents/openai.yaml",
@@ -1611,7 +1595,7 @@
     },
     {
       "path": "runtime/codex/skills/project-write-access/evals/run_evals.py",
-      "sha256": "bcbe73b9032b6d4b8af9ad506d23b73384212729a1484ff255c57b33fd1f211c"
+      "sha256": "993889c4577a41a881e5dc5bf268b218371aea52e2e25ef9731d40a6b6943e0c"
     },
     {
       "path": "runtime/codex/skills/project-write-access/prompts/workflow.md",
@@ -1619,7 +1603,7 @@
     },
     {
       "path": "runtime/codex/skills/project-write-access/references/policy-schema.md",
-      "sha256": "4cf8bdb58606ec9abb0937fdda7f22b4b255fd18fb793c13e22b21fc5d24cc47"
+      "sha256": "40e3dd171ca9b3009afab5ff2d0fb71ad9ddf1c799cc63aef00a390d02f41b5c"
     },
     {
       "path": "runtime/codex/skills/project-write-access/references/provider-capabilities.md",
@@ -1627,11 +1611,11 @@
     },
     {
       "path": "runtime/codex/skills/project-write-access/references/security-contract.md",
-      "sha256": "915bcc095a52b502d84e3d6e072ef73b2344279a234e80fd7347e280575c2f9a"
+      "sha256": "bcc84c4d907913b80bd1df72aad5bb1f7e0374057e1648fd5c57137756740b3f"
     },
     {
       "path": "runtime/codex/skills/project-write-access/scripts/project_write_access.py",
-      "sha256": "f4e1fa9f171eb23a670b6345bab94de105a0921fa75f07e8896fdc7522c09252"
+      "sha256": "475e84de45b5024d7c135aacf29ecf13af5dac5a2e8033b3bbc727140c8d3901"
     },
     {
       "path": "runtime/codex/skills/ui-ux-pro-max/SKILL.md",

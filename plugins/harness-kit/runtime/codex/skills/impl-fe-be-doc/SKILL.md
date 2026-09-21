@@ -337,7 +337,7 @@ Step 7에서 방금 저장한 문서와 같은 자리에 인덱스 문서를 새
 상위 producer가 전달한 실행 컨텍스트가 있으면 새 ID나 owner를 만들지 않는다.
 
 ```text
-artifact_bundle_id = impl-fe-be-doc:{정규화한 프로젝트 루트}:{이번 실행의 고유 ID}
+artifact_bundle_id = impl-fe-be-doc:{이번 실행의 고유 ID}
 handoff_owner = impl-fe-be-doc
 suppress_child_handoff = false
 handoff_completed = false

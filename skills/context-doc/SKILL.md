@@ -2,7 +2,7 @@
 name: context-doc
 description: >
   설계 문서나 PRD가 완성된 후 AI Agent용 컨텍스트 파일을 만들 때 사용한다.
-  'AGENTS.md 만들어줘', 'CLAUDE.md 만들어줘', '컨텍스트 문서 생성', 'instruction 작성',
+  'AGENTS.md 만들어줘', '컨텍스트 문서 생성', 'instruction 작성',
   '.ai-docs/instruction 생성', '규칙 문서 생성', '프로젝트 규칙 파일',
   '에이전트 가이드 만들어줘' 요청이 오면 반드시 이 스킬을 쓴다.
   앱별 DESIGN.md와 현재 코드·설정·Git 정보를 동기화해 *-context.md의 개요·기술 스택·
@@ -33,7 +33,7 @@ allowed-tools: Read, Glob, Grep, Write, Agent
 이 스킬은 애플리케이션의 설계 원칙, 기술 스택, 아키텍처, 실행 profile, Git remote·
 branch, 배포, 환경 변수와 주제별 작업 규칙을 앱 context·instruction으로 만든다.
 AI가 프로젝트 전체를 어떻게 읽을지 정하는
-루트 `AGENTS.md`·`CLAUDE.md`, `.ai-docs/root-context/**`와 `.ai-docs/harness/**`는
+루트 `AGENTS.md`, `.ai-docs/root-context/**`와 `.ai-docs/harness/**`는
 `harness-setup`의 관리 범위이며 이 스킬이 만들거나 갱신하지 않는다.
 
 단일 앱도 권한과 소유권을 분리하기 위해 프로젝트 팩트를 루트 `AGENTS.md`에 직접
@@ -79,7 +79,7 @@ guard의 `decision=confirm`은 권한은 있으나 앱 핵심 문서 쓰기 전�
   확정한 직후 다음 값을 만든다.
 
 ```text
-artifact_bundle_id = context-doc:{정규화한 프로젝트 루트}:{이번 실행의 고유 ID}
+artifact_bundle_id = context-doc:{이번 실행의 고유 ID}
 handoff_owner = context-doc
 suppress_child_handoff = false
 handoff_completed = false
@@ -178,7 +178,7 @@ handoff_completed = false
 1. **앱 context는 구현에 필요한 상세 사실만 유지한다.** 개요·기술 스택·아키텍처·
    실행 profile·Git·배포·계층형 앱 특이사항·환경 변수·instruction 인덱스와 기능 분류
    추적을 두되 DB 절차와 세부 규칙은 해당 섹션·instruction으로 분리한다.
-2. **루트 컨텍스트를 수정하지 않는다.** 루트 `AGENTS.md`·`CLAUDE.md`와 `.ai-docs/root-context/**`는 harness-setup에 맡긴다.
+2. **루트 컨텍스트를 수정하지 않는다.** 루트 `AGENTS.md`와 `.ai-docs/root-context/**`는 harness-setup에 맡긴다.
 3. **규칙은 주제별로 분리한다.** Agent가 필요한 주제만 찾아 참조할 수 있게 한다.
 4. **프레임워크를 하드코딩하지 않는다.** 설계 문서에 등장한 라이브러리·주제를 그대로 반영한다.
 5. **instruction 생명주기를 관리한다.** 최초 목적 골격, 이후 현재 규칙 갱신과 불필요
@@ -362,7 +362,7 @@ STEP 0에서 병렬을 선택한 경우, Step 3-B에서 확정된 생성 파일 
   managed block diff만 보여주고 사용자 승인 뒤에 적용한다.
 - 외부 fixed-format bundle은 `.ai-docs/_inbox/{artifact-bundle-id}/artifact-manifest.json`에
   proposal로 기록하며 G12 승인 전 canonical instruction에 병합하지 않는다.
-- 루트 `AGENTS.md`·`CLAUDE.md`와 `.ai-docs/root-context/**`는 생성 목록에 넣지 않는다.
+- 루트 `AGENTS.md`와 `.ai-docs/root-context/**`는 생성 목록에 넣지 않는다.
 - 각 instruction 파일은 자신의 주제에만 집중한다. 주제 간 중복 금지.
 - 앱 context와 모든 instruction 본문은 변경 이력 없이 현재 사실·규칙만 유지한다.
   최초 골격과 후속 갱신·삭제 표현은 `prompts/instruction-lifecycle.md`를 따른다.
@@ -395,7 +395,7 @@ STEP 0에서 병렬을 선택한 경우, Step 3-B에서 확정된 생성 파일 
 - `.ai-docs/{앱}-context.md` → DESIGN.md와 양방향 추적하는 앱의 1~10 상세 컨텍스트와
   AI 구현 지침 인덱스
 - `.ai-docs/{앱}/instruction/*-instruction.md` → 앱별 instruction 폴더에 작성
-- 루트 `AGENTS.md`/`CLAUDE.md`와 `.ai-docs/root-context/**`는 생성하지 않는다. admin이
+- 루트 `AGENTS.md`와 `.ai-docs/root-context/**`는 생성하지 않는다. admin이
   `harness-setup`으로 앱 context·instruction 위치를 읽기 지도에 반영한다.
 
 권한 정책이 활성화되어 guard가 `decision=confirm`을 반환했다면 일반 초안 검토·저장
@@ -448,7 +448,7 @@ STEP 0에서 확정한 프로젝트 유형에 따라 저장 경로와 검증 범
    - 7번이 핵심 도메인 개념을 포함한 계층형 노드인지, 10번 기능 분류가 DESIGN.md 02의
      노드명·순서·부모-자식 관계·Depth와 일치하는지 확인
    - 앱 context와 instruction 본문에 과거 값·변경 이력·폐기 규칙이 없는지 확인
-   - 루트 `AGENTS.md`·`CLAUDE.md`와 `.ai-docs/root-context/**`를 수정하지 않았는지 확인
+   - 루트 `AGENTS.md`와 `.ai-docs/root-context/**`를 수정하지 않았는지 확인
    - 불일치 시 사용자에게 보고하고 수정
 
 #### 복수 애플리케이션
@@ -466,7 +466,7 @@ STEP 0에서 확정한 프로젝트 유형에 따라 저장 경로와 검증 범
    - 7번이 핵심 도메인 개념을 포함한 계층형 노드인지, 10번 기능 분류가 DESIGN.md 02의
      노드명·순서·부모-자식 관계·Depth와 일치하는지 확인
    - 앱 context와 instruction 본문에 과거 값·변경 이력·폐기 규칙이 없는지 확인
-   - 루트 `AGENTS.md`·`CLAUDE.md`와 `.ai-docs/root-context/**`를 수정하지 않았는지 확인
+   - 루트 `AGENTS.md`와 `.ai-docs/root-context/**`를 수정하지 않았는지 확인
    - 불일치 시 사용자에게 보고하고 수정
 
 저장과 검증이 끝나면 루트 읽기 지도 갱신이 필요한지 보고한다. 필요하면 admin이

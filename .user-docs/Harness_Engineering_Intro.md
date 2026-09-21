@@ -60,7 +60,7 @@ flowchart LR
 그래서 하네스는 다음을 프로젝트에 남긴다.
 
 - 단일 앱의 루트 `AGENTS.md`, 복수 앱의 `.ai-docs/root-context/AGENTS.md` 형상관리 원본과 루트 실행용 `AGENTS.md`
-- Claude가 정본을 읽도록 하는 `CLAUDE.md` bridge
+- Codex와 Claude Code 2.1.277 이상이 직접 읽는 `AGENTS.md` 단일 진입점
 - 설계 문서
 - 주제별 instruction
 - 구현 계획과 roadmap index
@@ -117,7 +117,7 @@ flowchart LR
 
 ### 3.2 고정 맥락은 얇고 연결 가능해야 한다
 
-루트 `AGENTS.md`는 프로젝트·앱 경계와 문서 읽기 순서를 안내하는 지도로 유지한다. 복수 앱은 `.ai-docs/root-context/AGENTS.md`를 형상관리 갱신 기준으로 두고 루트 `AGENTS.md`를 실행용으로 갱신한다. 앱의 상세 현재 사실은 DESIGN과 양방향 추적하는 `.ai-docs/{앱}-context.md`, 세부 규칙은 `.ai-docs/**/instruction/`으로 분리한다. `CLAUDE.md`는 별도의 정본이 아니라 `@AGENTS.md`를 읽게 하는 bridge다.
+루트 `AGENTS.md`는 프로젝트·앱 경계와 문서 읽기 순서를 안내하는 지도로 유지한다. 복수 앱은 `.ai-docs/root-context/AGENTS.md`를 형상관리 갱신 기준으로 두고 루트 `AGENTS.md`를 실행용으로 갱신한다. 앱의 상세 현재 사실은 DESIGN과 양방향 추적하는 `.ai-docs/{앱}-context.md`, 세부 규칙은 `.ai-docs/**/instruction/`으로 분리한다. Claude 대상 setup은 프로젝트부터 파일시스템 루트까지 선점하는 `CLAUDE.md`, `.claude/CLAUDE.md`, `CLAUDE.local.md`가 없는지 먼저 확인한다.
 
 ### 3.3 구현은 작은 단위로 쪼갠다
 
@@ -152,7 +152,7 @@ custom skill과 사용자 스킬 복사본은 읽기 전용으로 분류·보고
 
 | 스킬 | 역할 | 언제 쓰는가 |
 |------|------|-------------|
-| `harness-setup` | `.ai-docs` 골격, `AGENTS.md` 정본, `CLAUDE.md` bridge와 `.ai-docs/harness/` portable routing bundle 생성·복구; 별도 승인 시 Claude·Codex write guard 설치 | 모든 참여자가 자기 작업 환경에서 최초 1회. 서명 정책 활성 뒤 공유 루트·하네스 갱신은 `admin`이 수행 |
+| `harness-setup` | `.ai-docs` 골격, `AGENTS.md` 정본과 `.ai-docs/harness/` portable routing bundle 생성·복구; Claude instruction 선점 검사; 별도 승인 시 Claude·Codex write guard 설치 | 모든 참여자가 자기 작업 환경에서 최초 1회. 서명 정책 활성 뒤 공유 루트·하네스 갱신은 `admin`이 수행 |
 | `harness-bootstrap` | 기존 코드를 스캔해 설계·컨텍스트 역추출 | 하네스 문서가 없는 기존 코드 |
 | `git-scoped-account` | 단일·복수 repo의 Git 작성자와 provider·host·login을 프로젝트 범위로 지정하고 정책이 있으면 현재 PC를 로컬 등록 | 모든 참여자가 PC별 최초 1회, 새 PC·새 clone·계정·repo 변경 때 |
 | `project-write-access` | `.ai-docs`와 Git에 포함된 루트 컨텍스트의 공유 역할 정책, CODEOWNERS와 PC별 Git·AI 가드를 연결 | 관리자는 공유 정책 설정·변경, 각 참여자는 PC별 로컬 등록 |
@@ -161,7 +161,7 @@ custom skill과 사용자 스킬 복사본은 읽기 전용으로 분류·보고
 
 `project-write-access`는 선택 기능이다. 권한을 사용하는 프로젝트는 원격 Git provider·저장소·참여자 계정을 준비하고, 관리자가 `harness-setup`과 참여자별 Git 계정 등록 뒤 `design-doc`, `context-doc`, 앱 핵심 문서를 만드는 `harness-bootstrap`보다 먼저 공유 정책을 설정한다. 정책 생성 뒤 각 참여자는 관리자 키 없이 자기 PC의 로컬 Git·AI 가드만 등록한다. `admin`은 앱 문서 권한을 상속하지 않으며, 권한이 있는 `pm-pl`·`app-doc-lead`도 앱 핵심 문서를 AI로 쓰기 전에 대상·문서 역할·변경 이유를 설명받고 한 번 더 확인한다. 정책이 있는데 현재 PC의 Git 계정 표식이나 로컬 등록이 없거나 서로 다르면 지원되는 AI 가드는 `.ai-docs/**` 쓰기를 거부하지만 애플리케이션 소스코드는 막지 않는다.
 
-`harness-setup`이 만든 portable bundle은 플러그인 제거 뒤에도 남는다. host hook의 `pending-trust` 상태는 사용자가 신뢰 검토를 끝낸 증적을 명시해 `active`로 기록하기 전까지 바뀌지 않으며, 외부 fixed-format 산출물은 `_inbox`에서만 관리한다. `_inbox` 파일은 기본적으로 로컬에서만 보관하지만, 설계·instruction에 계속 참고할 원문은 사용자가 정확한 파일과 Git 공유를 명시한 경우에만 파일별로 선택 추적할 수 있다. 추적된 원문도 정규 산출물로 자동 승격되지 않으며 commit과 원격 push는 각각 별도로 요청해야 한다.
+`harness-setup`이 만든 portable bundle은 플러그인 제거 뒤에도 남는다. 공유 파일은 프로젝트 상대경로만 사용하고, host hook의 `pending-trust`/`active` 상태는 Git에서 제외되는 `.ai-docs/.harness/routing-state.local.json`에 PC별로 기록한다. 외부 fixed-format 산출물은 `_inbox`에서 basename·hash만 관리해 원본 PC 경로를 공유하지 않는다. `_inbox` 파일은 기본적으로 로컬에서만 보관하지만, 설계·instruction에 계속 참고할 원문은 사용자가 정확한 파일과 Git 공유를 명시한 경우에만 파일별로 선택 추적할 수 있다. 추적된 원문도 정규 산출물로 자동 승격되지 않으며 commit과 원격 push는 각각 별도로 요청해야 한다.
 
 ### 설계·컨텍스트·프로토타입
 
@@ -409,7 +409,7 @@ $harness-bootstrap
 현재 repository가 대상 프로젝트다.
 코드에서 직접 관찰한 사실과 내가 확인해야 할 추정을 분리해줘.
 기존 실행 명령과 테스트 체계를 우선하고 새 표준을 임의로 만들지 말아줘.
-생성 예정인 .ai-docs, AGENTS.md, CLAUDE.md 전체를 저장 전에 보여줘.
+생성 예정인 .ai-docs와 AGENTS.md 전체를 저장 전에 보여줘.
 ```
 
 ### 예시 4. 설계를 에이전트 규칙으로 고정
@@ -427,7 +427,7 @@ $context-doc
 반영해줘. 더 이상 필요 없는 선택 instruction은 삭제 후보로 보여준 뒤 승인받아
 9번 인덱스와 함께 제거하고, 모든 본문에는 변경 이력을 남기지 마.
 금지 규칙은 패턴, 이유, 대안을 함께 적어줘.
-루트 AGENTS.md와 CLAUDE.md는 수정하지 말아줘.
+루트 AGENTS.md는 수정하지 말아줘.
 ```
 
 ### 예시 5. 화면을 먼저 확인

@@ -398,10 +398,10 @@
       "id": "claude-memory",
       "observed": {
         "source_url": "https://code.claude.com/docs/en/memory",
-        "checked_at": "2026-07-29",
+        "checked_at": "2026-09-21",
         "ref": "documentation",
         "sha": null,
-        "note": "Documentation reference only; supports @AGENTS.md bridge pattern."
+        "note": "Documentation reference only; Claude Code 2.1.277+ can load AGENTS.md directly when no CLAUDE.md, .claude/CLAUDE.md, or CLAUDE.local.md exists from the project directory through its ancestors. Native support is unavailable in documented exception environments."
       },
       "accepted": null,
       "embedded": null,

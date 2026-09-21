@@ -4,10 +4,10 @@
   "plugin": {
     "plugin_root": "plugins/harness-kit",
     "plugin_id": "harness-kit",
-    "version": "0.6.5",
+    "version": "0.8.0",
     "codex_manifest_matches_claude": true,
-    "archive": "plugins/harness-kit-0.6.5.zip",
-    "archive_sha256": "22e0f98637cacf9c3eef94b439711deed34e4f8aacaa2eb08250ab64f6a4b3ab",
+    "archive": "plugins/harness-kit-0.8.0.zip",
+    "archive_sha256": "ec4b29879bd0a4c1c144323ef50bbc866cb96ea53d41d5543a7ab8a941146899",
     "archive_sha256_matches_release": true,
     "logical_user_skills": 20,
     "codex_physical_skills": 20,
@@ -79,10 +79,10 @@
         "--help"
       ],
       "available": true,
-      "status": "failed-to-start",
-      "exit_code": null,
-      "stdout_excerpt": "",
-      "stderr_excerpt": "[WinError 2] 지정된 파일을 찾을 수 없습니다"
+      "status": "ok",
+      "exit_code": 0,
+      "stdout_excerpt": "Codex CLI\n\nIf no subcommand is specified, options will be forwarded to the interactive CLI.\n\nUsage: codex [OPTIONS] [PROMPT]\n       codex [OPTIONS] <COMMAND> [ARGS]\n\nCommands:\n  agents            Browse all agent sessions on the shared local app-server daemon\n  exec              Run Codex non-interactively [aliases: e]\n  review            Run a code review non-interactively\n  login             Manage login\n  logout            Remove stored authentication credentials\n  mcp               Manage external MCP servers for Codex\n  plugin            Manage Codex plugins\n  app-server        [experimental] Run the app server or related tooling\n  remote-control    [experimental] Manage the app-server daemon with remote control enabled\n  app               Launch the Desktop app (opens the app installer if missing)\n  completion        Generate shell completion scripts\n  update            Update Codex to the latest version\n  doctor            Diagnose local Codex installation, config, auth, and run",
+      "stderr_excerpt": ""
     },
     "codex_plugin_help": {
       "command": [
@@ -91,10 +91,10 @@
         "--help"
       ],
       "available": true,
-      "status": "failed-to-start",
-      "exit_code": null,
-      "stdout_excerpt": "",
-      "stderr_excerpt": "[WinError 2] 지정된 파일을 찾을 수 없습니다"
+      "status": "ok",
+      "exit_code": 0,
+      "stdout_excerpt": "Manage Codex plugins\n\nUsage: codex plugin [OPTIONS] <COMMAND>\n\nCommands:\n  add          Install a plugin from a configured or remote marketplace\n  list         List plugins available from configured and remote marketplaces\n  marketplace  Add, list, upgrade, or remove configured plugin marketplaces\n  remove       Uninstall a plugin and remove its local cache\n  help         Print this message or the help of the given subcommand(s)\n\nOptions:\n  -c, --config <key=value>\n          Override a configuration value that would otherwise be loaded from `~/.codex/config.toml`.\n          Use a dotted path (`foo.bar.baz`) to override nested values. The `value` portion is parsed\n          as TOML. If it fails to parse as TOML, the raw string is used as a literal.\n          \n          Examples: - `-c model=\"o3\"` - `-c 'sandbox_permissions=[\"disk-full-read-access\"]'` - `-c\n          shell_environment_policy.inherit=all`\n\n      --enable <FEATURE>\n          Enable a feature (repeatable). Equivalent to `-c",
+      "stderr_excerpt": ""
     },
     "claude_help": {
       "command": [
@@ -102,10 +102,10 @@
         "--help"
       ],
       "available": true,
-      "status": "ok",
-      "exit_code": 0,
-      "stdout_excerpt": "Usage: claude [options] [command] [prompt]\n\nClaude Code - starts an interactive session by default, use -p/--print for\nnon-interactive output\n\nArguments:\n  prompt                                Your prompt\n\nOptions:\n  --add-dir <directories...>            Additional directories to allow tool\n                                        access to\n  --agent <agent>                       Agent for the current session. Overrides\n                                        the 'agent' setting.\n  --agents <json>                       JSON object defining custom agents (e.g.\n                                        '{\"reviewer\": {\"description\": \"Reviews\n                                        code\", \"prompt\": \"You are a code\n                                        reviewer\"}}')\n  --allow-dangerously-skip-permissions  Enable bypassing all permission checks\n                                        as an option, without it being enabled\n                                        by default. Recommended only f",
-      "stderr_excerpt": ""
+      "status": "failed-to-start",
+      "exit_code": null,
+      "stdout_excerpt": "",
+      "stderr_excerpt": "[WinError 2] 지정된 파일을 찾을 수 없습니다"
     }
   },
   "cli_smoke": {
@@ -160,22 +160,22 @@
         "cleanup": "passed"
       }
     },
-    "status": "passed",
-    "evidence_applies_to_current_version": true,
-    "summary": "isolated marketplace add/install/list/uninstall/remove and cache inspection passed; model invocation not tested"
+    "status": "failed",
+    "evidence_applies_to_current_version": false,
+    "summary": "CLI smoke evidence covers plugin version(s) ['0.6.5'], not the current candidate 0.8.0; re-run smoke_cli_install.py"
   },
   "surfaces": {
     "codex-cli": {
-      "status": "install-smoke-verified",
-      "summary": "isolated marketplace add/install/list/uninstall/remove and cache inspection passed; model invocation not tested"
+      "status": "blocked",
+      "summary": "CLI smoke evidence covers plugin version(s) ['0.6.5'], not the current candidate 0.8.0; re-run smoke_cli_install.py"
     },
     "codex-desktop-app": {
       "status": "manual-required",
       "summary": "Interactive Plugins UI install/update requires app surface and cannot be completed from this shell."
     },
     "claude-code-cli": {
-      "status": "install-smoke-verified",
-      "summary": "isolated marketplace add/install/list/uninstall/remove and cache inspection passed; model invocation not tested"
+      "status": "blocked",
+      "summary": "CLI smoke evidence covers plugin version(s) ['0.6.5'], not the current candidate 0.8.0; re-run smoke_cli_install.py"
     },
     "claude-desktop-code": {
       "status": "manual-required",

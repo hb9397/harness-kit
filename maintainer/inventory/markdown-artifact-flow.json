@@ -7,29 +7,26 @@
       "skill": "harness-setup",
       "artifacts": [
         "AGENTS.md",
-        "CLAUDE.md",
         ".ai-docs/README.md"
       ],
-      "structural_validator": "project layout allowlist, AGENTS canonical context, CLAUDE @AGENTS.md bridge",
+      "structural_validator": "project layout allowlist, AGENTS canonical context, and absence of Claude instruction files from project root through filesystem root",
       "handoff": "Only on an explicit refinement request, the outermost owner offers one humanize-korean document-refinement proposal after structural validation."
     },
     {
       "skill": "harness-bootstrap",
       "artifacts": [
         "DESIGN.md",
-        "AGENTS.md",
-        "CLAUDE.md"
+        "AGENTS.md"
       ],
-      "structural_validator": "design output, context references, AGENTS/CLAUDE bridge and output paths",
+      "structural_validator": "design output, context references, AGENTS context and output paths",
       "handoff": "On an explicit refinement request, own the combined design-doc/context-doc bundle, suppress both child handoffs, and offer once after final validation."
     },
     {
       "skill": "context-doc",
       "artifacts": [
-        "AGENTS.md",
-        "CLAUDE.md"
+        "AGENTS.md"
       ],
-      "structural_validator": "instruction references, AGENTS canonical context and CLAUDE @AGENTS.md bridge",
+      "structural_validator": "instruction references and AGENTS canonical context",
       "handoff": "Offer once only when refinement is explicitly requested and directly invoked; otherwise return the draft and validation result."
     },
     {

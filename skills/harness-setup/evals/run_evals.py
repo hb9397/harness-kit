@@ -37,6 +37,20 @@ GITIGNORE_MARKERS = (
     "# harness-kit:managed:start",
     "# harness-kit:managed:end",
 )
+CLAUDE_INSTRUCTION_PATHS = (
+    Path("CLAUDE.md"),
+    Path(".claude") / "CLAUDE.md",
+    Path("CLAUDE.local.md"),
+)
+LEGACY_MANAGED_BRIDGE = """<!-- harness-kit:managed:start -->
+@AGENTS.md
+
+## Claude Code 전용 차이
+
+- portable routing과 Claude host hook 상태는 `@.ai-docs/harness/artifact-routing.json`을 확인한다.
+- bundle 생성만으로 Claude 설정·hook을 활성화하지 않는다.
+<!-- harness-kit:managed:end -->
+"""
 
 
 def read(path: Path) -> str:
@@ -134,6 +148,30 @@ def detect_mode(project: Path) -> str:
     if legacy:
         return "legacy-document-root-migration"
     return "update" if canonical or (project / "AGENTS.md").exists() else "initial"
+
+
+def find_claude_instruction_files(project: Path, stop_at: Path | None = None) -> list[Path]:
+    """Return project/ancestor Claude instruction files that preempt default AGENTS loading."""
+    current = project.resolve()
+    boundary = stop_at.resolve() if stop_at is not None else None
+    found: list[Path] = []
+    while True:
+        found.extend(path for relative in CLAUDE_INSTRUCTION_PATHS if (path := current / relative).is_file())
+        if current == boundary or current.parent == current:
+            return found
+        current = current.parent
+
+
+def is_managed_only_claude_bridge(path: Path) -> bool:
+    if not path.is_file():
+        return False
+    text = read(path)
+    start, end = MARKDOWN_MARKERS
+    if text.count(start) != 1 or text.count(end) != 1 or "@AGENTS.md" not in text:
+        return False
+    start_index = text.index(start)
+    end_index = text.index(end, start_index) + len(end)
+    return not (text[:start_index] + text[end_index:]).strip()
 
 
 def replace_managed_block(existing: str, template: str, markers: tuple[str, str]) -> str:
@@ -262,19 +300,17 @@ def check_portable_routing_bundle() -> None:
             raise AssertionError(f"missing portable-routing template: {template_name}")
 
     routing = json.loads(render_portable("artifact-routing.json.template", replacements))
-    if routing["schema_version"] != "1.1.0":
+    if routing["schema_version"] != "1.2.0":
         raise AssertionError("portable routing schema version drifted")
     if routing["mode"] not in {"single", "multi"}:
         raise AssertionError("portable routing mode must be single or multi")
-    if routing["project_root"] != replacements["{{PROJECT_ROOT}}"]:
-        raise AssertionError("project root was not rendered at installation time")
-    if {host: item["status"] for host, item in routing["hosts"].items()} != {
-        "claude": "pending-trust",
-        "codex": "pending-trust",
-    }:
-        raise AssertionError("host hook states must remain pending-trust before G13")
-    if routing.get("setup", {}).get("harness_kit_runtime_required") is not True:
-        raise AssertionError("routing manifest must not claim runtime independence before host trust")
+    if routing["project_root"] != ".":
+        raise AssertionError("shared routing must use a checkout-relative project root")
+    if routing.get("setup", {}).get("local_state_path") != ".ai-docs/.harness/routing-state.local.json":
+        raise AssertionError("host state must be stored in the ignored local state file")
+    for host, item in routing["hosts"].items():
+        if set(item) != {"layer", "config_path", "adapter_path"}:
+            raise AssertionError(f"shared routing leaked local host state for {host}: {set(item)}")
     repository = routing.get("repositories", [None])[0]
     if repository != {
         "id": "app-source",
@@ -286,7 +322,8 @@ def check_portable_routing_bundle() -> None:
         "applications": ["application"],
     }:
         raise AssertionError("routing manifest lost provider repository-to-application mapping")
-    if "C:\\Users\\" in json.dumps(routing):
+    rendered_routing = json.dumps(routing)
+    if re.search(r"(?i)(?:[a-z]:[/\\\\](?:users|home)[/\\\\]|/(?:home|users)/)", rendered_routing):
         raise AssertionError("portable routing schema stores a user-specific path")
 
     for template_name in ("artifact-format-contract.json.template", "inbox-artifact-manifest.json.template"):
@@ -298,12 +335,12 @@ def check_portable_routing_bundle() -> None:
         raise AssertionError("Claude Windows hook config must use the documented exec form")
 
     codex_hook_template = read(PORTABLE_ROUTING_TEMPLATE_ROOT / "codex-hooks.json.template")
-    if "{{CODEX_HOOK_PATH}}" not in codex_hook_template:
-        raise AssertionError("Codex hook command must be rendered with an installation-time stable path")
+    if "{{CODEX_HOOK_PATH}}" in codex_hook_template:
+        raise AssertionError("Codex hook command still requires an installation-time absolute path")
     codex_hook_config = json.loads(render_portable("codex-hooks.json.template", replacements))
     codex_handler = codex_hook_config["hooks"]["PreToolUse"][0]["hooks"][0]
-    if replacements["{{CODEX_HOOK_PATH}}"] not in codex_handler.get("commandWindows", ""):
-        raise AssertionError("Codex Windows hook config did not receive the resolved hook path")
+    if "(Get-Location).Path" not in codex_handler.get("commandWindows", "") or ".codex/hooks/codex-pre-tool-use.ps1" not in codex_handler.get("commandWindows", ""):
+        raise AssertionError("Codex Windows hook config does not resolve the project hook portably")
     codex_matcher = codex_hook_config["hooks"]["PreToolUse"][0]["matcher"]
     for write_tool in ("apply_patch", "Bash"):
         if not codex_matcher_matches(codex_matcher, write_tool):
@@ -371,8 +408,6 @@ def check_portable_routing_bundle() -> None:
         bundle = project / ".ai-docs" / "harness"
         bundle.mkdir(parents=True)
         install_replacements = dict(replacements)
-        install_replacements["{{PROJECT_ROOT}}"] = project.resolve().as_posix()
-        install_replacements["{{CODEX_HOOK_PATH}}"] = (project / ".codex" / "hooks" / "codex-pre-tool-use.ps1").resolve().as_posix()
         for template_name in required_templates:
             destination = bundle / template_name.removesuffix(".template")
             destination.parent.mkdir(parents=True, exist_ok=True)
@@ -392,18 +427,21 @@ def check_portable_routing_bundle() -> None:
         if result.returncode != 0:
             raise AssertionError(f"portable installer plan failed: {result.stderr}")
         plan = json.loads(result.stdout)
-        if Path(plan["project_root"]).resolve() != project.resolve():
-            raise AssertionError("portable installer plan is not bound to the routing project root")
+        if plan["project_root"] != ".":
+            raise AssertionError("portable installer output leaked the resolved checkout root")
         targets = {item["host"]: item for item in plan["targets"]}
         if set(targets) != {"claude", "codex"}:
             raise AssertionError("portable installer plan does not contain both host targets")
         if targets["claude"]["trust"] != "pending-trust" or targets["codex"]["trust"] != "pending-trust":
             raise AssertionError("portable installer plan must not activate host trust")
+        if any(Path(item["config"]).is_absolute() or Path(item["adapter"]).is_absolute() for item in targets.values()):
+            raise AssertionError("portable installer plan exposed host absolute paths")
 
         claude_settings = project / ".claude" / "settings.json"
         claude_settings.parent.mkdir(parents=True, exist_ok=True)
         claude_settings.write_text('{"permissions":{"allow":["Read"]}}\n', encoding="utf-8")
         before_apply = snapshot_files(project)
+        shared_routing_before = (bundle / "artifact-routing.json").read_bytes()
         denied = subprocess.run(
             ["pwsh", "-NoProfile", "-File", str(bundle / "install-routing.ps1"), "-Apply"],
             capture_output=True,
@@ -428,6 +466,11 @@ def check_portable_routing_bundle() -> None:
             raise AssertionError("approved Apply did not materialize both host adapters")
         if "Read" not in read(claude_settings):
             raise AssertionError("approved Apply did not preserve unrelated Claude settings")
+        if (bundle / "artifact-routing.json").read_bytes() != shared_routing_before:
+            raise AssertionError("host installation mutated the shared routing contract")
+        local_state_path = project / ".ai-docs" / ".harness" / "routing-state.local.json"
+        if not local_state_path.is_file():
+            raise AssertionError("approved Apply did not create local-only host state")
 
         codex_adapter_path = project / ".codex" / "hooks" / "codex-pre-tool-use.ps1"
 
@@ -441,6 +484,24 @@ def check_portable_routing_bundle() -> None:
                 check=False,
             )
             return codex_pre_tool_use_outcome(result.returncode, result.stdout, result.stderr)
+
+        nested_cwd = project / "src" / "nested"
+        nested_cwd.mkdir(parents=True)
+        codex_config = json.loads(read(project / ".codex" / "hooks.json"))
+        portable_command = codex_config["hooks"]["PreToolUse"][0]["hooks"][0]["commandWindows"]
+        portable_run = subprocess.run(
+            portable_command,
+            shell=True,
+            cwd=nested_cwd,
+            input=json.dumps({"tool_name": "Bash", "tool_input": {"command": "Get-ChildItem .ai-docs"}}),
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+            check=False,
+        )
+        if codex_pre_tool_use_outcome(portable_run.returncode, portable_run.stdout, portable_run.stderr) != ("completed", ""):
+            raise AssertionError(f"portable Codex command failed from a nested checkout path: {portable_run.stderr}")
 
         outside = invoke_codex(apply_patch_payload(("../escape.md", "blocked")))
         if outside[0] != "blocked" or "outside project containment" not in outside[1]:
@@ -601,7 +662,7 @@ def check_portable_routing_bundle() -> None:
         )
         if trust_activated.returncode != 0:
             raise AssertionError(f"approved Codex trust activation failed: {trust_activated.stderr}")
-        post_trust = json.loads((bundle / "artifact-routing.json").read_text(encoding="utf-8"))
+        post_trust = json.loads(local_state_path.read_text(encoding="utf-8"))
         if post_trust["hosts"]["codex"]["status"] != "active" or post_trust["hosts"]["claude"]["status"] != "pending-trust":
             raise AssertionError("Codex trust activation did not preserve the other host's pending-trust state")
 
@@ -621,6 +682,10 @@ def check_portable_routing_bundle() -> None:
         managed_entry = codex_config["hooks"]["PreToolUse"][0]
         legacy_entry = json.loads(json.dumps(managed_entry))
         legacy_entry["matcher"] = "apply_patch|Edit|Write|Bash|MCP|.*"
+        legacy_posix_path = "/".join(("C:", "Users", "old-user", "old-project", ".codex", "hooks", "codex-pre-tool-use.ps1"))
+        legacy_windows_path = "\\".join(("C:", "Users", "old-user", "old-project", ".codex", "hooks", "codex-pre-tool-use.ps1"))
+        legacy_entry["hooks"][0]["command"] = f'pwsh -File "{legacy_posix_path}"'
+        legacy_entry["hooks"][0]["commandWindows"] = f'powershell.exe -File "{legacy_windows_path}"'
         unrelated_entry = {"matcher": "Bash", "hooks": [{"type": "command", "command": "echo unrelated"}]}
         codex_config["hooks"]["PreToolUse"] = [unrelated_entry, legacy_entry]
         codex_config_path.write_text(json.dumps(codex_config, indent=2), encoding="utf-8")
@@ -636,8 +701,8 @@ def check_portable_routing_bundle() -> None:
         if installed_adapter != (bundle / "hooks" / "codex-pre-tool-use.ps1").read_bytes():
             raise AssertionError("installed Codex adapter differs from the project-owned bundle source")
         routed = json.loads(read(bundle / "artifact-routing.json"))
-        if routed["setup"]["harness_kit_runtime_required"] is not True:
-            raise AssertionError("pending-trust host must keep harness_kit_runtime_required=true")
+        if any(key in routed["hosts"]["codex"] for key in ("status", "trust", "config_sha256")):
+            raise AssertionError("shared routing contract regained host-local state")
 
         text_input = project / "external.mdx"
         text_input.write_text("<!-- harness-kit:managed:start -->\nNEW-MANAGED\n<!-- harness-kit:managed:end -->\n", encoding="utf-8", newline="\n")
@@ -672,6 +737,9 @@ def check_portable_routing_bundle() -> None:
         fixed_manifest = project / ".ai-docs" / "_inbox" / "external-fixed" / "artifact-manifest.json"
         if fixed_promoted.returncode != 0 or fixed_target.exists() or json.loads(read(fixed_manifest)).get("status") != "fixed-format-inbox-only":
             raise AssertionError(f"fixed-format promotion must remain inbox-only: {fixed_promoted.stdout} / {fixed_promoted.stderr}")
+        fixed_metadata = json.loads(read(fixed_manifest))
+        if fixed_metadata.get("source_name") != "external.pdf" or "source_path" in fixed_metadata:
+            raise AssertionError("fixed-format manifest leaked its source PC path")
         removed = subprocess.run(
             ["pwsh", "-NoProfile", "-File", str(bundle / "install-routing.ps1"), "-Uninstall", "-ApproveHostInstall"],
             capture_output=True,
@@ -690,7 +758,7 @@ def check_portable_routing_lifecycle_contract() -> None:
     for token in ("-Plan", "-Apply", "-Check", "-Uninstall", "-ActivateTrust", "[ValidateSet('claude', 'codex', 'all')]", "ApproveHostInstall", "ApproveTrustEvidence"):
         if token not in installer:
             raise AssertionError(f"portable installer lifecycle operation missing: {token}")
-    for template_name in ("root-context-single.template", "root-context.template", "claude-bridge.template"):
+    for template_name in ("root-context-single.template", "root-context.template"):
         template = read(SETUP_ROOT / "templates" / template_name)
         if ".ai-docs/harness/artifact-routing.json" not in template:
             raise AssertionError(f"{template_name}: missing portable routing Layer 1 summary")
@@ -734,7 +802,7 @@ def assert_allowed_outputs(project: Path, before: dict[str, str]) -> None:
         for path in changed
         if not (
             path == "AGENTS.md"
-            or path == "CLAUDE.md"
+            or (path == "CLAUDE.md" and path in before and path not in after)
             or path.startswith(".ai-docs/")
         )
     )
@@ -760,16 +828,11 @@ def materialize_single_fixture(project: Path) -> None:
         render(
             "root-context-single.template",
             {
-                "{{PROJECT_NAME}}": project.name,
-                "{{PROJECT_ROOT}}": str(project.resolve()),
-                "{{APP_ID}}": project.name,
+                "{{APP_ID}}": "application",
             },
         ),
         encoding="utf-8",
         newline="\n",
-    )
-    (project / "CLAUDE.md").write_text(
-        render("claude-bridge.template"), encoding="utf-8", newline="\n"
     )
 
 
@@ -798,18 +861,14 @@ def materialize_multi_fixture(project: Path) -> None:
     agents = render(
         "root-context.template",
         {
-            "{{PROJECT_NAME}}": project.name,
             "{{APP_LIST}}": "| API | `api/` | fixture |\n| Web | `web/` | fixture |",
             "{{APP_CONTEXT_ENTRIES}}": "- `@.ai-docs/api-context.md`\n- `@.ai-docs/web-context.md`",
             "{{APP_INSTRUCTION_ENTRIES}}": "- `@.ai-docs/api/instruction/*-instruction.md`\n- `@.ai-docs/web/instruction/*-instruction.md`",
         },
     )
-    bridge = render("claude-bridge.template")
     for path, text in (
         (project / "AGENTS.md", agents),
-        (project / "CLAUDE.md", bridge),
         (root_context / "AGENTS.md", agents),
-        (root_context / "CLAUDE.md", bridge),
     ):
         path.write_text(text, encoding="utf-8", newline="\n")
 
@@ -828,7 +887,7 @@ def check_setup_contract() -> None:
             require(text, forbidden_path, path)
 
     skill_text = setup_texts[SETUP_ROOT / "SKILL.md"]
-    require(skill_text, "허용되는 생성·갱신 범위는 `.ai-docs/**`, 루트 `AGENTS.md`, 루트 `CLAUDE.md`뿐이다.", SETUP_ROOT / "SKILL.md")
+    require(skill_text, "허용되는 생성·갱신 범위는 `.ai-docs/**`, 루트 `AGENTS.md`뿐이다.", SETUP_ROOT / "SKILL.md")
     require(skill_text, "플러그인 리소스 해석 계약", SETUP_ROOT / "SKILL.md")
     require(skill_text, "`.ai-docs/`와 `AGENTS.md`가 모두 없음", SETUP_ROOT / "SKILL.md")
     require(skill_text, "`.ai-docs/` 또는 `AGENTS.md` 중 하나 이상 존재", SETUP_ROOT / "SKILL.md")
@@ -847,6 +906,9 @@ def check_setup_contract() -> None:
         "`admin`은 앱 문서 권한을 상속하지 않는다",
         "`write_access_guard.py check-path`",
         "권한 정책을 자동 변경하거나 `project-write-access`를 자동 호출하지 않는다",
+        "프로젝트 루트부터 파일시스템 루트까지",
+        "Claude Code 2.1.277",
+        "새 `CLAUDE.md`·`CLAUDE.local.md`는 생성하거나 갱신하지 않는다",
         "## 문서 루트 전환 계약",
         "`.docs/`만 있으면 **이전 문서 루트 이관 모드**",
         "`.docs/`와 `.ai-docs/`가 함께 있으면",
@@ -869,6 +931,10 @@ def check_setup_contract() -> None:
         (SETUP_ROOT / "prompts" / "multi-app-setup.md", ".ai-docs/harness/"),
         (SETUP_ROOT / "prompts" / "update-mode.md", "current/proposed diff"),
         (SETUP_ROOT / "prompts" / "update-mode.md", "G10"),
+        (SETUP_ROOT / "prompts" / "update-mode.md", "routing-state.local.json"),
+        (SETUP_ROOT / "prompts" / "update-mode.md", "byte-identical"),
+        (SETUP_ROOT / "prompts" / "update-mode.md", "migrated-{fingerprint}"),
+        (SETUP_ROOT / "prompts" / "update-mode.md", "artifact-route-guard.ps1"),
     ):
         require(read(path), needle, path)
 
@@ -911,8 +977,9 @@ def check_setup_contract() -> None:
             raise AssertionError(f"missing bundled template: {template_path}")
 
     single_template = read(SETUP_ROOT / "templates" / "root-context-single.template")
-    require(single_template, "{{PROJECT_NAME}}", SETUP_ROOT / "templates" / "root-context-single.template")
-    require(single_template, "{{PROJECT_ROOT}}", SETUP_ROOT / "templates" / "root-context-single.template")
+    if "{{PROJECT_NAME}}" in single_template or "{{PROJECT_ROOT}}" in single_template:
+        raise AssertionError("single-app root map still embeds checkout identity")
+    require(single_template, "프로젝트 루트: `./`", SETUP_ROOT / "templates" / "root-context-single.template")
     require(single_template, "{{APP_ID}}-context.md", SETUP_ROOT / "templates" / "root-context-single.template")
     if "context-doc`으로 보강" in single_template:
         raise AssertionError("single-app root map still delegates admin-owned root content to context-doc")
@@ -920,6 +987,8 @@ def check_setup_contract() -> None:
         require(needle=needle, text=single_template, source=SETUP_ROOT / "templates" / "root-context-single.template")
 
     multi_template = read(SETUP_ROOT / "templates" / "root-context.template")
+    if "{{PROJECT_NAME}}" in multi_template or "{{PROJECT_ROOT}}" in multi_template:
+        raise AssertionError("multi-app root map still embeds checkout identity")
     if "HARNESS_REPO_NAME" in multi_template:
         raise AssertionError("removed clone-era HARNESS_REPO_NAME remains")
     require(multi_template, ".ai-docs/root-context/AGENTS.md`가 Git 관리 원본", SETUP_ROOT / "templates" / "root-context.template")
@@ -947,14 +1016,32 @@ def check_setup_contract() -> None:
         "docs-readme-multi.template",
         "root-context-single.template",
         "root-context.template",
-        "claude-bridge.template",
     ):
         template = read(SETUP_ROOT / "templates" / template_name)
         for marker in MARKDOWN_MARKERS:
             require(template, marker, SETUP_ROOT / "templates" / template_name)
+    for template_name in ("root-context-single.template", "root-context.template"):
+        template_path = SETUP_ROOT / "templates" / template_name
+        template = read(template_path)
+        for needle in (
+            "Claude Code 2.1.277",
+            ".ai-docs/harness/artifact-routing.json",
+            "pending-trust",
+            "host별 승인과 신뢰",
+        ):
+            require(template, needle, template_path)
+    if (SETUP_ROOT / "templates" / "claude-bridge.template").exists():
+        raise AssertionError("retired CLAUDE.md bridge template still exists")
     gitignore = read(SETUP_ROOT / "templates" / "docs-gitignore.template")
     for marker in GITIGNORE_MARKERS:
         require(gitignore, marker, SETUP_ROOT / "templates" / "docs-gitignore.template")
+    require(gitignore, "/.harness/routing-state.local.json", SETUP_ROOT / "templates" / "docs-gitignore.template")
+
+    for path in SKILLS_ROOT.rglob("*"):
+        if path.is_file() and path.suffix.lower() in {".md", ".json", ".py", ".template"}:
+            text = read(path).casefold()
+            if "ke" + "ai" in text or "lhb" + "93" in text:
+                raise AssertionError(f"user payload contains a case-specific project or user token: {path}")
 
 
 def check_nested_handoff_contract() -> None:
@@ -1008,8 +1095,8 @@ def check_portable_routing_baseline() -> None:
         raise AssertionError("portable routing baseline lost root-non-git/docs-git topology")
     apps = topology.get("applications", [])
     if sorted((item.get("path"), item.get("is_git")) for item in apps) != [
-        ("be-keai-e-life-check", True),
-        ("fe-keai-e-life-check", True),
+        ("sample-api", True),
+        ("sample-web", True),
     ]:
         raise AssertionError("portable routing baseline lost separate application Git topology")
     claude = baseline.get("host_capabilities", {}).get("claude", {})
@@ -1051,7 +1138,6 @@ def check_filesystem_fixtures() -> None:
         artifacts = [
             single / ".ai-docs" / "README.md",
             single / "AGENTS.md",
-            single / "CLAUDE.md",
         ]
         fingerprint, artifact_manifest = artifact_fingerprint(single, artifacts)
         ledger = single / ".ai-docs" / ".harness" / "humanize-handoffs.json"
@@ -1101,9 +1187,18 @@ def check_filesystem_fixtures() -> None:
         if ledger.with_name(f".{ledger.name}.tmp").exists():
             raise AssertionError("atomic ledger temporary file was not cleaned up")
         assert_allowed_outputs(single, before)
+        if find_claude_instruction_files(single, root):
+            raise AssertionError("fresh single-app setup created a Claude instruction file")
         for rel in FORBIDDEN_LOCAL_SKILL_PATHS:
             if (single / rel.rstrip("/")).exists():
                 raise AssertionError(f"single fixture created forbidden path: {rel}")
+
+        checkout_a = root / "renamed-checkout-a"
+        checkout_b = root / "renamed-checkout-b"
+        materialize_single_fixture(checkout_a)
+        materialize_single_fixture(checkout_b)
+        if snapshot_files(checkout_a) != snapshot_files(checkout_b):
+            raise AssertionError("shared setup output changes when only the checkout folder name changes")
 
         multi = root / "multi-project"
         (multi / "api").mkdir(parents=True)
@@ -1111,6 +1206,10 @@ def check_filesystem_fixtures() -> None:
         before = snapshot_files(multi)
         materialize_multi_fixture(multi)
         assert_allowed_outputs(multi, before)
+        if find_claude_instruction_files(multi, root):
+            raise AssertionError("fresh multi-app setup created a Claude instruction file")
+        if (multi / ".ai-docs" / "root-context" / "CLAUDE.md").exists():
+            raise AssertionError("fresh multi-app setup created a retired root-context bridge")
         for rel in FORBIDDEN_LOCAL_SKILL_PATHS:
             if (multi / rel.rstrip("/")).exists():
                 raise AssertionError(f"multi fixture created forbidden path: {rel}")
@@ -1124,6 +1223,21 @@ def check_filesystem_fixtures() -> None:
         (partial_agents / "AGENTS.md").write_text("# Existing\n", encoding="utf-8")
         if detect_mode(partial_agents) != "update":
             raise AssertionError("AGENTS-only project must use update/recovery mode")
+
+        ancestor = root / "ancestor-instruction"
+        nested_project = ancestor / "project"
+        nested_project.mkdir(parents=True)
+        (ancestor / "CLAUDE.local.md").write_text("team override\n", encoding="utf-8")
+        found = find_claude_instruction_files(nested_project, root)
+        if found != [ancestor / "CLAUDE.local.md"]:
+            raise AssertionError(f"ancestor Claude instruction preemption was not detected: {found}")
+
+        user_bridge_project = root / "user-claude-project"
+        user_bridge_project.mkdir()
+        user_bridge = user_bridge_project / "CLAUDE.md"
+        user_bridge.write_text(LEGACY_MANAGED_BRIDGE + "\nTEAM-CLAUDE-DELTA\n", encoding="utf-8")
+        if is_managed_only_claude_bridge(user_bridge):
+            raise AssertionError("user content outside the managed bridge was treated as removable")
 
         legacy_root = root / "legacy-document-root"
         (legacy_root / ".docs").mkdir(parents=True)
@@ -1141,7 +1255,6 @@ def check_filesystem_fixtures() -> None:
             update / ".ai-docs" / "README.md": "TEAM-README-EXTENSION",
             update / ".ai-docs" / ".gitignore": "team-private.cache",
             update / "AGENTS.md": "TEAM-AGENT-RULE",
-            update / "CLAUDE.md": "TEAM-CLAUDE-DELTA",
         }
         for path, token in custom_tokens.items():
             path.write_text(
@@ -1174,15 +1287,9 @@ def check_filesystem_fixtures() -> None:
                 render(
                     "root-context-single.template",
                     {
-                        "{{PROJECT_NAME}}": update.name,
-                        "{{PROJECT_ROOT}}": str(update.resolve()),
-                        "{{APP_ID}}": update.name,
+                        "{{APP_ID}}": "application",
                     },
                 ),
-                MARKDOWN_MARKERS,
-            ),
-            update / "CLAUDE.md": (
-                render("claude-bridge.template"),
                 MARKDOWN_MARKERS,
             ),
         }
@@ -1200,6 +1307,16 @@ def check_filesystem_fixtures() -> None:
         for path, digest in legacy_before.items():
             if sha256(path) != digest:
                 raise AssertionError(f"legacy local skill copy changed: {path}")
+
+        managed_bridge = update / "CLAUDE.md"
+        managed_bridge.write_text(LEGACY_MANAGED_BRIDGE, encoding="utf-8", newline="\n")
+        if not is_managed_only_claude_bridge(managed_bridge):
+            raise AssertionError("known harness-managed bridge was not recognized")
+        before_bridge_removal = snapshot_files(update)
+        managed_bridge.unlink()
+        assert_allowed_outputs(update, before_bridge_removal)
+        if find_claude_instruction_files(update, root):
+            raise AssertionError("approved managed bridge migration left a Claude instruction file")
 
 
 def main() -> int:

@@ -21,7 +21,7 @@ disable-model-invocation: true
 ## 1. 저장소와 변경 증거 확인
 
 1. `git rev-parse --show-toplevel`로 대상 저장소를 확정하라.
-2. 대상 경로에 적용되는 `AGENTS.md`와 `CLAUDE.md`를 읽고 커밋 규칙, 금지 작업,
+2. 대상 경로에 적용되는 `AGENTS.md`를 읽고 커밋 규칙, 금지 작업,
    단일·복수 애플리케이션 구조를 확인하라. 저장소 규칙을 이 스킬의 예시보다 우선하라.
 3. 커밋 전 `git rev-parse --verify HEAD`로 `before_sha`를 기록하라. `HEAD`가 아직
    없는 최초 커밋 저장소라면 실패를 오류로 숨기지 말고 `initial commit` 상태로

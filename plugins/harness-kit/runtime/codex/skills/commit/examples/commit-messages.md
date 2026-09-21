@@ -87,5 +87,6 @@ Co-Authored-By: AI Agent <agent@example.invalid>
 | `package.json`, `requirements.txt` | `deps` |
 | `README.md`, `docs/` | `docs` |
 
-`CLAUDE.md`가 `AGENTS.md`를 가리키는 bridge라면 중복 규칙으로 해석하지 않는다. 서로
+이전 프로젝트의 `CLAUDE.md`가 남아 있다면 현재 `AGENTS.md` 직접 로드 계약과 충돌할 수
+있으므로 중복 규칙으로 합치지 않고 `harness-setup` 이관 대상으로 보고한다. 서로
 충돌하는 규칙이나 불명확한 scope가 있으면 커밋 전에 사용자에게 확인한다.

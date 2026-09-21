@@ -1,6 +1,6 @@
 ---
 name: doc-audit
-description: "프로젝트 문서와 실제 코드의 괴리, 의존성·아키텍처·규칙 drift를 읽기 전용으로 감사하고 AGENTS.md·CLAUDE.md·.ai-docs 최신화 제안을 만들 때 사용한다. 사용자가 '문서와 코드가 맞는지 감사', '의존성/아키텍처 규칙 drift 확인', '에이전트 문서 최신화 제안'을 요청하면 적용하며, 승인 전에는 문서를 수정하지 않는다."
+description: "프로젝트 문서와 실제 코드의 괴리, 의존성·아키텍처·규칙 drift를 읽기 전용으로 감사하고 AGENTS.md·.ai-docs 최신화 제안을 만들 때 사용한다. 사용자가 '문서와 코드가 맞는지 감사', '의존성/아키텍처 규칙 drift 확인', '에이전트 문서 최신화 제안'을 요청하면 적용하며, 승인 전에는 문서를 수정하지 않는다."
 allowed-tools: Read, Glob, Grep, Agent
 ---
 
@@ -45,8 +45,8 @@ allowed-tools: Read, Glob, Grep, Agent
 4. 확인된 범위 밖은 건드리지 않는다.
 
 복수 앱인 경우 분석 대상 문서 경로가 달라진다:
-- (단일앱) `.ai-docs/instruction/**/*.md`, `CLAUDE.md`, `AGENTS.md`
-- (복수앱) `.ai-docs/{앱}/instruction/**/*.md`, `.ai-docs/root-context/CLAUDE.md`, `.ai-docs/root-context/AGENTS.md`, 루트 `CLAUDE.md`/`AGENTS.md`
+- (단일앱) `.ai-docs/instruction/**/*.md`, `AGENTS.md`
+- (복수앱) `.ai-docs/{앱}/instruction/**/*.md`, `.ai-docs/root-context/AGENTS.md`, 루트 `AGENTS.md`
 
 ---
 
@@ -63,7 +63,6 @@ allowed-tools: Read, Glob, Grep, Agent
 |------|------|
 | `README.md` | 프로젝트 개요 및 전체 구조 (핵심) |
 | `AGENTS.md` | 공통 Agent 지침 정본 |
-| `CLAUDE.md` | Claude Code bridge (`@AGENTS.md` + Claude 전용 차이) |
 | `.ai-docs/instruction/**/*.md` | 세부 코딩 규칙, 아키텍처 가이드 등 (있는 경우) |
 
 ---
@@ -111,4 +110,4 @@ doc-audit (orchestrator)
 4. 대화창에 변경 제안서 내용 바로 출력 (.md 파일 생성 금지)
 5. **사용자에게 확인 요청** — 승인 전 문서 파일 절대 수정 금지
 
-> ⚠️ 승인 후 반영은 대상 문서를 직접 수정하는 방식으로 진행한다. `AGENTS.md`가 공통 정본이며, `CLAUDE.md`는 bridge 구조를 유지한다.
+> ⚠️ 승인 후 반영은 대상 문서를 직접 수정하는 방식으로 진행한다. `AGENTS.md`가 Claude Code와 Codex의 공통 정본이다.

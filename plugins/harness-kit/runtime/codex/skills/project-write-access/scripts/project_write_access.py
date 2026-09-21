@@ -375,7 +375,6 @@ def path_rules(config: dict[str, Any], layout: dict[str, Any]) -> list[dict[str,
 
     def add_control_plane() -> None:
         add("AGENTS.md", "admin", 120)
-        add("CLAUDE.md", "admin", 120)
         add(".claude/settings.json", "admin", 120)
         add(".codex/hooks.json", "admin", 120)
         codeowners_prefix = "" if layout["git_root_relative"] == "." else f"{docs}/"
@@ -622,7 +621,7 @@ def provider_shadow(git_root: Path, provider: str, managed_target: Path) -> str 
 def instruction_targets(project_root: Path) -> list[Path]:
     """Return only session-entry maps that must point at the signed access instruction."""
     targets: list[Path] = []
-    for root_file in (project_root / "AGENTS.md", project_root / "CLAUDE.md"):
+    for root_file in (project_root / "AGENTS.md",):
         if root_file.is_file():
             targets.append(root_file)
     return targets
@@ -696,8 +695,12 @@ def merge_hook_config(path: Path, host: str, project_root: Path) -> tuple[bytes,
         }
         matcher = "Write|Edit|Bash|PowerShell"
     else:
-        guard = project_root / ".ai-docs" / "harness" / "access-control" / "hooks" / "write_access_guard.py"
-        command = f'python "{guard}" ai --host codex --project-root "{project_root}"'
+        command = (
+            'python -c "import pathlib,runpy,sys; p=pathlib.Path.cwd(); '
+            "r=next((x for x in (p,*p.parents) if (x/'.ai-docs/harness/access-control/hooks/write_access_guard.py').is_file()),None); "
+            "assert r is not None,'project write access guard not found'; g=r/'.ai-docs/harness/access-control/hooks/write_access_guard.py'; "
+            "sys.argv=[str(g),'ai','--host','codex','--project-root',str(r)]; runpy.run_path(str(g),run_name='__main__')\""
+        )
         handler = {"type": "command", "command": command, "commandWindows": command}
         matcher = "apply_patch|Edit|Write|Bash|PowerShell|MCP|.*"
 

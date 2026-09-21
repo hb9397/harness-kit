@@ -67,7 +67,7 @@ def check_inspection_and_scope(skill: str) -> None:
         (
             "git rev-parse --show-toplevel",
             "`AGENTS.md`",
-            "`CLAUDE.md`",
+            "`AGENTS.md`",
             "git status --short --branch",
             "git diff --staged --stat",
             "git diff --staged",

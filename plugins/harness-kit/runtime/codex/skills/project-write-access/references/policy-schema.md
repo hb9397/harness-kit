@@ -54,7 +54,7 @@ Plan과 Apply에 전달하는 JSON은 비밀정보를 담지 않는다. `subject
       "id": "docs-repo",
       "provider": "gitea",
       "host": "git.example.com:3000",
-      "cli_login": "keai-gitea",
+      "cli_login": "example-gitea",
       "owner": "example",
       "name": "example-docs",
       "purpose": "docs",
@@ -171,7 +171,7 @@ python {skill-root}/scripts/project_write_access.py discover-participants \
 
 `policy.json`에는 subject, 명시적 역할 배정, 앱·repository 매핑, 경로별 쓰기 범위와
 생성 목록 해시가 들어간다. `generated-manifest.json`은 파일 전체 또는 관리 블록의
-해시를 추적한다. 루트 `AGENTS.md`·`CLAUDE.md`에는 전용
+해시를 추적한다. 루트 `AGENTS.md`에는 전용
 `write-access-instruction.md`를 반드시 읽으라는 짧은 관리 블록만 넣는다. 앱별
 instruction 본문에 권한 계약을 복제하지 않는다.
 

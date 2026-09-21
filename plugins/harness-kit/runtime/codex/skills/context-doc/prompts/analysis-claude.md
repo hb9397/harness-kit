@@ -2,7 +2,7 @@
 
 `.ai-docs/{앱}-context.md`는 대상 앱의 `DESIGN.md`와 현재 소스·설정·Git 정보를
 AI가 구현 중 바로 사용할 수 있도록 전개한 상세 애플리케이션 컨텍스트다. 루트
-`AGENTS.md`·`CLAUDE.md`와 `.ai-docs/root-context/**`에는 이 분석 결과를 직접 쓰지 않는다.
+`AGENTS.md`와 `.ai-docs/root-context/**`에는 이 분석 결과를 직접 쓰지 않는다.
 
 ## 라우팅 표
 

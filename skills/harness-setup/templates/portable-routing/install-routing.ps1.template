@@ -31,9 +31,35 @@ if ($operation -eq 'ActivateTrust' -and -not $ApproveTrustEvidence) {
 $projectRoot = (Resolve-Path (Join-Path $PSScriptRoot '..\\..')).Path
 $routingPath = Join-Path $PSScriptRoot 'artifact-routing.json'
 $routing = Get-Content -LiteralPath $routingPath -Raw | ConvertFrom-Json
-if ($routing.project_root -ne '{{PROJECT_ROOT}}') { throw 'artifact-routing.json was not rendered for this installation.' }
+if ($routing.project_root -ne '.') { throw 'artifact-routing.json project_root must be the portable value ".".' }
+$statePath = Join-Path $projectRoot ([string]$routing.setup.local_state_path)
 $hosts = if ($TargetHost -eq 'all') { @('claude', 'codex') } else { @($TargetHost) }
 
+function New-LocalState() {
+    return [pscustomobject]@{
+        schema_version = '1.0.0'
+        hosts = [pscustomobject]@{
+            claude = [pscustomobject]@{ status = 'not-installed'; trust = 'not-installed'; config_sha256 = $null }
+            codex = [pscustomobject]@{ status = 'not-installed'; trust = 'not-installed'; config_sha256 = $null }
+        }
+    }
+}
+function Read-LocalState() {
+    if (-not (Test-Path -LiteralPath $statePath -PathType Leaf)) { return New-LocalState }
+    try { $value = Get-Content -LiteralPath $statePath -Raw | ConvertFrom-Json } catch { throw "local routing state is malformed: $statePath" }
+    foreach ($name in @('claude', 'codex')) {
+        if ($null -eq $value.hosts.PSObject.Properties[$name]) {
+            $value.hosts | Add-Member -NotePropertyName $name -NotePropertyValue ([pscustomobject]@{ status = 'not-installed'; trust = 'not-installed'; config_sha256 = $null })
+        }
+    }
+    return $value
+}
+function Write-LocalState([object]$Value) {
+    New-Item -ItemType Directory -Force -Path (Split-Path -Parent $statePath) | Out-Null
+    $temporary = "$statePath.tmp"
+    $Value | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath $temporary -Encoding utf8NoBOM
+    Move-Item -LiteralPath $temporary -Destination $statePath -Force
+}
 function Read-Config([string]$Path) {
     if (-not (Test-Path -LiteralPath $Path -PathType Leaf)) { return [pscustomobject]@{} }
     return (Get-Content -LiteralPath $Path -Raw | ConvertFrom-Json)
@@ -56,7 +82,8 @@ function Get-Handler([string]$Name, [object]$Paths) {
     if ($Name -eq 'claude') {
         return [ordered]@{ type = 'command'; command = 'powershell.exe'; args = @('-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', '${CLAUDE_PROJECT_DIR}/.claude/hooks/claude-pre-tool-use.ps1') }
     }
-    return [ordered]@{ type = 'command'; command = "pwsh -NoProfile -ExecutionPolicy Bypass -File `"$($Paths.adapter)`""; commandWindows = "powershell.exe -NoProfile -ExecutionPolicy Bypass -File `"$($Paths.adapter)`"" }
+    $portable = '-NoProfile -ExecutionPolicy Bypass -Command "$d=(Get-Location).Path; while ($true) { $s=Join-Path $d ''.codex/hooks/codex-pre-tool-use.ps1''; if (Test-Path -LiteralPath $s -PathType Leaf) { & $s; exit $LASTEXITCODE }; $p=Split-Path -Parent $d; if (-not $p -or $p -eq $d) { throw ''Codex project hook not found.'' }; $d=$p }"'
+    return [ordered]@{ type = 'command'; command = "pwsh $portable"; commandWindows = "powershell.exe $portable" }
 }
 function Is-ManagedHandler([string]$Name, [object]$Handler, [object]$Paths) {
     # Unrelated handlers may omit args or commandWindows; StrictMode must not fail on them.
@@ -64,7 +91,7 @@ function Is-ManagedHandler([string]$Name, [object]$Handler, [object]$Paths) {
     $commandProperty = $Handler.PSObject.Properties['command']
     $windowsProperty = $Handler.PSObject.Properties['commandWindows']
     if ($Name -eq 'claude') { return $null -ne $commandProperty -and $commandProperty.Value -eq 'powershell.exe' -and $null -ne $argsProperty -and (@($argsProperty.Value) -contains '${CLAUDE_PROJECT_DIR}/.claude/hooks/claude-pre-tool-use.ps1') }
-    return $null -ne $windowsProperty -and ([string]$windowsProperty.Value).Contains([string]$Paths.adapter)
+    return $null -ne $windowsProperty -and ([string]$windowsProperty.Value).Replace([char]92, [char]47).Contains('.codex/hooks/codex-pre-tool-use.ps1')
 }
 function Merge-Handler([string]$Name, [object]$Paths, [bool]$Remove) {
     $config = Read-Config $Paths.config
@@ -78,9 +105,11 @@ function Merge-Handler([string]$Name, [object]$Paths, [bool]$Remove) {
     Write-Config $Paths.config $config
 }
 
+$state = Read-LocalState
 $result = @()
 foreach ($name in $hosts) {
     $paths = Get-HostPaths $name
+    $hostState = $state.hosts.$name
     $exists = (Test-Path -LiteralPath $paths.config -PathType Leaf) -and (Test-Path -LiteralPath $paths.adapter -PathType Leaf)
     if ($operation -eq 'Apply') {
         New-Item -ItemType Directory -Force -Path (Split-Path -Parent $paths.adapter) | Out-Null
@@ -88,30 +117,24 @@ foreach ($name in $hosts) {
         Merge-Handler $name $paths $false
         # Host trust is keyed to the hook definition, so only an unchanged active config keeps active.
         $configHash = Get-Hash $paths.config
-        if ($routing.hosts.$name.status -ne 'active' -or $routing.hosts.$name.config_sha256 -ne $configHash) {
-            $routing.hosts.$name.status = 'pending-trust'
-            $routing.hosts.$name.trust = 'pending'
-            $routing.setup.host_installation = 'pending-trust'
-            $routing.setup.harness_kit_runtime_required = $true
+        if ($hostState.status -ne 'active' -or $hostState.config_sha256 -ne $configHash) {
+            $hostState.status = 'pending-trust'
+            $hostState.trust = 'pending'
         }
-        $routing.hosts.$name.config_sha256 = $configHash
+        $hostState.config_sha256 = $configHash
     } elseif ($operation -eq 'ActivateTrust') {
         if (-not $exists) { throw "ActivateTrust requires installed $name adapter and config." }
-        $routing.hosts.$name.status = 'active'
-        $routing.hosts.$name.trust = 'trusted-by-user-evidence'
-        $routing.hosts.$name.config_sha256 = Get-Hash $paths.config
+        $hostState.status = 'active'
+        $hostState.trust = 'trusted-by-user-evidence'
+        $hostState.config_sha256 = Get-Hash $paths.config
     } elseif ($operation -eq 'Uninstall') {
         Merge-Handler $name $paths $true
         if (Test-Path -LiteralPath $paths.adapter -PathType Leaf) { Remove-Item -LiteralPath $paths.adapter -Force }
-        $routing.hosts.$name.status = 'uninstalled'
-        $routing.hosts.$name.trust = 'not-installed'
-        $routing.hosts.$name.config_sha256 = Get-Hash $paths.config
-        $routing.setup.host_installation = 'not-installed'
+        $hostState.status = 'uninstalled'
+        $hostState.trust = 'not-installed'
+        $hostState.config_sha256 = Get-Hash $paths.config
     }
-    $result += [ordered]@{ host = $name; operation = $operation.ToLowerInvariant(); config = $paths.config; adapter = $paths.adapter; state = if ($operation -eq 'Plan') { 'proposed' } elseif ($operation -eq 'Check') { if (-not $exists) { 'not-installed' } elseif ($routing.hosts.$name.status -eq 'active' -and $routing.hosts.$name.config_sha256 -ne (Get-Hash $paths.config)) { 'pending-trust' } else { $routing.hosts.$name.status } } else { $routing.hosts.$name.status }; trust = if ($operation -eq 'Plan') { 'pending-trust' } else { $routing.hosts.$name.trust }; diff = if ($operation -eq 'Plan') { 'host-specific managed merge proposal; unrelated settings are preserved' } else { $null } }
+    $result += [ordered]@{ host = $name; operation = $operation.ToLowerInvariant(); config = [string]$routing.hosts.$name.config_path; adapter = [string]$routing.hosts.$name.adapter_path; state = if ($operation -eq 'Plan') { 'proposed' } elseif ($operation -eq 'Check') { if (-not $exists) { 'not-installed' } elseif ($hostState.status -eq 'active' -and $hostState.config_sha256 -ne (Get-Hash $paths.config)) { 'pending-trust' } else { $hostState.status } } else { $hostState.status }; trust = if ($operation -eq 'Plan') { 'pending-trust' } else { $hostState.trust }; diff = if ($operation -eq 'Plan') { 'host-specific managed merge proposal; unrelated settings are preserved' } else { $null } }
 }
-if ($operation -eq 'ActivateTrust') {
-    $routing.setup.harness_kit_runtime_required = -not (@($routing.hosts.PSObject.Properties | ForEach-Object { $_.Value.status }) -notcontains 'pending-trust' -and @($routing.hosts.PSObject.Properties | ForEach-Object { $_.Value.status }) -notcontains 'uninstalled')
-}
-if ($operation -in @('Apply', 'Uninstall', 'ActivateTrust')) { $routing | ConvertTo-Json -Depth 12 | Set-Content -LiteralPath $routingPath -Encoding utf8NoBOM }
-[ordered]@{ schema_version = '1.0.0'; operation = $operation.ToLowerInvariant(); project_root = $projectRoot; targets = $result; hosts = $result } | ConvertTo-Json -Depth 8
+if ($operation -in @('Apply', 'Uninstall', 'ActivateTrust')) { Write-LocalState $state }
+[ordered]@{ schema_version = '1.1.0'; operation = $operation.ToLowerInvariant(); project_root = '.'; targets = $result; hosts = $result } | ConvertTo-Json -Depth 8
