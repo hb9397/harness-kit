@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "pwsh -NoProfile -ExecutionPolicy Bypass -Command \"$d=(Get-Location).Path; while ($true) { $s=Join-Path $d '.codex/hooks/codex-pre-tool-use.ps1'; if (Test-Path -LiteralPath $s -PathType Leaf) { & $s; exit $LASTEXITCODE }; $p=Split-Path -Parent $d; if (-not $p -or $p -eq $d) { throw 'Codex project hook not found.' }; $d=$p }\"",
+            "command": "pwsh -NoProfile -ExecutionPolicy Bypass -Command '$d=(Get-Location).Path; while ($true) { $s=Join-Path $d \".codex/hooks/codex-pre-tool-use.ps1\"; if (Test-Path -LiteralPath $s -PathType Leaf) { & $s; exit $LASTEXITCODE }; $p=Split-Path -Parent $d; if (-not $p -or $p -eq $d) { throw \"Codex project hook not found.\" }; $d=$p }'",
             "commandWindows": "powershell.exe -NoProfile -ExecutionPolicy Bypass -Command \"$d=(Get-Location).Path; while ($true) { $s=Join-Path $d '.codex/hooks/codex-pre-tool-use.ps1'; if (Test-Path -LiteralPath $s -PathType Leaf) { & $s; exit $LASTEXITCODE }; $p=Split-Path -Parent $d; if (-not $p -or $p -eq $d) { throw 'Codex project hook not found.' }; $d=$p }\""
           }
         ]

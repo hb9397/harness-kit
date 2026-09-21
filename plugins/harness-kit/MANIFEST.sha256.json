@@ -395,7 +395,7 @@
     },
     {
       "path": "runtime/claude/skills/harness-setup/templates/portable-routing/codex-hooks.json.template",
-      "sha256": "425f112a38da733b57b7221b616a9667e96f4ea2614b4ffe515f8d8607a0fdd3"
+      "sha256": "ffce65fbfa4d0d876550661797b2ab8b634ec88e5efdfd9a9ff0d8b32f8f0569"
     },
     {
       "path": "runtime/claude/skills/harness-setup/templates/portable-routing/hooks/approve-artifact.ps1.template",
@@ -1271,7 +1271,7 @@
     },
     {
       "path": "runtime/codex/skills/harness-setup/templates/portable-routing/codex-hooks.json.template",
-      "sha256": "425f112a38da733b57b7221b616a9667e96f4ea2614b4ffe515f8d8607a0fdd3"
+      "sha256": "ffce65fbfa4d0d876550661797b2ab8b634ec88e5efdfd9a9ff0d8b32f8f0569"
     },
     {
       "path": "runtime/codex/skills/harness-setup/templates/portable-routing/hooks/approve-artifact.ps1.template",
