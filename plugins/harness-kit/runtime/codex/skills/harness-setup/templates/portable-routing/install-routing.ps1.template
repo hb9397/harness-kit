@@ -82,8 +82,7 @@ function Get-Handler([string]$Name, [object]$Paths) {
     if ($Name -eq 'claude') {
         return [ordered]@{ type = 'command'; command = 'powershell.exe'; args = @('-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', '${CLAUDE_PROJECT_DIR}/.claude/hooks/claude-pre-tool-use.ps1') }
     }
-    $portable = '-NoProfile -ExecutionPolicy Bypass -Command "$d=(Get-Location).Path; while ($true) { $s=Join-Path $d ''.codex/hooks/codex-pre-tool-use.ps1''; if (Test-Path -LiteralPath $s -PathType Leaf) { & $s; exit $LASTEXITCODE }; $p=Split-Path -Parent $d; if (-not $p -or $p -eq $d) { throw ''Codex project hook not found.'' }; $d=$p }"'
-    return [ordered]@{ type = 'command'; command = "pwsh $portable"; commandWindows = "powershell.exe $portable" }
+    return (Read-Config (Join-Path $PSScriptRoot 'codex-hooks.json')).hooks.PreToolUse[0].hooks[0]
 }
 function Is-ManagedHandler([string]$Name, [object]$Handler, [object]$Paths) {
     # Unrelated handlers may omit args or commandWindows; StrictMode must not fail on them.

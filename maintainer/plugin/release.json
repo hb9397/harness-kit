@@ -5,7 +5,7 @@
   "version": "0.8.0",
   "plugin_root": "plugins/harness-kit",
   "archive": "plugins/harness-kit-0.8.0.zip",
-  "archive_sha256": "e56d1643dae74fad4aa6bfca485b00a03043817c3fb906a48aab3e9540c046b9",
+  "archive_sha256": "d0205ba07ba0bfd034c92bda01c53d4dc56bbd2ac9c5f57464a0e696a2338d3a",
   "marketplaces": {
     "codex": ".agents/plugins/marketplace.json",
     "claude": ".claude-plugin/marketplace.json"

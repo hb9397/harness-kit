@@ -419,7 +419,7 @@
     },
     {
       "path": "runtime/claude/skills/harness-setup/templates/portable-routing/install-routing.ps1.template",
-      "sha256": "bea44bf8526d31a1a562e32637893429e86eabbef9ba8a8c91b77dc6253fd671"
+      "sha256": "dbf212123f654fdfcb6149b68ddaebe8a494744e455f054576758deb5d645ee3"
     },
     {
       "path": "runtime/claude/skills/harness-setup/templates/portable-routing/normalize-artifact.ps1.template",
@@ -1295,7 +1295,7 @@
     },
     {
       "path": "runtime/codex/skills/harness-setup/templates/portable-routing/install-routing.ps1.template",
-      "sha256": "bea44bf8526d31a1a562e32637893429e86eabbef9ba8a8c91b77dc6253fd671"
+      "sha256": "dbf212123f654fdfcb6149b68ddaebe8a494744e455f054576758deb5d645ee3"
     },
     {
       "path": "runtime/codex/skills/harness-setup/templates/portable-routing/normalize-artifact.ps1.template",
