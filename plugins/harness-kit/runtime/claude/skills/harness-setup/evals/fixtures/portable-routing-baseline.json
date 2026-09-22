@@ -32,6 +32,11 @@
       "status": "not-installed",
       "expected_project_path": ".codex/hooks.json",
       "reason": "the current Claude-only case is evidence for topology and failure modes, not a portable dual-host implementation"
+    },
+    "muse_installation": {
+      "status": "not-installed",
+      "expected_project_path": ".muse/hooks.json",
+      "reason": "the Muse host is a canonical routing target from the B8 template set; this read-only case records no installation"
     }
   },
   "host_capabilities": {
@@ -55,6 +60,16 @@
       "project_scope": ".codex/hooks.json",
       "trust": "/hooks review and hash trust required for new or changed non-managed definitions",
       "plugin_hook_support": "supported but rejected as canonical installer because a project-owned configuration must remain after plugin removal"
+    },
+    "muse": {
+      "status": "supported",
+      "source": "https://dev.meta.ai/docs/muse-code/extending",
+      "event": "PreToolUse",
+      "matcher": "* with in-adapter write-tool gating (write_file, edit_file)",
+      "input": "JSON stdin; hook_event_name, tool_name, tool_input.path and cwd",
+      "deny": "exit 0 with hookSpecificOutput.permissionDecision=deny; nonzero exit also blocks",
+      "project_scope": ".muse/hooks.json",
+      "trust": "project hook fires after project trust; new or changed managed definitions stay pending-trust until user-reviewed evidence"
     }
   },
   "reuse_scan": [

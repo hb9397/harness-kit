@@ -8,6 +8,7 @@ import os
 import re
 import shutil
 import subprocess
+import sys
 import tempfile
 from pathlib import Path
 
@@ -290,9 +291,11 @@ def check_portable_routing_bundle() -> None:
         "hooks/artifact-route-core.ps1.template",
         "hooks/claude-pre-tool-use.ps1.template",
         "hooks/codex-pre-tool-use.ps1.template",
+        "hooks/muse-route.py.template",
         "hooks/approve-artifact.ps1.template",
         "claude-settings-hook.json.template",
         "codex-hooks.json.template",
+        "muse-hooks.json.template",
         "inbox-artifact-manifest.json.template",
     )
     for template_name in required_templates:
@@ -351,6 +354,39 @@ def check_portable_routing_bundle() -> None:
     if f"matcher = '{codex_matcher}'" not in read(PORTABLE_ROUTING_TEMPLATE_ROOT / "install-routing.ps1.template"):
         raise AssertionError("install-routing Codex matcher drifted from codex-hooks.json.template")
 
+    muse_hook_template = read(PORTABLE_ROUTING_TEMPLATE_ROOT / "muse-hooks.json.template")
+    if ".muse/hooks/muse-route.py" not in muse_hook_template:
+        raise AssertionError("Muse hook template does not reference the project Muse adapter")
+    muse_hook_config = json.loads(render_portable("muse-hooks.json.template", replacements))
+    muse_entry = muse_hook_config["hooks"]["PreToolUse"][0]
+    if muse_entry.get("matcher") != "*":
+        raise AssertionError("Muse hook must match every tool call and gate write tools inside the adapter")
+    muse_handler = muse_entry["hooks"][0]
+    if ".muse/hooks/muse-route.py" not in str(muse_handler.get("command", "")):
+        raise AssertionError("Muse hook config does not resolve the project adapter portably")
+    if "matcher = '*'" not in read(PORTABLE_ROUTING_TEMPLATE_ROOT / "install-routing.ps1.template"):
+        raise AssertionError("install-routing Muse matcher drifted from muse-hooks.json.template")
+
+    muse_adapter = render_portable("hooks/muse-route.py.template", replacements)
+    for token in (
+        "hook_event_name",
+        "write_file",
+        "edit_file",
+        "tool_input",
+        "artifact-routing.json",
+        "hookSpecificOutput",
+        "permissionDecision",
+        "deny",
+    ):
+        if token not in muse_adapter:
+            raise AssertionError(f"Muse adapter is missing routing contract: {token}")
+    if "DENIED_DIR" in muse_adapter:
+        raise AssertionError("Muse adapter must not hardcode a demo rule outside the routing manifest")
+    try:
+        compile(muse_adapter, "muse-route.py.template", "exec")
+    except SyntaxError as exc:
+        raise AssertionError(f"Muse adapter template is not valid Python: {exc}")
+
     claude_adapter = render_portable("hooks/claude-pre-tool-use.ps1.template", replacements)
     codex_adapter = render_portable("hooks/codex-pre-tool-use.ps1.template", replacements)
     if "$env:CLAUDE_PROJECT_DIR" not in claude_adapter or "tool_name" not in claude_adapter:
@@ -393,7 +429,7 @@ def check_portable_routing_bundle() -> None:
         if "harness-kit" in readme.lower():
             raise AssertionError("portable bundle documentation still requires Harness Kit")
         installer = read(bundle / "install-routing.ps1")
-        for host in ("claude", "codex"):
+        for host in ("claude", "codex", "muse"):
             if f"{host}" not in installer.lower():
                 raise AssertionError(f"portable installer does not plan {host} targets")
         if "-Plan" not in installer:
@@ -430,9 +466,9 @@ def check_portable_routing_bundle() -> None:
         if plan["project_root"] != ".":
             raise AssertionError("portable installer output leaked the resolved checkout root")
         targets = {item["host"]: item for item in plan["targets"]}
-        if set(targets) != {"claude", "codex"}:
-            raise AssertionError("portable installer plan does not contain both host targets")
-        if targets["claude"]["trust"] != "pending-trust" or targets["codex"]["trust"] != "pending-trust":
+        if set(targets) != {"claude", "codex", "muse"}:
+            raise AssertionError("portable installer plan does not contain all host targets")
+        if any(targets[host]["trust"] != "pending-trust" for host in ("claude", "codex", "muse")):
             raise AssertionError("portable installer plan must not activate host trust")
         if any(Path(item["config"]).is_absolute() or Path(item["adapter"]).is_absolute() for item in targets.values()):
             raise AssertionError("portable installer plan exposed host absolute paths")
@@ -462,8 +498,8 @@ def check_portable_routing_bundle() -> None:
         )
         if applied.returncode != 0:
             raise AssertionError(f"approved portable installer apply failed: {applied.stderr}")
-        if not (project / ".claude" / "hooks" / "claude-pre-tool-use.ps1").is_file() or not (project / ".codex" / "hooks" / "codex-pre-tool-use.ps1").is_file():
-            raise AssertionError("approved Apply did not materialize both host adapters")
+        if not (project / ".claude" / "hooks" / "claude-pre-tool-use.ps1").is_file() or not (project / ".codex" / "hooks" / "codex-pre-tool-use.ps1").is_file() or not (project / ".muse" / "hooks" / "muse-route.py").is_file():
+            raise AssertionError("approved Apply did not materialize all host adapters")
         if "Read" not in read(claude_settings):
             raise AssertionError("approved Apply did not preserve unrelated Claude settings")
         if (bundle / "artifact-routing.json").read_bytes() != shared_routing_before:
@@ -704,6 +740,32 @@ def check_portable_routing_bundle() -> None:
         routed = json.loads(read(bundle / "artifact-routing.json"))
         if any(key in routed["hosts"]["codex"] for key in ("status", "trust", "config_sha256")):
             raise AssertionError("shared routing contract regained host-local state")
+        if set(routed.get("hosts", {})) != {"claude", "codex", "muse"}:
+            raise AssertionError("shared routing contract does not declare all three hosts")
+        if routed["hosts"]["muse"] != {"layer": 3, "config_path": ".muse/hooks.json", "adapter_path": ".muse/hooks/muse-route.py"}:
+            raise AssertionError("shared routing contract Muse host entry drifted")
+        if ".muse/hooks.json" not in routed.get("managed_files", []) or ".muse/hooks/muse-route.py" not in routed.get("managed_files", []):
+            raise AssertionError("shared routing contract does not manage the Muse host files")
+
+        muse_trust = subprocess.run(
+            ["pwsh", "-NoProfile", "-File", str(bundle / "install-routing.ps1"), "-ActivateTrust", "-TargetHost", "muse", "-ApproveTrustEvidence"],
+            capture_output=True, text=True, encoding="utf-8", errors="replace", check=False,
+        )
+        if muse_trust.returncode != 0:
+            raise AssertionError(f"approved Muse trust activation failed: {muse_trust.stderr}")
+        muse_state = json.loads(local_state_path.read_text(encoding="utf-8"))
+        if muse_state["hosts"]["muse"]["status"] != "active":
+            raise AssertionError("Muse trust activation did not record active")
+        if run_installer("-Apply", "-TargetHost", "muse", "-ApproveHostInstall")["muse"]["state"] != "active":
+            raise AssertionError("re-Apply with an unchanged trusted Muse hook definition must keep active")
+        muse_config_path = project / ".muse" / "hooks.json"
+        muse_config = json.loads(read(muse_config_path))
+        muse_managed = [entry for entry in muse_config["hooks"]["PreToolUse"] if any(".muse/hooks/muse-route.py" in hook.get("command", "") for hook in entry["hooks"])]
+        if len(muse_managed) != 1 or muse_managed[0]["matcher"] != "*":
+            raise AssertionError(f"Muse Apply must install exactly one managed entry: {muse_config}")
+        installed_muse = (project / ".muse" / "hooks" / "muse-route.py").read_bytes()
+        if installed_muse != (bundle / "hooks" / "muse-route.py").read_bytes():
+            raise AssertionError("installed Muse adapter differs from the project-owned bundle source")
 
         text_input = project / "external.mdx"
         text_input.write_text("<!-- harness-kit:managed:start -->\nNEW-MANAGED\n<!-- harness-kit:managed:end -->\n", encoding="utf-8", newline="\n")
@@ -747,16 +809,121 @@ def check_portable_routing_bundle() -> None:
             text=True,
             check=False,
         )
-        if removed.returncode != 0 or (project / ".claude" / "hooks" / "claude-pre-tool-use.ps1").exists() or (project / ".codex" / "hooks" / "codex-pre-tool-use.ps1").exists():
-            raise AssertionError("approved Uninstall did not remove only both host adapters")
+        if removed.returncode != 0 or (project / ".claude" / "hooks" / "claude-pre-tool-use.ps1").exists() or (project / ".codex" / "hooks" / "codex-pre-tool-use.ps1").exists() or (project / ".muse" / "hooks" / "muse-route.py").exists():
+            raise AssertionError("approved Uninstall did not remove all host adapters")
         if "Read" not in read(claude_settings):
             raise AssertionError("Uninstall did not preserve unrelated Claude settings")
+
+
+def muse_payload(tool_name: str, path: str | None, content: str = "", project: Path | None = None) -> dict:
+    tool_input: dict = {}
+    if path is not None:
+        tool_input["path"] = path
+    if content:
+        tool_input["content"] = content
+    payload = {"hook_event_name": "PreToolUse", "tool_name": tool_name, "tool_input": tool_input}
+    if project is not None:
+        payload["cwd"] = str(project)
+    return payload
+
+
+def invoke_muse(adapter: Path, payload: dict | str, project: Path) -> tuple[str, str]:
+    result = subprocess.run(
+        [sys.executable, str(adapter)],
+        input=payload if isinstance(payload, str) else json.dumps(payload, ensure_ascii=False),
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        errors="replace",
+        cwd=project,
+        check=False,
+    )
+    if result.returncode != 0:
+        raise AssertionError(f"Muse adapter must always exit 0: {result.returncode} / {result.stderr}")
+    trimmed = result.stdout.strip()
+    if not trimmed:
+        return "allow", ""
+    try:
+        wire = json.loads(trimmed)
+    except json.JSONDecodeError:
+        raise AssertionError(f"Muse adapter returned invalid JSON: {result.stdout}")
+    specific = wire.get("hookSpecificOutput", {})
+    if specific.get("hookEventName") != "PreToolUse" or specific.get("permissionDecision") != "deny" or not str(specific.get("permissionDecisionReason", "")).strip():
+        raise AssertionError(f"Muse adapter returned an unsupported verdict: {result.stdout}")
+    return "deny", specific["permissionDecisionReason"]
+
+
+def check_muse_adapter_matrix() -> None:
+    """B8 contract: the Muse python adapter enforces the shared routing table."""
+    import hashlib as _hashlib
+
+    fixture = json.loads(read(PORTABLE_ROUTING_FIXTURE))
+    replacements = fixture["replacements"]
+    with tempfile.TemporaryDirectory(prefix="muse-routing-matrix-") as tmp:
+        project = Path(tmp) / "project"
+        harness = project / ".ai-docs" / "harness"
+        (harness / "hooks").mkdir(parents=True)
+        (harness / "artifact-routing.json").write_text(
+            render_portable("artifact-routing.json.template", replacements), encoding="utf-8", newline="\n"
+        )
+        adapter = harness / "hooks" / "muse-route.py"
+        adapter.write_text(render_portable("hooks/muse-route.py.template", replacements), encoding="utf-8", newline="\n")
+        (project / ".ai-docs" / "instruction").mkdir(parents=True)
+        existing = project / ".ai-docs" / "instruction" / "existing.md"
+        existing.write_text("canonical\n", encoding="utf-8")
+
+        if invoke_muse(adapter, muse_payload("read_file", ".ai-docs/instruction/existing.md", project=project), project)[0] != "allow":
+            raise AssertionError("Muse non-write tool must be allowed without output")
+        if invoke_muse(adapter, {"hook_event_name": "PostToolUse", "tool_name": "write_file", "tool_input": {"path": "../x.md"}}, project)[0] != "allow":
+            raise AssertionError("Muse non-PreToolUse event must be allowed without output")
+        if invoke_muse(adapter, "not-json{{{", project)[0] != "deny":
+            raise AssertionError("Muse malformed payload must fail closed")
+        if invoke_muse(adapter, muse_payload("write_file", None, project=project), project)[0] != "deny":
+            raise AssertionError("Muse write without a path must fail closed")
+        if invoke_muse(adapter, muse_payload("ns.write_file", "../escape.md", "blocked", project=project), project)[0] != "deny":
+            raise AssertionError("Muse namespaced write tool must still gate traversal")
+        if invoke_muse(adapter, muse_payload("write_file", "../escape.md", "blocked", project=project), project)[0] != "deny":
+            raise AssertionError("Muse traversal write was not denied")
+        if invoke_muse(adapter, muse_payload("write_file", "docs/superpowers/plans/external.md", "blocked", project=project), project)[0] != "deny":
+            raise AssertionError("Muse external default path was not denied")
+        if invoke_muse(adapter, muse_payload("edit_file", ".ai-docs/instruction/existing.md", "canonical\nmore\n", project=project), project)[0] != "allow":
+            raise AssertionError("Muse existing canonical edit was not allowed")
+        if invoke_muse(adapter, muse_payload("write_file", ".ai-docs/instruction/new.md", "new", project=project), project)[0] != "deny":
+            raise AssertionError("Muse new managed artifact without a marker was not denied")
+
+        marker_dir = project / ".ai-docs" / ".harness" / "artifact-approvals"
+        marker_dir.mkdir(parents=True)
+        approved_content = "approved"
+        approved_hash = _hashlib.sha256(approved_content.encode("utf-8")).hexdigest()
+        (marker_dir / "marker-1.json").write_text(
+            json.dumps({
+                "operation": "write",
+                "target_path": ".ai-docs/instruction/new.md",
+                "content_sha256": approved_hash,
+                "expires_at": "2099-01-01T00:00:00+00:00",
+                "nonce": "fixture-nonce-1",
+            }),
+            encoding="utf-8",
+        )
+        if invoke_muse(adapter, muse_payload("write_file", ".ai-docs/instruction/new.md", approved_content, project=project), project)[0] != "allow":
+            raise AssertionError("Muse exact one-shot marker was not honored")
+        if (marker_dir / "marker-1.json").exists():
+            raise AssertionError("Muse one-shot marker was not consumed")
+        if invoke_muse(adapter, muse_payload("write_file", ".ai-docs/instruction/new.md", approved_content, project=project), project)[0] != "deny":
+            raise AssertionError("Muse replayed write after marker consumption was not denied")
+
+        outside = Path(tmp) / "norouting"
+        outside.mkdir()
+        stray = outside / "muse-route.py"
+        stray.write_bytes(adapter.read_bytes())
+        if invoke_muse(stray, muse_payload("write_file", "note.md", "x", project=outside), outside)[0] != "deny":
+            raise AssertionError("Muse adapter without a routing contract must fail closed")
 
 
 def check_portable_routing_lifecycle_contract() -> None:
     """B2 contract: lifecycle operations stay host-scoped and approval-gated."""
     installer = read(PORTABLE_ROUTING_TEMPLATE_ROOT / "install-routing.ps1.template")
-    for token in ("-Plan", "-Apply", "-Check", "-Uninstall", "-ActivateTrust", "[ValidateSet('claude', 'codex', 'all')]", "ApproveHostInstall", "ApproveTrustEvidence"):
+    for token in ("-Plan", "-Apply", "-Check", "-Uninstall", "-ActivateTrust", "[ValidateSet('claude', 'codex', 'muse', 'all')]", "ApproveHostInstall", "ApproveTrustEvidence"):
         if token not in installer:
             raise AssertionError(f"portable installer lifecycle operation missing: {token}")
     for template_name in ("root-context-single.template", "root-context.template"):
@@ -769,8 +936,8 @@ def check_routing_coverage_manifest() -> None:
     """B5: keep every portable-routing requirement traceable to executable evidence."""
     coverage = json.loads(read(ROUTING_COVERAGE_MANIFEST))
     cases = coverage.get("cases", [])
-    if [case.get("id") for case in cases] != list(range(1, 17)):
-        raise AssertionError("routing coverage manifest must contain exactly ordered cases 1..16")
+    if [case.get("id") for case in cases] != list(range(1, 18)):
+        raise AssertionError("routing coverage manifest must contain exactly ordered cases 1..17")
     for case in cases:
         for field in ("title", "fixture", "assertion", "evidence"):
             if not str(case.get(field, "")).strip():
@@ -782,11 +949,13 @@ def check_routing_coverage_manifest() -> None:
     expected_matrix = {
         ("harness-kit-installed", "claude"),
         ("harness-kit-installed", "codex"),
+        ("harness-kit-installed", "muse"),
         ("portable-only", "claude"),
         ("portable-only", "codex"),
+        ("portable-only", "muse"),
     }
     if {(item.get("bundle"), item.get("host")) for item in matrix} != expected_matrix:
-        raise AssertionError("routing coverage matrix must cover installed|portable-only × Claude|Codex")
+        raise AssertionError("routing coverage matrix must cover installed|portable-only × Claude|Codex|Muse")
     if any(item.get("expected_trust") not in {"pending-trust", "active"} for item in matrix):
         raise AssertionError("routing coverage matrix has invalid trust state")
 
@@ -1102,12 +1271,17 @@ def check_portable_routing_baseline() -> None:
         raise AssertionError("portable routing baseline lost separate application Git topology")
     claude = baseline.get("host_capabilities", {}).get("claude", {})
     codex = baseline.get("host_capabilities", {}).get("codex", {})
-    if claude.get("status") != "supported" or codex.get("status") != "supported":
-        raise AssertionError("both host hook capabilities must be explicitly supported")
+    muse = baseline.get("host_capabilities", {}).get("muse", {})
+    if claude.get("status") != "supported" or codex.get("status") != "supported" or muse.get("status") != "supported":
+        raise AssertionError("all host hook capabilities must be explicitly supported")
     if claude.get("project_scope") != ".claude/settings.json":
         raise AssertionError("Claude baseline must use project settings scope")
     if codex.get("project_scope") != ".codex/hooks.json" or "/hooks" not in codex.get("trust", ""):
         raise AssertionError("Codex baseline must record project hook path and hash trust")
+    if muse.get("project_scope") != ".muse/hooks.json" or muse.get("event") != "PreToolUse":
+        raise AssertionError("Muse baseline must record project hook path and PreToolUse event")
+    if case.get("muse_installation", {}).get("expected_project_path") != ".muse/hooks.json":
+        raise AssertionError("Muse baseline must record the expected project hook path without installing")
     expected_failures = {"path-unbound-marker", "sibling-prefix-containment", "hardcoded-app-regex"}
     actual_failures = {item.get("id") for item in baseline.get("failure_fixtures", []) if item.get("expected") == "fail"}
     if actual_failures != expected_failures:
@@ -1121,7 +1295,7 @@ def check_portable_routing_baseline() -> None:
     inventory = contract.get("portable_routing_baseline", {})
     if inventory.get("case_study_fixture") != "skills/harness-setup/evals/fixtures/portable-routing-baseline.json":
         raise AssertionError("artifact output contract does not point to the B0 baseline fixture")
-    if {name: entry.get("status") for name, entry in inventory.get("host_capabilities", {}).items()} != {"claude": "supported", "codex": "supported"}:
+    if {name: entry.get("status") for name, entry in inventory.get("host_capabilities", {}).items()} != {"claude": "supported", "codex": "supported", "muse": "supported"}:
         raise AssertionError("artifact output contract host capability baseline drifted")
 
 
@@ -1325,6 +1499,7 @@ def main() -> int:
     check_nested_handoff_contract()
     check_portable_routing_baseline()
     check_portable_routing_bundle()
+    check_muse_adapter_matrix()
     check_portable_routing_lifecycle_contract()
     check_routing_coverage_manifest()
     check_filesystem_fixtures()

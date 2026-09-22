@@ -8,6 +8,7 @@ description: >
   'harness setup', 'harness init' 요청이 오면 이 스킬을 사용한다.
   단일/복수 애플리케이션 프로젝트를 판별하여 .ai-docs 구조와 루트 Agent 컨텍스트를 세팅한다.
   사용자 스킬 설치·갱신은 harness-kit 플러그인이 담당하며, 이 스킬은 프로젝트 local skill copy를 만들거나 덮어쓰지 않는다.
+allowed-tools: Read, Write, Glob, Grep
 ---
 
 ## 스킬 연계
@@ -410,9 +411,10 @@ host별 current/proposed diff, created/modified/unchanged, local-only/shared 파
 기본 생성·갱신 범위는 `.ai-docs/**`, 루트 `AGENTS.md`다. G10으로
 host 설치가 별도 승인된 실행에서만 `.claude/settings.json`,
 `.claude/hooks/claude-pre-tool-use.ps1`, `.codex/hooks.json`,
-`.codex/hooks/codex-pre-tool-use.ps1`의 관리 hook entry와 adapter를 다룬다. Claude
-settings merge와 Codex hooks.json merge는 서로 다른 adapter이며 기존 사용자 설정은
-보존한다.
+`.codex/hooks/codex-pre-tool-use.ps1`, `.muse/hooks.json`,
+`.muse/hooks/muse-route.py`의 관리 hook entry와 adapter를 다룬다. Claude
+settings merge와 Codex hooks.json merge, Muse hooks.json merge는 서로 다른 adapter이며
+기존 사용자 설정은 보존한다.
 
 공유 `artifact-routing.json`에는 프로젝트 상대경로와 host capability만 기록한다.
 현재 PC의 설치·신뢰·config hash는 Git 무시 대상인
@@ -422,7 +424,8 @@ host config의 managed entry에는 사용자 홈이나 설치 당시 체크아�
 `.ai-docs/harness/install-routing.ps1`의 `-Plan`과 `-Check`은 읽기 전용이다. `-Apply`와
 `-Uninstall`은 host별 diff를 확인한 별도 G10 승인 뒤에만
 `-ApproveHostInstall`과 함께 실행한다. Codex 신규·변경 hook은 `/hooks` 검토·신뢰
-증적 전까지 로컬 상태를 `pending-trust`로 보고하며 active로 보고하지 않는다.
+증적 전까지 로컬 상태를 `pending-trust`로 보고하며 active로 보고하지 않는다. Muse
+신규·변경 hook도 프로젝트 신뢰 검토 증적 전까지 `pending-trust`로 보고한다.
 
 사용자가 host의 실제 신뢰 검토를 마친 증적을 제시할 때만 `-ActivateTrust`와
 `-ApproveTrustEvidence`로 해당 host의 로컬 상태를 `active`로 기록한다. 이 명령은
@@ -443,6 +446,13 @@ Codex matcher는 쓰기 가능 도구 `apply_patch|Bash`만 대상으로 하며,
 `hookEventName=PreToolUse`를 포함한 deny JSON을 쓰고, adapter/core 예외·잘못된 payload도
 같은 deny JSON(exit 0)으로 fail-closed한다. Codex CLI 0.154.0 Windows 실측에서 exit 2와
 stderr는 도구 실행을 막지 못했으므로 차단 경로로 쓰지 않는다.
+Muse hook config(`.muse/hooks.json`)의 matcher는 `*`이며 쓰기 판정은
+`hooks/muse-route.py` adapter 안에서 `write_file|edit_file` 대상으로만 수행한다.
+adapter 입력은 stdin JSON의 `hook_event_name`, `tool_name`,
+`tool_input.path`, `cwd`(프로젝트 루트)이며, allow는 exit 0+빈 stdout, deny는 exit 0과
+`hookSpecificOutput.permissionDecision=deny` JSON이다. nonzero exit도 차단되므로
+미검증 hook 명령은 승인하지 않으며, adapter 예외·잘못된 payload·routing 부재도
+같은 deny JSON(exit 0)으로 fail-closed한다.
 
 로컬 상태의 `pending-trust`/`active`는 사용자 신뢰 증적 기록이며 hook 실행 여부를 결정하지
 않는다. Codex 실행 여부는 사용자 `/hooks` trusted hash 또는 호출 단위

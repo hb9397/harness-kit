@@ -221,11 +221,13 @@ host-local file을 `created`/`modified`/`unchanged`, `local-only`/`shared`로 �
 
 `-Plan`/`-Check`은 읽기 전용이고, manual portable adoption의 `-Apply`/`-Uninstall`은
 G10 승인 뒤 `-ApproveHostInstall`과 함께만 실행한다. Codex hook은 `/hooks` 신뢰
-증적 전까지 `pending-trust`이며 active로 변경하지 않는다.
+증적 전까지 `pending-trust`이며 active로 변경하지 않는다. Muse hook도 프로젝트
+신뢰 검토 증적 전까지 `pending-trust`이며 active로 변경하지 않는다.
 
 갱신 때는 다음 portability migration을 같은 계획에 포함한다.
 
-1. 공유 `.ai-docs/**`, 루트 컨텍스트, `.claude/settings.json`, `.codex/hooks.json`에서
+1. 공유 `.ai-docs/**`, 루트 컨텍스트, `.claude/settings.json`, `.codex/hooks.json`,
+   `.muse/hooks.json`에서
    현재 PC의 사용자 홈·드라이브 절대경로가 생성 템플릿에 의해 들어간 부분을 찾는다.
 2. `artifact-routing.json.project_root`는 `.`으로 바꾸고, host의 `status`, `trust`,
    `config_sha256`은 공유 manifest에서 제거한다. 기존 값은 존재할 때만 Git 무시 대상인
