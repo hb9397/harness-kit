@@ -8,7 +8,6 @@ description: >
   'harness setup', 'harness init' 요청이 오면 이 스킬을 사용한다.
   단일/복수 애플리케이션 프로젝트를 판별하여 .ai-docs 구조와 루트 Agent 컨텍스트를 세팅한다.
   사용자 스킬 설치·갱신은 harness-kit 플러그인이 담당하며, 이 스킬은 프로젝트 local skill copy를 만들거나 덮어쓰지 않는다.
-allowed-tools: Read, Write, Glob, Grep
 ---
 
 ## 스킬 연계

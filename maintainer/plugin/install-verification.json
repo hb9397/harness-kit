@@ -4,10 +4,10 @@
   "plugin": {
     "plugin_root": "plugins/harness-kit",
     "plugin_id": "harness-kit",
-    "version": "0.8.0",
+    "version": "0.9.0",
     "codex_manifest_matches_claude": true,
-    "archive": "plugins/harness-kit-0.8.0.zip",
-    "archive_sha256": "4d2bd5139ee56a5a396d2fb3f16e299c3adb6f4681b5caf88ce9e5100fa6e0d7",
+    "archive": "plugins/harness-kit-0.9.0.zip",
+    "archive_sha256": "32d032836aac99d835df6e75c4019b04a43f0442fdbf6e9d7d801dbc86189a9a",
     "archive_sha256_matches_release": true,
     "logical_user_skills": 20,
     "codex_physical_skills": 20,
@@ -162,12 +162,12 @@
     },
     "status": "failed",
     "evidence_applies_to_current_version": false,
-    "summary": "CLI smoke evidence covers plugin version(s) ['0.6.5'], not the current candidate 0.8.0; re-run smoke_cli_install.py"
+    "summary": "CLI smoke evidence covers plugin version(s) ['0.6.5'], not the current candidate 0.9.0; re-run smoke_cli_install.py"
   },
   "surfaces": {
     "codex-cli": {
       "status": "blocked",
-      "summary": "CLI smoke evidence covers plugin version(s) ['0.6.5'], not the current candidate 0.8.0; re-run smoke_cli_install.py"
+      "summary": "CLI smoke evidence covers plugin version(s) ['0.6.5'], not the current candidate 0.9.0; re-run smoke_cli_install.py"
     },
     "codex-desktop-app": {
       "status": "manual-required",
@@ -175,7 +175,7 @@
     },
     "claude-code-cli": {
       "status": "blocked",
-      "summary": "CLI smoke evidence covers plugin version(s) ['0.6.5'], not the current candidate 0.8.0; re-run smoke_cli_install.py"
+      "summary": "CLI smoke evidence covers plugin version(s) ['0.6.5'], not the current candidate 0.9.0; re-run smoke_cli_install.py"
     },
     "claude-desktop-code": {
       "status": "manual-required",

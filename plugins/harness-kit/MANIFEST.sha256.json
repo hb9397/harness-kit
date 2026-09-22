@@ -3,15 +3,15 @@
   "files": [
     {
       "path": ".claude-plugin/plugin.json",
-      "sha256": "e936e677bf6e0ffc13a9a4c0ffa0f841f674dfbe23a1d651eea9f8c1710996e9"
+      "sha256": "df23d914c0fb119e2b774654f4cb1456deca79eabc2a223534da35944296b1c0"
     },
     {
       "path": ".codex-plugin/plugin.json",
-      "sha256": "a3881c966fedd7d665b11dd01f5f9df4b5ab14a896a127e318622336cbe3d9c9"
+      "sha256": "a4742d8015e33862ab3c84a0e13be94f0f25b5f08101300048d8edf5b3b5a078"
     },
     {
       "path": "CAPABILITIES.json",
-      "sha256": "680acd4adcb43edf92f7eed9526722a8c48888a9f053effd59fa1ac314bec767"
+      "sha256": "ce9d72e5bd06c7f957eb07e2fe6f447dd123dfd277e3edf512bddb435400f7f4"
     },
     {
       "path": "LICENSE",
@@ -27,7 +27,7 @@
     },
     {
       "path": "UPSTREAMS.lock.json",
-      "sha256": "03de4b7c546cc8df659aa95271876031dfe7533c8e7cb988b8922c05c0dd7459"
+      "sha256": "7fbbdbc722fd2ffa55e6468761a0d73f0b7948bfbdf9ec4fd2ae55eed3c8e8e3"
     },
     {
       "path": "licenses/anthropic-frontend-design-LICENSE",
@@ -703,7 +703,7 @@
     },
     {
       "path": "runtime/claude/skills/project-write-access/SKILL.md",
-      "sha256": "c32ed5ce81f9832a77fcf66412bb9862dc304be1b9a17f19ac9fade37c723c15"
+      "sha256": "f691e3b935925d75f9fb14cfe2ac8d5896784375f782a660722e2cf6517a4892"
     },
     {
       "path": "runtime/claude/skills/project-write-access/agents/openai.yaml",
@@ -719,7 +719,7 @@
     },
     {
       "path": "runtime/claude/skills/project-write-access/assets/runtime/write_access_guard.py",
-      "sha256": "8d1efc558889a9fcb2400ca0bce85b58c14fc940cb203d9fc42a30b4a2031796"
+      "sha256": "b04baf84b2dcb46ad8b71edc373cbf8cb28100bd4881a78c78aaca87c4117c49"
     },
     {
       "path": "runtime/claude/skills/project-write-access/evals/evals.json",
@@ -727,7 +727,7 @@
     },
     {
       "path": "runtime/claude/skills/project-write-access/evals/run_evals.py",
-      "sha256": "993889c4577a41a881e5dc5bf268b218371aea52e2e25ef9731d40a6b6943e0c"
+      "sha256": "7ac65b97f4ecbb404639d69cd7f08b01d409f304301bcc0f60ed80b686278c63"
     },
     {
       "path": "runtime/claude/skills/project-write-access/prompts/workflow.md",
@@ -739,15 +739,15 @@
     },
     {
       "path": "runtime/claude/skills/project-write-access/references/provider-capabilities.md",
-      "sha256": "d84fe296d150c5dbc1cc607f1b8d438f82a7056a5dfee04809af0af055ee3ac8"
+      "sha256": "a47f266608d8c2fb31c0602787f9fd8ba6ca52218d7b4639428dd8af7e9a2be4"
     },
     {
       "path": "runtime/claude/skills/project-write-access/references/security-contract.md",
-      "sha256": "bcc84c4d907913b80bd1df72aad5bb1f7e0374057e1648fd5c57137756740b3f"
+      "sha256": "e1430e38342ed13dce1de2235cac9a1ca76ba89d540f27ad7af4b5be7c4956c7"
     },
     {
       "path": "runtime/claude/skills/project-write-access/scripts/project_write_access.py",
-      "sha256": "475e84de45b5024d7c135aacf29ecf13af5dac5a2e8033b3bbc727140c8d3901"
+      "sha256": "5d684114f450345a833231058bb05460ef40e5f0ef223fb8b8e4878050e6325c"
     },
     {
       "path": "runtime/claude/skills/ui-ux-pro-max/SKILL.md",
@@ -1587,7 +1587,7 @@
     },
     {
       "path": "runtime/codex/skills/project-write-access/SKILL.md",
-      "sha256": "c32ed5ce81f9832a77fcf66412bb9862dc304be1b9a17f19ac9fade37c723c15"
+      "sha256": "f691e3b935925d75f9fb14cfe2ac8d5896784375f782a660722e2cf6517a4892"
     },
     {
       "path": "runtime/codex/skills/project-write-access/agents/openai.yaml",
@@ -1603,7 +1603,7 @@
     },
     {
       "path": "runtime/codex/skills/project-write-access/assets/runtime/write_access_guard.py",
-      "sha256": "8d1efc558889a9fcb2400ca0bce85b58c14fc940cb203d9fc42a30b4a2031796"
+      "sha256": "b04baf84b2dcb46ad8b71edc373cbf8cb28100bd4881a78c78aaca87c4117c49"
     },
     {
       "path": "runtime/codex/skills/project-write-access/evals/evals.json",
@@ -1611,7 +1611,7 @@
     },
     {
       "path": "runtime/codex/skills/project-write-access/evals/run_evals.py",
-      "sha256": "993889c4577a41a881e5dc5bf268b218371aea52e2e25ef9731d40a6b6943e0c"
+      "sha256": "7ac65b97f4ecbb404639d69cd7f08b01d409f304301bcc0f60ed80b686278c63"
     },
     {
       "path": "runtime/codex/skills/project-write-access/prompts/workflow.md",
@@ -1623,15 +1623,15 @@
     },
     {
       "path": "runtime/codex/skills/project-write-access/references/provider-capabilities.md",
-      "sha256": "d84fe296d150c5dbc1cc607f1b8d438f82a7056a5dfee04809af0af055ee3ac8"
+      "sha256": "a47f266608d8c2fb31c0602787f9fd8ba6ca52218d7b4639428dd8af7e9a2be4"
     },
     {
       "path": "runtime/codex/skills/project-write-access/references/security-contract.md",
-      "sha256": "bcc84c4d907913b80bd1df72aad5bb1f7e0374057e1648fd5c57137756740b3f"
+      "sha256": "e1430e38342ed13dce1de2235cac9a1ca76ba89d540f27ad7af4b5be7c4956c7"
     },
     {
       "path": "runtime/codex/skills/project-write-access/scripts/project_write_access.py",
-      "sha256": "475e84de45b5024d7c135aacf29ecf13af5dac5a2e8033b3bbc727140c8d3901"
+      "sha256": "5d684114f450345a833231058bb05460ef40e5f0ef223fb8b8e4878050e6325c"
     },
     {
       "path": "runtime/codex/skills/ui-ux-pro-max/SKILL.md",

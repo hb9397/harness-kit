@@ -2,10 +2,10 @@
   "schema_version": "1.0.0",
   "generated_by": "harness-plugin-maintainer",
   "plugin_id": "harness-kit",
-  "version": "0.8.0",
+  "version": "0.9.0",
   "plugin_root": "plugins/harness-kit",
-  "archive": "plugins/harness-kit-0.8.0.zip",
-  "archive_sha256": "4d2bd5139ee56a5a396d2fb3f16e299c3adb6f4681b5caf88ce9e5100fa6e0d7",
+  "archive": "plugins/harness-kit-0.9.0.zip",
+  "archive_sha256": "32d032836aac99d835df6e75c4019b04a43f0442fdbf6e9d7d801dbc86189a9a",
   "marketplaces": {
     "codex": ".agents/plugins/marketplace.json",
     "claude": ".claude-plugin/marketplace.json"

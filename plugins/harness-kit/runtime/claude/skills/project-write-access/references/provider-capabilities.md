@@ -126,3 +126,20 @@
 공개 공식 문서에서 현재 프로젝트 훅 계약을 확인할 수 없는 환경에서는 instruction과
 표준 Git 훅만 적용하고 Codex host hook은 `검증 불가`로 둔다. 다른 제품의 hook JSON을
 Codex에 그대로 복사해 지원된다고 주장하지 않는다.
+
+## Muse
+
+- 프로젝트 공유 설정은 `.muse/hooks.json`이다.
+- `PreToolUse` command hook은 고정 `command`로 실행되며 이벤트 payload를 stdin
+  JSON(`hook_event_name`, `tool_name`, `tool_input`, `cwd`)으로 받는다.
+- matcher는 `*`이며 쓰기 판정은 가드 안에서 `write_file|edit_file` 대상으로만
+  수행한다. `PreToolUse`가 아닌 이벤트와 쓰기 도구가 아닌 호출은 허용한다.
+- allow는 exit 0+빈 stdout, deny는 exit 0과
+  `hookSpecificOutput.permissionDecision=deny` JSON이다. 확인(`ask`) 응답은
+  미검증이므로 가드는 같은 경우 deny로 fail-closed한다.
+- 설치 직후 상태는 `pending-trust`로 기록하고 프로젝트 신뢰 검토 증적이 있어야
+  active로 바꾼다.
+
+공식 자료:
+
+- https://dev.meta.ai/docs/muse-code/extending

@@ -49,7 +49,7 @@
     },
     {
       "skill": "harness-plugin-maintainer",
-      "file_count": 19,
+      "file_count": 20,
       "files": [
         {
           "path": "maintainer/skills/harness-plugin-maintainer/evals/design_workflow.py",
@@ -73,11 +73,15 @@
         },
         {
           "path": "maintainer/skills/harness-plugin-maintainer/evals/run_evals.py",
-          "sha256": "a8e73bcc4a50534c23024c6e50dec533b6df51f696bac81e83a416678b77ba4f"
+          "sha256": "e3782ecc02a47b7356d23f47ff2bd7fbe336d8b50e38faf2969e29af99a66870"
         },
         {
           "path": "maintainer/skills/harness-plugin-maintainer/references/plugin-structure.md",
           "sha256": "49c94d9bca62a34c8245eddf4ffdb72ce46c94708c09965e67d339471609f08e"
+        },
+        {
+          "path": "maintainer/skills/harness-plugin-maintainer/scripts/build_muse_plugin.py",
+          "sha256": "48c4169016080cfdeef787d1ac1b056f8c13ab761d31ed09729c7e8f92a69963"
         },
         {
           "path": "maintainer/skills/harness-plugin-maintainer/scripts/build_plugin.py",
@@ -89,7 +93,7 @@
         },
         {
           "path": "maintainer/skills/harness-plugin-maintainer/scripts/plugin_common.py",
-          "sha256": "09cd6db2ab42f0e1851263505540950a1fd5ede995d4d35bed2c7221f316ff7a"
+          "sha256": "fe26568538f30ed7e6894cce88e040beee1a4adb48e6ac814852c7ad149147a5"
         },
         {
           "path": "maintainer/skills/harness-plugin-maintainer/scripts/run_all_skill_evals.py",

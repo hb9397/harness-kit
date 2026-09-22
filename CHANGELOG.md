@@ -2,6 +2,34 @@
 
 이 문서는 `harness-kit` 사용자 플러그인의 주요 변경 사항을 기록한다.
 
+## [0.9.0] - 2026-09-22
+
+### 변경
+
+- Track B portable routing에 Muse 호스트를 정본 편입했다. `harness-setup`의
+  `muse-hooks.json`·`muse-route.py` 템플릿, `artifact-routing.json` Muse 항목,
+  `install-routing.ps1` Muse 분기, Muse 어댑터 직접 검증 매트릭스를 추가했다.
+- `project-write-access` 가드가 `ai --host muse`를 정식 지원한다. Muse
+  PreToolUse payload 판정, 쓰기 도구 외 호출 허용, 확인(`ask`) 응답의
+  fail-closed deny, `.muse/hooks.json` 관리 핸들러 생성을 포함한다.
+- `harness-kit-muse` `0.2.0`의 정식 빌드 파이프라인을 추가했다. 정본 스킬
+  복사·`allowed-tools` 제거·가드 vendoring·manifest·아카이브·릴리스 증적을
+  재현 빌드와 `--check`로 검증한다.
+- 공개 산출물 계약 변경이므로 minor 버전을 올렸다.
+
+### 보호 자산 영향
+
+- `templates/` 내용 보완이다. Muse 템플릿 2종을 신설하고 기존 routing
+  템플릿·README·프롬프트에 Muse 분기를 추가했으며, `evals/`에 Muse 검증을
+  추가했다.
+- 보호 자산의 삭제·이동·교체는 없다.
+
+### 배포 상태
+
+- `0.9.0`는 `main` 브랜치 배포 후보로 tag와 GitHub Release를 만들지 않는다.
+- `0.9.0` 플러그인 아카이브 경로와 SHA-256은
+  [`maintainer/plugin/release.json`](./maintainer/plugin/release.json)을 정본으로 따른다.
+
 ## [0.6.2] - 2026-09-03
 
 ### 변경

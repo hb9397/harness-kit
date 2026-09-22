@@ -38,7 +38,7 @@ def main() -> int:
         payload = {}
     root = derive_root(payload)
     proc = subprocess.run(
-        [sys.executable, str(GUARD), "ai", "--host", "codex", "--project-root", root],
+        [sys.executable, str(GUARD), "ai", "--host", "muse", "--project-root", root],
         input=raw,
     )
     return proc.returncode

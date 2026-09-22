@@ -1,0 +1,913 @@
+{
+  "generated_by": "harness-plugin-maintainer",
+  "files": [
+    {
+      "path": ".muse-plugin/plugin.json",
+      "sha256": "4bef542dda5ba949473bc0d965e0e5c80a5c0109ba0e2a6441cbc81e4cbe713f"
+    },
+    {
+      "path": "hooks/write-access-guard-muse.py",
+      "sha256": "1edc3d025b5f0d07aeac7c69df44de17740165084def0cb3698425166b601072"
+    },
+    {
+      "path": "hooks/write-access-guard.py",
+      "sha256": "b04baf84b2dcb46ad8b71edc373cbf8cb28100bd4881a78c78aaca87c4117c49"
+    },
+    {
+      "path": "prototype/muse-routing/NOTE.md",
+      "sha256": "43265f3bd12edcb59884aba72b5f55fbc9120df53f569ff489906972323a317d"
+    },
+    {
+      "path": "prototype/muse-routing/muse-hooks.json",
+      "sha256": "8bf1a0a2b9555f3e8df36fa8dcdbb58c89d7f13f428c7373b0cc886a0036d471"
+    },
+    {
+      "path": "prototype/muse-routing/muse-route.py",
+      "sha256": "48a271291f49430da5e2e95981b162fbcefca3bb5598a4a28697452b9a836ccd"
+    },
+    {
+      "path": "skills/code-comment/SKILL.md",
+      "sha256": "2ca39f4ce3a1c7adc75c58a6375fa0eaa80147a205f0cd28d13053d1b7682bb7"
+    },
+    {
+      "path": "skills/code-comment/prompts/change-detection.md",
+      "sha256": "8a5d4efb20beae74bddd4ecdf62d109e9c3cf65ff0a46835262a3750e7c2deb1"
+    },
+    {
+      "path": "skills/code-comment/prompts/comment-rules.md",
+      "sha256": "00bb66ccf51f52df644e353c4f3e6576cd29f4121ffa4b8a68daaf0b50147bff"
+    },
+    {
+      "path": "skills/code-comment/prompts/parallel-setup.md",
+      "sha256": "6a63e6db3ac98d4db33b1c388b2d92e58b3c589d1251252a485df96ce18c5181"
+    },
+    {
+      "path": "skills/code-comment/prompts/style-guide.md",
+      "sha256": "e27fa2d721201d784a5279f647f93518ad9d9b0608fdf0198c636050c49f795b"
+    },
+    {
+      "path": "skills/commit/SKILL.md",
+      "sha256": "11b2667e575c65a3af302b017fd9f3d98feed0e88e1dba5941b030914c1462c3"
+    },
+    {
+      "path": "skills/commit/evals/run_evals.py",
+      "sha256": "200d9986adf7bb20b8b29ced52f27e1793c3270f75c0bfe0800a06c44dea1ee9"
+    },
+    {
+      "path": "skills/commit/examples/commit-messages.md",
+      "sha256": "b2d417716ed8a4400d0dd9f7b4c397315965c94858ab422b26e0920d02b13a94"
+    },
+    {
+      "path": "skills/context-doc/SKILL.md",
+      "sha256": "5489ee0c6d8d05526121ff3aa46cc91c8a6b6bb7ff0d42b64c522f5942e277f5"
+    },
+    {
+      "path": "skills/context-doc/evals/evals.json",
+      "sha256": "3fa3cbf7a9d8e821c6d1a86cf2120707ab133b865ff4bc835047bc89eb9cb8b3"
+    },
+    {
+      "path": "skills/context-doc/evals/run_evals.py",
+      "sha256": "7cedadc8f0b014995471319bccced9344608473c5be5d06a9f2364e3bfa022a3"
+    },
+    {
+      "path": "skills/context-doc/prompts/analysis-claude.md",
+      "sha256": "ec79421b6269b90d286acbdd16c63d6d00f1cafff274aee748d8c3bfc6e8cbb7"
+    },
+    {
+      "path": "skills/context-doc/prompts/analysis-instruction.md",
+      "sha256": "d8e15c6787b25655d4f8037c5a0b5a8ad436d27ad8dd71cdbb1330d4e75d8ba6"
+    },
+    {
+      "path": "skills/context-doc/prompts/design-sync.md",
+      "sha256": "92aa4c9f0d6d71b01e94da8c9a373f5a6d9939bf19c6371c322888b89fff20e1"
+    },
+    {
+      "path": "skills/context-doc/prompts/instruction-lifecycle.md",
+      "sha256": "6360f34f4fb912c73d6e71e5b9daf80c681a2d0d0465a39ada851b4e77f36cec"
+    },
+    {
+      "path": "skills/context-doc/prompts/parallel-setup.md",
+      "sha256": "c3ec4582ccd8c2cba1ee8c043d61f0518a7ebb959c905265af5819e8e0e5c44c"
+    },
+    {
+      "path": "skills/context-doc/templates/AGENTS.md.template",
+      "sha256": "9ea6e479266ad604b664e6abbb57177f77dafe7f321fcc57907c498c86faf8d3"
+    },
+    {
+      "path": "skills/context-doc/templates/agent-instruction.md.template",
+      "sha256": "613c066c3046ddcfa1a42901e4c836a1c653542379574736b73bafabfa26322b"
+    },
+    {
+      "path": "skills/context-doc/templates/api-instruction.md.template",
+      "sha256": "683db9cc75bb2fd8ccb8033171306712ed70c05fa8d43eea80dda5d25fbf29bf"
+    },
+    {
+      "path": "skills/context-doc/templates/architecture-instruction.md.template",
+      "sha256": "9befa82c4a40ce536e3d34bf68978dc906ce6880b2261ca140186fcd152647be"
+    },
+    {
+      "path": "skills/context-doc/templates/artifact-output-routing-instruction.md.template",
+      "sha256": "c18f08055c958a4bf090630bf1ecbc05fa382e01b7f2ebf03d5985583f539cbc"
+    },
+    {
+      "path": "skills/context-doc/templates/code-style-instruction.md.template",
+      "sha256": "d5bc6350579b5499264c1046d321e8f857517f59495c454268dd60cbfbe91d4b"
+    },
+    {
+      "path": "skills/context-doc/templates/comm-instruction.md.template",
+      "sha256": "6e1125db9501d84ff1a37f7656e2282bd88fc741c209b5b5cb900c341f5995da"
+    },
+    {
+      "path": "skills/context-doc/templates/data-standard-instruction.md.template",
+      "sha256": "31b6d802ce210a10f89675df9b3f7c8a8455e3bda1f43c3490392d1ae71095b5"
+    },
+    {
+      "path": "skills/context-doc/templates/file-convention-instruction.md.template",
+      "sha256": "1977f88ffe871f25cad5e55485c75a0855544b1ed82cf9e79f92963b94a5bad5"
+    },
+    {
+      "path": "skills/context-doc/templates/framework-instruction.md.template",
+      "sha256": "3a535d99d3a7eb5bdb936faae3220e0e9635e9e7f3764e62ab2164a0ce078ed1"
+    },
+    {
+      "path": "skills/create-prototype/SKILL.md",
+      "sha256": "f0709a31a9530fadb006304c4c80a3de3cc1830e8248c53aa92c494a6d6a3c2e"
+    },
+    {
+      "path": "skills/create-prototype/evals/run_evals.py",
+      "sha256": "9b5a175fdefafde5fa31e640fcba6feb47c75a62aaecdddf0cf5f30aa67445dc"
+    },
+    {
+      "path": "skills/create-prototype/examples/SFR-018.html",
+      "sha256": "66c371c38f778f3098ce3d8ccf988014ee5931779436dd603fd3856e77e3f282"
+    },
+    {
+      "path": "skills/create-prototype/prompts/parallel-setup.md",
+      "sha256": "6a63e6db3ac98d4db33b1c388b2d92e58b3c589d1251252a485df96ce18c5181"
+    },
+    {
+      "path": "skills/create-prototype/references/color-system.md",
+      "sha256": "03b045fb536b29fcc05555927828227f4e1750b237298e7db49beffb86d65833"
+    },
+    {
+      "path": "skills/create-prototype/references/html-template.md",
+      "sha256": "2999fb6aa5baff8c354840f9efbceddbc292fdc55379527c2260a3de5cb322e5"
+    },
+    {
+      "path": "skills/design-doc/SKILL.md",
+      "sha256": "5fb33ad075f26da48fc0016562fb5bf169c91dd59a4689b4a31a92a64bb8e048"
+    },
+    {
+      "path": "skills/design-doc/prompts/interview.md",
+      "sha256": "f883601c57d9d0ad3358f34d34c51875391468434eb18ae2db54576094bab911"
+    },
+    {
+      "path": "skills/design-doc/prompts/project-design.md",
+      "sha256": "73c9df9816626537f29ccddc2555e8d9c78983debef51453d678fabb6688593d"
+    },
+    {
+      "path": "skills/design-doc/prompts/scale-routing.md",
+      "sha256": "1726438ecc34a15f85be5544b2090d452de13661f97bc86822735d4098beedb5"
+    },
+    {
+      "path": "skills/design-doc/templates/INPUT_V1.md",
+      "sha256": "3b8080e33402c3bd963f0ab957a7a2a46d4769c72ed3447e95389e09e9a800fc"
+    },
+    {
+      "path": "skills/design-doc/templates/INPUT_V1_example.md",
+      "sha256": "7588c8b84d0a8c14afc7068986e4269387b7b97a9cfbdc69c46ed4459895e75e"
+    },
+    {
+      "path": "skills/design-doc/templates/INPUT_V2.md",
+      "sha256": "958436175896422bfc23dcdb0d8ba4a099b26f9e702c5c2da246608a5ae25f8b"
+    },
+    {
+      "path": "skills/design-doc/templates/OUTPUT_V1.md",
+      "sha256": "d3c357ef5ed1181e7e128934d6f210497dd3c53764a6ed14f7561cc33a81da34"
+    },
+    {
+      "path": "skills/design-doc/templates/OUTPUT_V1_deprecated.md",
+      "sha256": "fe80e43a13b75dd1677d197fb2314e09287b9c1a6dcf56eaa1e9c6aa9c68f740"
+    },
+    {
+      "path": "skills/design-doc/templates/OUTPUT_V1_example.md",
+      "sha256": "71f682776970a5ba215487c343c50ccf5cb198005f425fb3bff78a675bb67c99"
+    },
+    {
+      "path": "skills/design-doc/templates/OUTPUT_V2.md",
+      "sha256": "18b04e177353891971f0279bbe295a2241f84b730b386a9ad4538ed1e703e5ad"
+    },
+    {
+      "path": "skills/design-doc/templates/PROJECT_DESIGN.md",
+      "sha256": "93a9f0e8dc9832b5d8d53d14ef2658a7c3d9bfe3612263fba41bbb4bc2fdd5c0"
+    },
+    {
+      "path": "skills/design-prototype-docs/SKILL.md",
+      "sha256": "d1ea5dc140e901bedc5cd0aeb6229a9ae60b71cc09ab050af74aa12bddaba86a"
+    },
+    {
+      "path": "skills/design-prototype-docs/evals/run_evals.py",
+      "sha256": "5f6a9d4c2aaab804ed2f2a4678077a41515d1539984496ba67899c6af1a60c49"
+    },
+    {
+      "path": "skills/design-prototype-docs/example/mock_output.md",
+      "sha256": "5c0734a57456d4e59c26b28a652ce3186c2a9353b4e34954abb7ca15f7b0b042"
+    },
+    {
+      "path": "skills/doc-audit/SKILL.md",
+      "sha256": "12bb46fbecc69c682a51dc029ed55866545fa931ad187326844bbe6410683a2c"
+    },
+    {
+      "path": "skills/doc-audit/audit-report.md",
+      "sha256": "cffa0f702a180ffe323a61187ca2116faddb93266f02e4df1723cc9ad9489d28"
+    },
+    {
+      "path": "skills/doc-audit/prompts/deps-audit.md",
+      "sha256": "ee76fb6db874fb0112f420a06ecf39c55a6919bd493d9666d49d530a004c7d04"
+    },
+    {
+      "path": "skills/doc-audit/prompts/parallel-setup.md",
+      "sha256": "6a63e6db3ac98d4db33b1c388b2d92e58b3c589d1251252a485df96ce18c5181"
+    },
+    {
+      "path": "skills/doc-audit/prompts/pattern-audit.md",
+      "sha256": "210e640004fcf39bc5845b0e5b7ad970d305f5165fffc4ea10f7aedc3c9a197c"
+    },
+    {
+      "path": "skills/doc-audit/prompts/rulecheck-audit.md",
+      "sha256": "f31920967c15401c42b13711906666339d4f5d356567f073864fc91b0f97eafd"
+    },
+    {
+      "path": "skills/doc-audit/templates/audit-report.md",
+      "sha256": "d76141f79f089e4ebe83a0abe3cd32528383dabe3ea1a466e015ab6b432985d6"
+    },
+    {
+      "path": "skills/frontend-design/SKILL.md",
+      "sha256": "df25c2bcbc1f6308dabb277d5371fbf3e67e553ccadc835863be547f7e9bffa4"
+    },
+    {
+      "path": "skills/frontend-design/evals/run_evals.py",
+      "sha256": "47655fa9540c5c7ce3eb5c2618bcdff8b65ea19c4fee210e88ffe24103222131"
+    },
+    {
+      "path": "skills/git-scoped-account/SKILL.md",
+      "sha256": "1325588ea8ab2f63a12d27f80b4c2613a04eda8219db0ec293216cdfb6b0a632"
+    },
+    {
+      "path": "skills/git-scoped-account/evals/evals.json",
+      "sha256": "6c60020fd9b2c50533aa410cdda63607462847d20812f628ae1d03a91bd6ccfb"
+    },
+    {
+      "path": "skills/git-scoped-account/evals/run_evals.py",
+      "sha256": "3fe446aedc46a99e4a0858c849c4f75078f9c19d0cbb10c7101dd7820326cfd8"
+    },
+    {
+      "path": "skills/git-scoped-account/prompts/commands.md",
+      "sha256": "f8438c6c48ff889f82d5113d404921b4259b08688aaf086bea8d279ca1699bb5"
+    },
+    {
+      "path": "skills/git-scoped-account/templates/gitconfig-shared.md",
+      "sha256": "3830e341868f716b9c242509342c6715ce71851f42b3bda4c6c45e8cc60f4be1"
+    },
+    {
+      "path": "skills/git-scoped-account/templates/verify-report.md",
+      "sha256": "523d5a2288c636f968e6258da19e29145355893d8d23a4826bba87b9fed5e0bc"
+    },
+    {
+      "path": "skills/harness-bootstrap/SKILL.md",
+      "sha256": "554042e3396f6ff9f81a537433e522d49648aba9e8efbd7d91b73273170b979f"
+    },
+    {
+      "path": "skills/harness-bootstrap/evals/evals.json",
+      "sha256": "3bd3d630ed962ffbeee9e39f9865c2e5fb7ad7585491ced578c23869532d61f6"
+    },
+    {
+      "path": "skills/harness-bootstrap/evals/run_evals.py",
+      "sha256": "e6d51bfa38dab099e2527da8c165f8defc993448801ceb33aed386b014a8d7e7"
+    },
+    {
+      "path": "skills/harness-bootstrap/prompts/code-scan.md",
+      "sha256": "bf996fa2ddbc0419a2c627ed8aae75bc721f037eb7112edf6516d5393d4721ba"
+    },
+    {
+      "path": "skills/harness-bootstrap/prompts/extraction-mapping.md",
+      "sha256": "ec41bc8585ebccaf5e9ec7248f6f67a96971303a525ce44359b5684608fd6fcb"
+    },
+    {
+      "path": "skills/harness-bootstrap/prompts/interview.md",
+      "sha256": "f9fa5edc882cc9f831baf41f2924f03c65e90df29d2968f808f6217106a3942c"
+    },
+    {
+      "path": "skills/harness-bootstrap/prompts/project-extraction-mapping.md",
+      "sha256": "618d8711943d7416b7c754c1b5efc93c178eac119c91963b7633d9230c3849e4"
+    },
+    {
+      "path": "skills/harness-bootstrap/prompts/stack-detection.md",
+      "sha256": "b3e7d651afdad12ac80144413c08aab7f021bd70afc3c8b94fd20f43f11b16d2"
+    },
+    {
+      "path": "skills/harness-setup/SKILL.md",
+      "sha256": "9b8eace472a03ad4fcd119ad32f22d6444491ac78ced2d21334a7151558624ed"
+    },
+    {
+      "path": "skills/harness-setup/evals/fixtures/portable-routing-baseline.json",
+      "sha256": "8e177e4787741035ef082da1a564e9c7ab43b68c18cd7a97bc12546fb00a159a"
+    },
+    {
+      "path": "skills/harness-setup/evals/fixtures/portable-routing-bundle.json",
+      "sha256": "fffdcfee9a4086f22b9a697a388210430c5d11e87427cc0a0900f065bdd31a84"
+    },
+    {
+      "path": "skills/harness-setup/evals/fixtures/portable-routing-coverage.json",
+      "sha256": "e3286d18a480f1a649b74de50c4fff97b18f707da41cad136b7dc86af141cf35"
+    },
+    {
+      "path": "skills/harness-setup/evals/run_evals.py",
+      "sha256": "c25ec96dbf12a2eff3ecd11ba8d8703a5272072bb327883568160e4a156ffc2e"
+    },
+    {
+      "path": "skills/harness-setup/prompts/detection.md",
+      "sha256": "b96e218479b24035cd3b24bf5975911d2f348a00c5512acbd9629cfacf543767"
+    },
+    {
+      "path": "skills/harness-setup/prompts/multi-app-setup.md",
+      "sha256": "2dc8b29c670952341c921acd67b418aee63c4ee9a4f3d1952cbfd03b8c463156"
+    },
+    {
+      "path": "skills/harness-setup/prompts/single-app-setup.md",
+      "sha256": "ee8d5778c26a24c13ab8620198f4375681063053bfd2d99340a9767013032f73"
+    },
+    {
+      "path": "skills/harness-setup/prompts/update-mode.md",
+      "sha256": "fc79463e2b871c17df403e48b1beb4d85d15b9f3b820e1c60cad1e008d5e90f0"
+    },
+    {
+      "path": "skills/harness-setup/templates/docs-gitignore.template",
+      "sha256": "47d9b05dccc4e8fc396d2d323b8c9b3bfd96725823c3c5dbfa57547678a538ce"
+    },
+    {
+      "path": "skills/harness-setup/templates/docs-readme-multi.template",
+      "sha256": "0680870f8e08fca53b5c9b5fed4270e59289bf65e2e2a62c88f3ca71546b15b0"
+    },
+    {
+      "path": "skills/harness-setup/templates/docs-readme-single.template",
+      "sha256": "9fc01107b8f93fa80e573e070f9f20c34b2135c79e82684132924376bb431832"
+    },
+    {
+      "path": "skills/harness-setup/templates/inbox-readme.template",
+      "sha256": "93fc1c4599a500ede7ff3a73b0846fa2f0d1bdd6a86c868a4c3c8841e0f88f28"
+    },
+    {
+      "path": "skills/harness-setup/templates/portable-routing/README.md.template",
+      "sha256": "20c3ae35666eccbec810f163236792b4bebb9b40dd30e06bc75a066116028cd8"
+    },
+    {
+      "path": "skills/harness-setup/templates/portable-routing/artifact-format-contract.json.template",
+      "sha256": "aec1accda1f3ae7da9fc6cbad4201e7b6e6e328a04c36fcaa1e33e85ca76b538"
+    },
+    {
+      "path": "skills/harness-setup/templates/portable-routing/artifact-routing.json.template",
+      "sha256": "ecf2c0706b6bbf7bf921d02b6ab382d5ce468be600fd6750ac29a65ef22960b5"
+    },
+    {
+      "path": "skills/harness-setup/templates/portable-routing/claude-settings-hook.json.template",
+      "sha256": "99ee94ff07768682da07d1fbb178a213cdc79ad8bd8ec2bea1abe8d4404e5e30"
+    },
+    {
+      "path": "skills/harness-setup/templates/portable-routing/codex-hooks.json.template",
+      "sha256": "ffce65fbfa4d0d876550661797b2ab8b634ec88e5efdfd9a9ff0d8b32f8f0569"
+    },
+    {
+      "path": "skills/harness-setup/templates/portable-routing/hooks/approve-artifact.ps1.template",
+      "sha256": "6859c2d110fa4b7b6a862505c8f952934b771606492aac51e4b125e806f69cc0"
+    },
+    {
+      "path": "skills/harness-setup/templates/portable-routing/hooks/artifact-route-core.ps1.template",
+      "sha256": "508f2440186c67f56fdb5458193511157e1af568801c49d0f54347d1cc090637"
+    },
+    {
+      "path": "skills/harness-setup/templates/portable-routing/hooks/claude-pre-tool-use.ps1.template",
+      "sha256": "f069c54d94ab9bf7934d73c85aca79ad2dbb9637b6163317e70f6a3aa320a8bb"
+    },
+    {
+      "path": "skills/harness-setup/templates/portable-routing/hooks/codex-pre-tool-use.ps1.template",
+      "sha256": "fc392ee7644c23bcbece2bf02eddc590f23d21d91da8388fc7420caef4f6fc17"
+    },
+    {
+      "path": "skills/harness-setup/templates/portable-routing/hooks/muse-route.py.template",
+      "sha256": "30f7bd4862552dc098366c7e0483d71202d5779d0193558416357a4e82788218"
+    },
+    {
+      "path": "skills/harness-setup/templates/portable-routing/inbox-artifact-manifest.json.template",
+      "sha256": "10737383ef52c3588480c9fcb8b493d63ddc3ebe2a5c05a643e3f660ab5ceac0"
+    },
+    {
+      "path": "skills/harness-setup/templates/portable-routing/install-routing.ps1.template",
+      "sha256": "f2c23be95db949c529287632dffec479167a0644145f425b586cdab552deb1ff"
+    },
+    {
+      "path": "skills/harness-setup/templates/portable-routing/muse-hooks.json.template",
+      "sha256": "91e248e6f6b2d549f9bc1e587dc5a1827447c088d596e8654d8bf188a276cb4a"
+    },
+    {
+      "path": "skills/harness-setup/templates/portable-routing/normalize-artifact.ps1.template",
+      "sha256": "2eccdc53bd9526c8d2f91fd7977d484c11d1f28d909ba84f2db3d4540e105c81"
+    },
+    {
+      "path": "skills/harness-setup/templates/root-context-single.template",
+      "sha256": "feebcded7e60a7fa179e86a110d285ba5042735da288803b9e983bcedd0657ba"
+    },
+    {
+      "path": "skills/harness-setup/templates/root-context.template",
+      "sha256": "af4f5b87926febc7c1f02eeb4bdf06fb8de31bdfcb560152b3bfa45f74a52798"
+    },
+    {
+      "path": "skills/humanize-korean/SKILL.md",
+      "sha256": "c274d43ac41f5ae7f03ae734b9193afac2af241dc08912a92352c871cdbad2b6"
+    },
+    {
+      "path": "skills/humanize-korean/evals/evals.json",
+      "sha256": "30bfbce3676b53bf217ce752c564ab879b44cc41167fb6f015e7ac33535a50b8"
+    },
+    {
+      "path": "skills/humanize-korean/evals/run_evals.py",
+      "sha256": "5fcc3445143b75224aaa17c2b4157fa6fdf1d7fa343cce8e880964e5f57da151"
+    },
+    {
+      "path": "skills/humanize-korean/references/document-refinement.md",
+      "sha256": "c3a0c9276462d6bc04d3d4ec270ba413544d4d77c8bc9b5d48fb94de65252a1c"
+    },
+    {
+      "path": "skills/humanize-korean/references/taxonomy.md",
+      "sha256": "9fcded40f17dc3ca8f564abfd9865cb9f41330437ea2684d9ef148a9426347c5"
+    },
+    {
+      "path": "skills/humanize-korean/scripts/humanize_korean.py",
+      "sha256": "078518f71e61fad627b8436277ae5a6ec9c6d177577a89228e9fe4a7fa6cf094"
+    },
+    {
+      "path": "skills/impl-doc/SKILL.md",
+      "sha256": "6a66c9ab9595a01a3a64c6de51ebd3e0fe093f7a533ec96980cb813d6b4b4caf"
+    },
+    {
+      "path": "skills/impl-doc/prompts/analysis.md",
+      "sha256": "26e9331ae184a46c53379114999d5b313954a7a85882927aa830d63f736b6c91"
+    },
+    {
+      "path": "skills/impl-doc/prompts/phase-design.md",
+      "sha256": "4fed351bc59527ef3d178e549efb578c82fb1cb5b28d3720adc2e189637c2e2d"
+    },
+    {
+      "path": "skills/impl-doc/prompts/pitfall-checklist.md",
+      "sha256": "368160945ad06e0c224f80f38ce5dbb7d5ab75d3ca6603a6c45ea88ee40e79e5"
+    },
+    {
+      "path": "skills/impl-doc/prompts/task-rules.md",
+      "sha256": "aa9504b8d9fd164814805b106d1bcd59630f24100c0188fc39a83f9d5fe1c843"
+    },
+    {
+      "path": "skills/impl-doc/prompts/verification.md",
+      "sha256": "085a22038b4e8ee48167dd5c5e09d5162875cb386a8420d0fa7a84b35b3b7b04"
+    },
+    {
+      "path": "skills/impl-doc/templates/output.md",
+      "sha256": "85ea4c42c8be1ab2d5a275d6128601414c44b2978a013f35bd1a1d1abe1f0752"
+    },
+    {
+      "path": "skills/impl-fe-be-doc/SKILL.md",
+      "sha256": "31f882d836cbc6fa0b73a72dfc4d492e45e378a5f450381e435c6250943f6673"
+    },
+    {
+      "path": "skills/impl-fe-be-doc/prompts/analysis.md",
+      "sha256": "1b104324cb441132af068bfde8e970165d9195ed1007613e49336a6a3331e3a5"
+    },
+    {
+      "path": "skills/impl-fe-be-doc/prompts/api-mapping.md",
+      "sha256": "85f6a0a88d7efeaf8892ad3f19dadd1b6aeacee46c415f0b4805fab760075907"
+    },
+    {
+      "path": "skills/impl-fe-be-doc/prompts/component-design.md",
+      "sha256": "f718d3b2185004eafbf755c079cdcdff0d0376f6b0142f613114ff7b6b750ff8"
+    },
+    {
+      "path": "skills/impl-fe-be-doc/prompts/phase-design.md",
+      "sha256": "09ad737bb75142a74db11b3d8ad87634bf8147d293228f9b8182dc97f177b838"
+    },
+    {
+      "path": "skills/impl-fe-be-doc/prompts/pitfall-checklist.md",
+      "sha256": "10f0b609bacfbe210faa9f21e0dd38d98630ee5d77047289c373b83584caf214"
+    },
+    {
+      "path": "skills/impl-fe-be-doc/prompts/screen-analysis.md",
+      "sha256": "2f708842093f3c952cc81fbed045c72cb8c137ab5cbf8cd0766bbde2938db44a"
+    },
+    {
+      "path": "skills/impl-fe-be-doc/prompts/task-rules.md",
+      "sha256": "1325275cdfcce10903ddacf543568c71679bb4d2c5b559b6d09d7f979946d781"
+    },
+    {
+      "path": "skills/impl-fe-be-doc/prompts/verification.md",
+      "sha256": "ebf11ea7d218ebcdc4c928c2e864616b532f999c6997e8cc680fae9cc42a32bc"
+    },
+    {
+      "path": "skills/impl-fe-be-doc/templates/impl-workflow.md.template",
+      "sha256": "cb8bb11b9fe6d87df26324c1abbb881f81f013e23ec1ed39dd48d2408d6be89a"
+    },
+    {
+      "path": "skills/impl-reuse-scan/SKILL.md",
+      "sha256": "99c40e74a3a2c10a135d55deaabcc7c69cb094fc2afd0b187892878a9928ce03"
+    },
+    {
+      "path": "skills/impl-reuse-scan/prompts/decision-interview.md",
+      "sha256": "64a1f1afd6caf42ce1a6da7130c5d66905c567d7545606d579804c963444e602"
+    },
+    {
+      "path": "skills/impl-reuse-scan/prompts/extract-intents.md",
+      "sha256": "71d68cf4c361bd9997fdb9829179adc14a8436c3f808b00f3226146957698efa"
+    },
+    {
+      "path": "skills/impl-reuse-scan/prompts/match-rules.md",
+      "sha256": "6c911d98c4ff4e9a86ff6bb7459292b1f5862ab950f763effc4f03b7b168ff36"
+    },
+    {
+      "path": "skills/impl-reuse-scan/prompts/scan-patterns.md",
+      "sha256": "a0e39d54c739ee3e87803b8672012051787aed5b26e1418f087bd38de17eae0a"
+    },
+    {
+      "path": "skills/impl-reuse-scan/references/common-pitfalls.md",
+      "sha256": "4a605bf9a03b12955b5baa2643494377b7e1391ada951295898dd7b72f18ce57"
+    },
+    {
+      "path": "skills/impl-reuse-scan/templates/discovery-report.md",
+      "sha256": "aff958adf15af17a398c4d97b58a859a98ff13b31ad78354b8d0bb56dc446044"
+    },
+    {
+      "path": "skills/impl-reuse-scan/templates/instruction-patch.md",
+      "sha256": "f8956500232cfe85be120173e4633058a85e958d03c951b3460c242879db4c15"
+    },
+    {
+      "path": "skills/impl-verify/SKILL.md",
+      "sha256": "b0b0317e3711fdaafe3895dbca0693738d6659269cb0df39b68dfa307574c94d"
+    },
+    {
+      "path": "skills/impl-verify/evals/run_evals.py",
+      "sha256": "7cfcf86c0159558cd8426fe9eb7df5cd3ebbd71c851ec40405fbdab0e1d22a05"
+    },
+    {
+      "path": "skills/impl-verify/prompts/classify-checks.md",
+      "sha256": "edfaea6ea1b113bd0979174f63a5d01cdd675848bb5e5092dfedaa694a4ad641"
+    },
+    {
+      "path": "skills/impl-verify/prompts/extract-checks.md",
+      "sha256": "3e8d976dc24c09b05ddb2cb1935c2ef18319f7e2aa3cb3bbad997f69a4407966"
+    },
+    {
+      "path": "skills/impl-verify/prompts/run-auto.md",
+      "sha256": "1742bf899ebb1fbb0486414911ce918acd3975c18e19220f428233149acb3133"
+    },
+    {
+      "path": "skills/impl-verify/prompts/run-manual.md",
+      "sha256": "af83486b35866760d3e1185f14962ce1384e9330255af713cef015a89b82f3a8"
+    },
+    {
+      "path": "skills/impl-verify/references/gate-rules.md",
+      "sha256": "1244ce2a36d9cc996512f0a483022357344f2d126d94c5f7d722575048ced841"
+    },
+    {
+      "path": "skills/impl-verify/references/safe-execution.md",
+      "sha256": "97665b9f5b4c9f4403aadd20d2d484ab8aaecafe548467201986851c1ae83835"
+    },
+    {
+      "path": "skills/impl-verify/templates/verification-report.md",
+      "sha256": "e45eb4cfdd04cc7ade50cdc9c7be05d51527b4cf0e1cb2a89fea9ea57f5b15dd"
+    },
+    {
+      "path": "skills/motion-design/SKILL.md",
+      "sha256": "eda94a0891a4c79a6cae93c2a3c044feb5ceca8c77b278422d96054acf547552"
+    },
+    {
+      "path": "skills/motion-design/director/choreography.md",
+      "sha256": "c81257b56160b9b2f3d99f78d4b8172b425c22d9ca73be06d3ffaa7305a34deb"
+    },
+    {
+      "path": "skills/motion-design/director/context-adaptation.md",
+      "sha256": "550e96a1c8c369513304ee74c0e89b63168bc7287b83e9ed5685bb65609986b3"
+    },
+    {
+      "path": "skills/motion-design/director/core-philosophy.md",
+      "sha256": "7aaa8a065d9940dad0198cf9cfe74979008495e6daf87f46f9022fff1b6a85e9"
+    },
+    {
+      "path": "skills/motion-design/director/decision-framework.md",
+      "sha256": "4b6758da6742475c928b4f8be8c662f4b5ed0964468ba7760df8f7635c779358"
+    },
+    {
+      "path": "skills/motion-design/director/disney-principles.md",
+      "sha256": "39024711890c2684a3434659a4d95a52ca8231facea74e87e79503054aaca671"
+    },
+    {
+      "path": "skills/motion-design/director/emotion-mapping.md",
+      "sha256": "a279e55a3f52a9f5830d38dc54679c652d9a5c26f0dd360700c16e23766d468b"
+    },
+    {
+      "path": "skills/motion-design/director/motion-personality.md",
+      "sha256": "66a3623b6654869482c02157ca791034a614ca6dcb02a8112049e28d292ee18a"
+    },
+    {
+      "path": "skills/motion-design/director/narrative-structure.md",
+      "sha256": "d49db19db40425dec027c3012d553b50fd74ed79e27ace9dec1226796469061b"
+    },
+    {
+      "path": "skills/motion-design/evals/run_evals.py",
+      "sha256": "19972e1731b07d0919e96118cf585b589653a81a315c018a27ff164a4273d24b"
+    },
+    {
+      "path": "skills/motion-design/patterns/ambient-continuous.md",
+      "sha256": "f9cfa00d3325dceadcb9ffd77dcb5dcbc51d34121f3b1f162979939006056773"
+    },
+    {
+      "path": "skills/motion-design/patterns/entrance-exit.md",
+      "sha256": "70b3fc3a8d58ebe58e293e643b78fd13750d9c8ef1c8fc5fe85e52f7378cbd91"
+    },
+    {
+      "path": "skills/motion-design/patterns/multi-element.md",
+      "sha256": "46c8da91843c593deb763a4a7fa32849bdaeb7a7ecd4d559e3b21bcc976f2c46"
+    },
+    {
+      "path": "skills/motion-design/patterns/state-feedback.md",
+      "sha256": "dac86388c2d8fcdfc2f194b4f8877caedcdc010df9ce29d27dfc99d08cf8c60e"
+    },
+    {
+      "path": "skills/motion-design/reference/property-selection.md",
+      "sha256": "053d830795fc824fed27618fbd18084207af6aeed55b73c0a6e1d5665de894ae"
+    },
+    {
+      "path": "skills/motion-design/reference/quality-checklist.md",
+      "sha256": "c11bf193b700d9c9ebc5d871f1d5f193bccc441c4eccc0509b53a40d6e8dc558"
+    },
+    {
+      "path": "skills/motion-design/reference/timing-easing-tables.md",
+      "sha256": "e478f3b99c4cac3f96eca008e20f8808d4cfae165f5799f260092baf9b6ebcff"
+    },
+    {
+      "path": "skills/motion-design/reference/troubleshooting.md",
+      "sha256": "69e5aaeee108231d51187143ae3fce4db7a42936f10682908ca9462a008a047a"
+    },
+    {
+      "path": "skills/multi-review/SKILL.md",
+      "sha256": "bbdb6fa588ab4068ce0adc8c3cb0667d507688788538b2a9d2f67c93ea0ed876"
+    },
+    {
+      "path": "skills/multi-review/prompts/maintainability.md",
+      "sha256": "ba7d2e12a60d010f034c44a5cca343029ffb1cf1168d8aeefa8aa1d1dcbe0386"
+    },
+    {
+      "path": "skills/multi-review/prompts/parallel-setup.md",
+      "sha256": "6a63e6db3ac98d4db33b1c388b2d92e58b3c589d1251252a485df96ce18c5181"
+    },
+    {
+      "path": "skills/multi-review/prompts/performance.md",
+      "sha256": "e071e581106212f9ec86af5e64063c90cd566360c460654086f861d4fdb84776"
+    },
+    {
+      "path": "skills/multi-review/prompts/security.md",
+      "sha256": "53419aed71f9c4ed5535367279213fbfeca0e5ecee43d66a8b86aaa895f657ea"
+    },
+    {
+      "path": "skills/multi-review/prompts/testing.md",
+      "sha256": "2e59439a5bdb389b3ff71ddd92d0f14f63f90adb3c5c5a506d1d2e8966010b16"
+    },
+    {
+      "path": "skills/multi-review/template.md",
+      "sha256": "11895446389916a78df63e5a429d652fae1f5636657f511a585519995db34a78"
+    },
+    {
+      "path": "skills/project-write-access/SKILL.md",
+      "sha256": "bc5377f4557ec9dac008c3b4a63bf5ef872802996bfcb6aa4df5d8920386c7c5"
+    },
+    {
+      "path": "skills/project-write-access/agents/openai.yaml",
+      "sha256": "56e18b95b81c6be9b59a8c665d40452f41ff6797bc65662f4994ab5471a87643"
+    },
+    {
+      "path": "skills/project-write-access/assets/runtime/pre-commit",
+      "sha256": "766c70f2db6351e2fdf4c4027c6666f378cea604998f81785f091b582f0d7f16"
+    },
+    {
+      "path": "skills/project-write-access/assets/runtime/pre-push",
+      "sha256": "cca92c0a5944581bb21cbece197ed56c223512a92de562f333944d43da791b91"
+    },
+    {
+      "path": "skills/project-write-access/assets/runtime/write_access_guard.py",
+      "sha256": "b04baf84b2dcb46ad8b71edc373cbf8cb28100bd4881a78c78aaca87c4117c49"
+    },
+    {
+      "path": "skills/project-write-access/evals/evals.json",
+      "sha256": "5c8c3b39b2ef76979e9e04bbd5cd2bd7bf9e20faf9c3fe3cf267ce175bc7f399"
+    },
+    {
+      "path": "skills/project-write-access/evals/run_evals.py",
+      "sha256": "7ac65b97f4ecbb404639d69cd7f08b01d409f304301bcc0f60ed80b686278c63"
+    },
+    {
+      "path": "skills/project-write-access/prompts/workflow.md",
+      "sha256": "536fa16c8d92da0f65be5ccd1c5eb213dab76f2e9949c2e1ba9fcf3a9bb6dedf"
+    },
+    {
+      "path": "skills/project-write-access/references/policy-schema.md",
+      "sha256": "40e3dd171ca9b3009afab5ff2d0fb71ad9ddf1c799cc63aef00a390d02f41b5c"
+    },
+    {
+      "path": "skills/project-write-access/references/provider-capabilities.md",
+      "sha256": "a47f266608d8c2fb31c0602787f9fd8ba6ca52218d7b4639428dd8af7e9a2be4"
+    },
+    {
+      "path": "skills/project-write-access/references/security-contract.md",
+      "sha256": "e1430e38342ed13dce1de2235cac9a1ca76ba89d540f27ad7af4b5be7c4956c7"
+    },
+    {
+      "path": "skills/project-write-access/scripts/project_write_access.py",
+      "sha256": "5d684114f450345a833231058bb05460ef40e5f0ef223fb8b8e4878050e6325c"
+    },
+    {
+      "path": "skills/ui-ux-pro-max/SKILL.md",
+      "sha256": "e1e34bb15b4511f2f48f83d6b1a87a9fa4fca33983dcb5906dadbb5a48fd470e"
+    },
+    {
+      "path": "skills/ui-ux-pro-max/data/app-interface.csv",
+      "sha256": "2a17ef810dab715ce1f339861817a8fbe3ccc38142b70517301e874803e838ac"
+    },
+    {
+      "path": "skills/ui-ux-pro-max/data/charts.csv",
+      "sha256": "a70ef7460b0eaaea8614f86a0d09a4bc38b467804179762464b5ca45b491baac"
+    },
+    {
+      "path": "skills/ui-ux-pro-max/data/colors.csv",
+      "sha256": "cb26759805217edaaa31b09836aec09eab0fe245c58f5884e9a16ef802c6e26a"
+    },
+    {
+      "path": "skills/ui-ux-pro-max/data/google-fonts.csv",
+      "sha256": "3fd2898fb0fdd31ba758bf05cfcd2b58cd0f038a20cf08e417d09e5a8a4a509e"
+    },
+    {
+      "path": "skills/ui-ux-pro-max/data/icons.csv",
+      "sha256": "f376c29fb4df37b4bdb366a5aa70cb211ba3dd8b435390aaa03152a64b07d2e8"
+    },
+    {
+      "path": "skills/ui-ux-pro-max/data/landing.csv",
+      "sha256": "121a2cac7cf21050234b5f80e7b4e182f10123536032e0f9ad862ad3aec9677d"
+    },
+    {
+      "path": "skills/ui-ux-pro-max/data/motion.csv",
+      "sha256": "6452fbd8028ab71d52993775340e1bc40a150d92be8d4b4cb8710620fd1a7512"
+    },
+    {
+      "path": "skills/ui-ux-pro-max/data/products.csv",
+      "sha256": "e9749e4fd8f7d4c94919c25ebd347a4adaddb671e7b01d33fbc2c87d447e6667"
+    },
+    {
+      "path": "skills/ui-ux-pro-max/data/react-performance.csv",
+      "sha256": "904c8afcda229629545912dde0e8ac37503757131f0169f80b016f1f58c4fd3f"
+    },
+    {
+      "path": "skills/ui-ux-pro-max/data/stacks/angular.csv",
+      "sha256": "9de35bbda536ced9af7642d88b7675cefa3e18c370ab40c0875f75ab473f0fd6"
+    },
+    {
+      "path": "skills/ui-ux-pro-max/data/stacks/astro.csv",
+      "sha256": "6b587e32df201b6e5e7b2ed187b65eee8e6d55dcd6cc16bde29fc25e0f911dae"
+    },
+    {
+      "path": "skills/ui-ux-pro-max/data/stacks/avalonia.csv",
+      "sha256": "6bfa40ec6609fcb59e52a38281edcc3a3e5b5e56341304fe5628b32cb9b1f875"
+    },
+    {
+      "path": "skills/ui-ux-pro-max/data/stacks/flutter.csv",
+      "sha256": "fe36d404c799781e8ba6e9a8179b45799ed5126a545528550cd2eb0f2346e8c5"
+    },
+    {
+      "path": "skills/ui-ux-pro-max/data/stacks/html-tailwind.csv",
+      "sha256": "7aef38e75c53559470afcfa91580a9917ca8b7dbf8b92110389e23e93703ac52"
+    },
+    {
+      "path": "skills/ui-ux-pro-max/data/stacks/javafx.csv",
+      "sha256": "5545e331b2479eb431ca45203799ce1b0ab1e369045ab7735d5a9f85ec78f956"
+    },
+    {
+      "path": "skills/ui-ux-pro-max/data/stacks/jetpack-compose.csv",
+      "sha256": "6c8fd4b0391c342c12b0af15610cd5becbeccaef0bbe8dcfc01d928c3195d93e"
+    },
+    {
+      "path": "skills/ui-ux-pro-max/data/stacks/laravel.csv",
+      "sha256": "3e9f551b5232136f7b5ce1304c5e1bf5a83bd63c0dc02afb37502b238772d145"
+    },
+    {
+      "path": "skills/ui-ux-pro-max/data/stacks/nextjs.csv",
+      "sha256": "e828ccc04843742f52f545a068e8a9ab0d2b97c0e771f7e93bf0cef74da05554"
+    },
+    {
+      "path": "skills/ui-ux-pro-max/data/stacks/nuxt-ui.csv",
+      "sha256": "b9972b31e721faabc667ee2b4e93ba2af29e1df86f186c2ff608b68370f0e3a5"
+    },
+    {
+      "path": "skills/ui-ux-pro-max/data/stacks/nuxtjs.csv",
+      "sha256": "f7a3f2d9542856d00199f85c6c023b7c284cc698e2e6e12d61afce2edacb24d6"
+    },
+    {
+      "path": "skills/ui-ux-pro-max/data/stacks/react-native.csv",
+      "sha256": "077aefc81d194895ecf7936b3ed298b978e36961f183e3a275f8acda19b5f621"
+    },
+    {
+      "path": "skills/ui-ux-pro-max/data/stacks/react.csv",
+      "sha256": "e5624ab41d33427d88e41d07581ce4eca59b37b36ab72a6ad43a9c8e2d0a1c72"
+    },
+    {
+      "path": "skills/ui-ux-pro-max/data/stacks/shadcn.csv",
+      "sha256": "395c2e415ef6f48a474acccdc8eb2c7258a6ed751a5037ba171a2d8823e02ded"
+    },
+    {
+      "path": "skills/ui-ux-pro-max/data/stacks/svelte.csv",
+      "sha256": "71af52d64f266c88070b91dbbaa900c2f8074b6baae9f35eaea6ba9cec6fd803"
+    },
+    {
+      "path": "skills/ui-ux-pro-max/data/stacks/swiftui.csv",
+      "sha256": "c9c2d2510f8e66281a2514e8dd0125a6b653b9ef53a71281b5e7dfe003d5b569"
+    },
+    {
+      "path": "skills/ui-ux-pro-max/data/stacks/threejs.csv",
+      "sha256": "c74d6ba76021f8d72c0ed12c559caecfeb6961829242acf6bcb9e99926b1a396"
+    },
+    {
+      "path": "skills/ui-ux-pro-max/data/stacks/uno.csv",
+      "sha256": "5d2e0f396bb9dc5a2661204264cc0eda7cc4fa3d78152dec89d668704a41b8fc"
+    },
+    {
+      "path": "skills/ui-ux-pro-max/data/stacks/uwp.csv",
+      "sha256": "debf669928871261ced9333788d5afd5784377ea1fa1b4f53993dd8f1574c0fc"
+    },
+    {
+      "path": "skills/ui-ux-pro-max/data/stacks/vue.csv",
+      "sha256": "c2724915d3c11cd67263f25896cff721f787a0fdd8326002d31e9f5806dfd8f8"
+    },
+    {
+      "path": "skills/ui-ux-pro-max/data/stacks/winui.csv",
+      "sha256": "2d970b08e44509d7afa53ce7feb446930b2d5e0667fa637df9aeeed65c42bbbe"
+    },
+    {
+      "path": "skills/ui-ux-pro-max/data/stacks/wpf.csv",
+      "sha256": "ca78b5f28dc50d66900548d602d74856400097284c73e076fcfbb5a38ae5083c"
+    },
+    {
+      "path": "skills/ui-ux-pro-max/data/styles.csv",
+      "sha256": "1bf9c1d8484a0a7a54fb67555902380446865b604c8449e47a449cb3d9c1ef88"
+    },
+    {
+      "path": "skills/ui-ux-pro-max/data/typography.csv",
+      "sha256": "7abead73de0e43e09544f164cb60cd431674e411f1e063e555a8b44d51273328"
+    },
+    {
+      "path": "skills/ui-ux-pro-max/data/ui-reasoning.csv",
+      "sha256": "06e4369445388ba9b7a57347510b125b7a2145bbf8546a327ba50292503b204a"
+    },
+    {
+      "path": "skills/ui-ux-pro-max/data/ux-guidelines.csv",
+      "sha256": "e01943c433b2cad3040f19389b3b0455673758a569b7a927b5bedf65c989cb96"
+    },
+    {
+      "path": "skills/ui-ux-pro-max/evals/run_evals.py",
+      "sha256": "3ea9c9c89e3c9aa8fc0644871b222b6eaffc7a83419920419f16cb08bfbcd2d8"
+    },
+    {
+      "path": "skills/ui-ux-pro-max/references/pro-rules.md",
+      "sha256": "bc56db7cb40c5f4d8d4f6229f5c7072865278488fe5b97c76d3a38eb596da4fc"
+    },
+    {
+      "path": "skills/ui-ux-pro-max/references/quick-reference.md",
+      "sha256": "b01ad594cc069d18786d5e8865356cc511226ba6f48d328fd975d31aae8e5781"
+    },
+    {
+      "path": "skills/ui-ux-pro-max/scripts/core.py",
+      "sha256": "64c149019196ee24647464a27278eb96d3b4638ded73ebfc35ccd2bc99c083a9"
+    },
+    {
+      "path": "skills/ui-ux-pro-max/scripts/design_system.py",
+      "sha256": "5612e607f3d4fded1aa83e5bf62d54a137a7087efbb70b72c91c30680b4d2dfd"
+    },
+    {
+      "path": "skills/ui-ux-pro-max/scripts/search.py",
+      "sha256": "69a349d69543f35f45a12c0c82922c550d1b0a16a2b37f6b1406afb2ad2919c8"
+    },
+    {
+      "path": "skills/ui-ux-pro-max/scripts/tests/test_core.py",
+      "sha256": "ce60ac571164cf35e8c866550ad989fa686706a56fa48df4fdf76444b94fdd8d"
+    },
+    {
+      "path": "skills/ui-ux-pro-max/scripts/tests/test_design_system_mode.py",
+      "sha256": "c38424e0f575f498c10564844338abce9363cd0b002ba8bd35c9d2762c2674ae"
+    },
+    {
+      "path": "skills/ui-ux-pro-max/scripts/validate_data.py",
+      "sha256": "f1b5e0916f3c2f8271416f93f6ff9ebf3311a68a943a19c1b83f16823cbb05a7"
+    }
+  ]
+}
