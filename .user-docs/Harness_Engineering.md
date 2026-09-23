@@ -43,7 +43,7 @@ AI Agent Harness는 Codex, Claude Code처럼 서로 다른 에이전트가 같�
 
 `harness-setup`의 쓰기 allowlist는 `.ai-docs/**`, 루트 `AGENTS.md`다. `.agents/skills/**`, `.claude/skills/**`, `skills/**`를 생성·복사·동기화하지 않는다. 실행 전에 존재하던 local skill 경로는 읽기 전용으로 분류·보고하고 승인 없이 변경하지 않는다. Claude 대상 setup은 프로젝트 루트부터 파일시스템 루트까지 `CLAUDE.md`, `.claude/CLAUDE.md`, `CLAUDE.local.md`를 검사한다. 관리 중인 구형 루트 bridge만 승인된 갱신에서 제거하고, 사용자 내용 또는 상위 경로 파일은 보존한 채 중단한다.
 
-새 하네스의 문서 루트는 `.ai-docs/` 하나뿐이다. 이전 이름 `.docs/`만 있는 프로젝트는 일반 초기 설정·갱신이 아니라 이관 모드로 분류한다. 서명 정책이 없으면 `harness-setup`이 전체 이동 계획과 바뀔 참조를 보여주고 별도 승인을 받는다. 서명 정책이 있으면 `admin`이 `project-write-access`의 `migrate-root-plan`과 `migrate-root`로 정책·Git 훅·AI 가드 경로까지 함께 이관한다. `.docs/`와 `.ai-docs/`가 함께 있으면 자동 병합하지 않는다.
+새 하네스의 문서 루트는 `.ai-docs/` 하나뿐이다. `.docs/` 디렉토리가 존재해도 참조하지 않고 일반 디렉토리로 취급한다.
 
 공유 runtime의 `allowed-tools`에는 제한 없는 `Bash`를 사전 승인하지 않는다. shell 명령은 각 플랫폼의 일반 permission mode를 따르며, 커밋·Git 설정·작업 지침 명령 실행처럼 부작용이 있는 스킬은 사용자가 명시 호출한다.
 

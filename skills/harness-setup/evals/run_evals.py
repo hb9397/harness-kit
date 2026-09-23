@@ -1079,21 +1079,34 @@ def check_setup_contract() -> None:
         "프로젝트 루트부터 파일시스템 루트까지",
         "Claude Code 2.1.277",
         "새 `CLAUDE.md`·`CLAUDE.local.md`는 생성하거나 갱신하지 않는다",
-        "## 문서 루트 전환 계약",
-        "`.docs/`만 있으면 **이전 문서 루트 이관 모드**",
-        "`.docs/`와 `.ai-docs/`가 함께 있으면",
-        "서명 권한 정책이 있으면 디렉토리를 옮기지 않는다",
-        "`migrate-root-plan`과 `migrate-root`",
-        "`harness-setup`이 이 권한 작업을 대신 실행하지 않는다",
+        "## 문서 루트 계약",
+        "일반 디렉토리로 취급하며",
         "사용자가 이번 요청에서 한국어 Markdown 문체 개선까지 명시한",
         "명시 요청이 없으면 이 절 전체를 건너뛰며",
     ):
         require(skill_text, needle, SETUP_ROOT / "SKILL.md")
 
     detection = read(SETUP_ROOT / "prompts" / "detection.md")
-    require(detection, "이전 `.docs/`만 존재", SETUP_ROOT / "prompts" / "detection.md")
-    require(detection, "`.ai-docs/`와 이전 `.docs/`가 함께 존재", SETUP_ROOT / "prompts" / "detection.md")
+    require(detection, "`.ai-docs/` 또는 `AGENTS.md`가 존재", SETUP_ROOT / "prompts" / "detection.md")
     require(detection, "위 조건 불충족", SETUP_ROOT / "prompts" / "detection.md")
+
+    update_text = read(SETUP_ROOT / "prompts" / "update-mode.md")
+    for path, text in (
+        (SETUP_ROOT / "SKILL.md", skill_text),
+        (SETUP_ROOT / "prompts" / "detection.md", detection),
+        (SETUP_ROOT / "prompts" / "update-mode.md", update_text),
+    ):
+        for retired in (
+            "이전 `.docs/`",
+            "`.docs/`만",
+            "`.docs/`와 `.ai-docs/`가 함께",
+            "migrate-root",
+            "문서 루트 충돌",
+            "문서 루트 전환 계약",
+            "문서 루트 이관",
+        ):
+            if retired in text:
+                raise AssertionError(f"{path} still references the retired .docs root: {retired}")
     require(detection, "manual portable adoption", SETUP_ROOT / "prompts" / "detection.md")
 
     for path, needle in (

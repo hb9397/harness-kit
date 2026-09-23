@@ -34,7 +34,7 @@
       "passed": true
     },
     "reproducible_build": {
-      "archive_sha256": "32d032836aac99d835df6e75c4019b04a43f0442fdbf6e9d7d801dbc86189a9a",
+      "archive_sha256": "77fe4186d0a1ba61f4b82bd4500022756cc877d0ece9554019c80dc9aa976e95",
       "same_archive_hash": true,
       "same_manifest": true,
       "release_metadata_matches": true,
@@ -120,7 +120,7 @@
       ],
       "push_tag_release_created": false,
       "released_lock_updated": false,
-      "reason": "Phase 10은 publish하지 않는다. 현재 후보의 CLI 설치 smoke는 검증되지 않아 이전 버전 증적을 승계하지 않는다; 다음 수동 증적이 남아 있다: codex-cli, codex-desktop-app, claude-code-cli, claude-desktop-code.",
+      "reason": "Phase 10은 publish하지 않는다. 현재 후보의 격리 Codex·Claude CLI 설치 smoke는 통과했다; 다음 수동 증적이 남아 있다: codex-cli, codex-desktop-app, claude-code-cli, claude-desktop-code.",
       "passed": true
     }
   }

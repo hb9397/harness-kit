@@ -200,7 +200,7 @@ custom skill과 사용자 스킬 복사본은 읽기 전용으로 분류·보고
 
 RFP는 `design-doc`, `design-prototype-docs`, 다중 화면·FE/BE 페어 계획용 `impl-fe-be-doc`에 직접 입력한다. 사용자 스킬 배포·업데이트는 플러그인이 담당한다.
 
-프로젝트 문서 루트는 `.ai-docs/`다. 이전 `.docs/`만 있는 프로젝트는 `harness-setup`의 승인형 이관을 먼저 수행하고, 서명된 권한 정책이 있으면 `admin`이 `project-write-access`의 전용 이관 흐름을 사용한다. 두 경로가 함께 있으면 자동 병합하지 않는다.
+프로젝트 문서 루트는 `.ai-docs/`다. `.docs/` 디렉토리가 존재해도 참조하지 않고 일반 디렉토리로 취급한다.
 
 ## 5. 언제 어떤 스킬을 쓰는가
 

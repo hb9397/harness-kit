@@ -7,7 +7,7 @@
     "version": "0.9.0",
     "codex_manifest_matches_claude": true,
     "archive": "plugins/harness-kit-0.9.0.zip",
-    "archive_sha256": "32d032836aac99d835df6e75c4019b04a43f0442fdbf6e9d7d801dbc86189a9a",
+    "archive_sha256": "77fe4186d0a1ba61f4b82bd4500022756cc877d0ece9554019c80dc9aa976e95",
     "archive_sha256_matches_release": true,
     "logical_user_skills": 20,
     "codex_physical_skills": 20,
@@ -119,13 +119,13 @@
     "platforms": {
       "codex": {
         "status": "passed",
-        "cli_version": "codex-cli 0.155.0",
+        "cli_version": "codex-cli 0.156.0",
         "marketplace": "hb9397",
         "plugin_id": "harness-kit@hb9397",
         "evidence_level": "marketplace-install-and-cache-smoke",
         "model_invocation_verified": false,
         "installed_payload": {
-          "version": "0.6.5",
+          "version": "0.9.0",
           "skill_count": 20,
           "agent_count": 0,
           "required_skills": [
@@ -140,13 +140,13 @@
       },
       "claude": {
         "status": "passed",
-        "cli_version": "2.1.274 (Claude Code)",
+        "cli_version": "2.1.280 (Claude Code)",
         "marketplace": "hb9397",
         "plugin_id": "harness-kit@hb9397",
         "evidence_level": "marketplace-install-and-cache-smoke",
         "model_invocation_verified": false,
         "installed_payload": {
-          "version": "0.6.5",
+          "version": "0.9.0",
           "skill_count": 20,
           "agent_count": 0,
           "required_skills": [
@@ -160,22 +160,22 @@
         "cleanup": "passed"
       }
     },
-    "status": "failed",
-    "evidence_applies_to_current_version": false,
-    "summary": "CLI smoke evidence covers plugin version(s) ['0.6.5'], not the current candidate 0.9.0; re-run smoke_cli_install.py"
+    "status": "passed",
+    "evidence_applies_to_current_version": true,
+    "summary": "isolated marketplace add/install/list/uninstall/remove and cache inspection passed; model invocation not tested"
   },
   "surfaces": {
     "codex-cli": {
-      "status": "blocked",
-      "summary": "CLI smoke evidence covers plugin version(s) ['0.6.5'], not the current candidate 0.9.0; re-run smoke_cli_install.py"
+      "status": "install-smoke-verified",
+      "summary": "isolated marketplace add/install/list/uninstall/remove and cache inspection passed; model invocation not tested"
     },
     "codex-desktop-app": {
       "status": "manual-required",
       "summary": "Interactive Plugins UI install/update requires app surface and cannot be completed from this shell."
     },
     "claude-code-cli": {
-      "status": "blocked",
-      "summary": "CLI smoke evidence covers plugin version(s) ['0.6.5'], not the current candidate 0.9.0; re-run smoke_cli_install.py"
+      "status": "install-smoke-verified",
+      "summary": "isolated marketplace add/install/list/uninstall/remove and cache inspection passed; model invocation not tested"
     },
     "claude-desktop-code": {
       "status": "manual-required",

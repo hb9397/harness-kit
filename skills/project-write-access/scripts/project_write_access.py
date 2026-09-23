@@ -23,8 +23,6 @@ RUNTIME_ROOT = SKILL_ROOT / "assets" / "runtime"
 NAMESPACE = "harness-kit-project-write-access"
 SCHEMA_VERSION = "3.0.0"
 DOCS_ROOT_NAME = ".ai-docs"
-LEGACY_DOCS_ROOT_NAME = ".docs"
-LEGACY_POLICY_SCHEMA_VERSIONS = {"1.1.0", "2.0.0"}
 ROLES = {"admin", "pm-pl", "app-doc-lead", "developer"}
 WRITE_SCOPES = {"admin", "app-doc", "team"}
 PROVIDERS = ("github", "gitlab", "gitea")
@@ -300,20 +298,6 @@ def is_git_root(path: Path) -> bool:
 
 def detect_layout(project_root: Path) -> dict[str, Any]:
     docs_root = project_root / DOCS_ROOT_NAME
-    legacy_docs_root = project_root / LEGACY_DOCS_ROOT_NAME
-    if docs_root.exists() and legacy_docs_root.exists():
-        raise AccessError(
-            ".ai-docs and legacy .docs both exist; resolve the document-root conflict with harness-setup before configuring access"
-        )
-    if legacy_docs_root.exists():
-        legacy_policy = legacy_docs_root / "harness" / "access-control" / "policy.json"
-        if legacy_policy.is_file():
-            raise AccessError(
-                "legacy .docs contains a signed access policy; use migrate-root-plan and migrate-root"
-            )
-        raise AccessError(
-            "legacy .docs exists without .ai-docs; run the explicit harness-setup document-root migration before configuring access"
-        )
     if docs_root.is_dir() and is_git_root(docs_root):
         git_root = docs_root
         git_root_relative = DOCS_ROOT_NAME
@@ -330,36 +314,6 @@ def detect_layout(project_root: Path) -> dict[str, Any]:
         "topology": topology,
         "git_root": git_root,
         "git_root_relative": git_root_relative,
-        "root_context_tracked": topology == "single-repository",
-    }
-
-
-def detect_legacy_layout(project_root: Path) -> dict[str, Any]:
-    """Describe the current Git boundary before an explicit .docs migration."""
-    docs_root = project_root / DOCS_ROOT_NAME
-    legacy_docs_root = project_root / LEGACY_DOCS_ROOT_NAME
-    if docs_root.exists() and legacy_docs_root.exists():
-        raise AccessError(".ai-docs and legacy .docs both exist; automatic merge is not supported")
-    if docs_root.exists():
-        raise AccessError(".ai-docs already exists; document-root migration is not applicable")
-    if not legacy_docs_root.is_dir():
-        raise AccessError("legacy .docs is missing; document-root migration is not applicable")
-    if is_git_root(legacy_docs_root):
-        git_root = legacy_docs_root
-        topology = "multi-repository"
-        post_git_root_relative = DOCS_ROOT_NAME
-    elif is_git_root(project_root):
-        git_root = project_root
-        topology = "single-repository"
-        post_git_root_relative = "."
-    else:
-        git_root = None
-        topology = "local-only"
-        post_git_root_relative = "."
-    return {
-        "topology": topology,
-        "git_root": git_root,
-        "git_root_relative": post_git_root_relative,
         "root_context_tracked": topology == "single-repository",
     }
 
@@ -474,30 +428,6 @@ def subject_for_account(policy: dict[str, Any], provider: str, host: str, login:
             actual = (str(account.get("provider", "")), str(account.get("host", "")).casefold(), str(account.get("login", "")).casefold())
             if actual == wanted:
                 return subject
-    return None
-
-
-def legacy_admin_id_for_account(
-    policy: dict[str, Any],
-    provider: str,
-    host: str,
-    login: str,
-) -> str | None:
-    """Resolve one legacy admin while preserving each schema's identity boundary."""
-    schema_version = policy.get("schema_version")
-    if schema_version == "1.1.0":
-        matches = [
-            str(principal.get("id", ""))
-            for principal in policy.get("principals", [])
-            if principal.get("role") == "admin"
-            and isinstance(principal.get("accounts"), dict)
-            and str(principal["accounts"].get(provider, "")).casefold() == login.casefold()
-        ]
-        return matches[0] if len(matches) == 1 and matches[0] else None
-    if schema_version == "2.0.0":
-        subject = subject_for_account(policy, provider, host, login)
-        if subject is not None and subject_has_role(policy, subject["id"], "admin"):
-            return str(subject["id"])
     return None
 
 
@@ -1309,8 +1239,6 @@ def install_git_hooks(
     git_root: Path,
     layout: dict[str, Any],
     config: dict[str, Any],
-    *,
-    legacy_root_migration: bool = False,
 ) -> None:
     git_dir_raw = git(git_root, "rev-parse", "--git-dir").stdout.decode().strip()
     git_dir = Path(git_dir_raw)
@@ -1330,11 +1258,7 @@ def install_git_hooks(
             if candidate.is_file():
                 previous_hooks[name] = str(candidate.resolve())
     ours_path = (git_root / ours_relative).resolve()
-    legacy_relative = ".docs/harness/access-control/hooks/git" if layout["git_root_relative"] == "." else ours_relative
-    legacy_path = (git_root / legacy_relative).resolve()
-    reusing_managed_state = hook_path.resolve() == ours_path or (
-        legacy_root_migration and hook_path.resolve() == legacy_path
-    )
+    reusing_managed_state = hook_path.resolve() == ours_path
     if reusing_managed_state and state_path.is_file():
         local_state = json.loads(state_path.read_text(encoding="utf-8"))
         local_state["schema_version"] = SCHEMA_VERSION
@@ -1705,166 +1629,6 @@ def remove_access_control(project_root: Path, approved_hash: str, codex_dir: Pat
     }
 
 
-def make_root_migration_plan(project_root: Path, config: dict[str, Any]) -> dict[str, Any]:
-    layout = detect_legacy_layout(project_root)
-    verified, current_policy, manifest = verify_bundle_at(project_root, LEGACY_DOCS_ROOT_NAME)
-    if current_policy.get("schema_version") not in LEGACY_POLICY_SCHEMA_VERSIONS:
-        raise AccessError(
-            f"unsupported legacy policy schema: {current_policy.get('schema_version')}"
-        )
-    if current_policy.get("project_id") != config["project_id"]:
-        raise AccessError("migration config project_id does not match the signed legacy policy")
-
-    state = preflight(layout)
-    scoped_state = git_scoped_plan_state(project_root, layout["git_root"], config["local_identity"])
-    remote_verification = "pending" if state["remote"] else "local-only"
-    desired_policy_core = build_policy_core(config, layout, remote_verification)
-    desired_policy_core_hash = sha256_bytes(canonical_json(desired_policy_core))
-    managed_paths = sorted(
-        {
-            str(entry["path"]).replace(
-                f"{LEGACY_DOCS_ROOT_NAME}/",
-                f"{DOCS_ROOT_NAME}/",
-                1,
-            )
-            for entry in manifest.get("files", [])
-        }
-    )
-    changes = [
-        {
-            "path": f"{LEGACY_DOCS_ROOT_NAME}/ -> {DOCS_ROOT_NAME}/",
-            "action": "rename-document-root",
-        },
-        *({"path": path, "action": "rebind-and-regenerate"} for path in managed_paths),
-    ]
-    legacy_schema_version = current_policy.get("schema_version")
-    basis = {
-        "schema_version": SCHEMA_VERSION,
-        "operation": "migrate-document-root",
-        "project_root": str(project_root.resolve()),
-        "project_id": config["project_id"],
-        "config": config,
-        "topology": layout["topology"],
-        "git_root_relative": layout["git_root_relative"],
-        "legacy_policy_schema_version": legacy_schema_version,
-        "legacy_admin_identity_binding": (
-            "provider-login-and-admin-key"
-            if legacy_schema_version == "1.1.0"
-            else "provider-host-login-and-admin-key"
-        ),
-        "legacy_policy_core_sha256": verified["policy_core_sha256"],
-        "policy_core_sha256": desired_policy_core_hash,
-        "changes": changes,
-        "git_scoped_account": scoped_state,
-        "provider_server_rules": "externally-managed-not-applied-by-skill",
-    }
-    return {
-        **basis,
-        "preflight": state,
-        "plan_hash": sha256_bytes(canonical_json(basis)),
-        "server_changes": [
-            {
-                "provider": repo["provider"],
-                "repository_id": repo["id"],
-                "host": repo["host"],
-                "repository": f"{repo['owner']}/{repo['name']}",
-                "status": "not-requested-by-document-root-migration",
-            }
-            for repo in config["repositories"]
-        ],
-    }
-
-
-def migrate_document_root(
-    project_root: Path,
-    config: dict[str, Any],
-    approved_hash: str,
-    codex_dir: Path,
-    claude_dir: Path,
-    backup_key: Path | None,
-    evidence: str | None,
-) -> dict[str, Any]:
-    plan = make_root_migration_plan(project_root, config)
-    if plan["plan_hash"] != approved_hash:
-        raise AccessError("approved migration plan hash does not match the current plan")
-    state = plan["preflight"]
-    if state.get("dirty"):
-        raise AccessError("Git worktree is not clean")
-    if state.get("behind", 0) > 0 or (
-        state.get("ahead", 0) > 0 and state.get("behind", 0) > 0
-    ):
-        raise AccessError("Git history is behind or diverged; fast-forward it before migration")
-    if state.get("remote") and not evidence:
-        raise AccessError("remote repositories require provider-admin evidence before migration")
-    git_root: Path | None = detect_legacy_layout(project_root)["git_root"]
-    if git_root is None:
-        raise AccessError("migration requires the Git boundary that tracks .docs")
-    scoped_identity = require_git_scoped_identity(project_root, git_root)
-    if (
-        scoped_identity["provider"],
-        scoped_identity["host"],
-        scoped_identity["account"].casefold(),
-    ) != (
-        config["local_identity"]["provider"],
-        config["local_identity"]["host"].casefold(),
-        config["local_identity"]["account"].casefold(),
-    ):
-        raise AccessError("git-scoped-account identity does not match migration local_identity")
-
-    _verified, current_policy, _manifest = verify_bundle_at(
-        project_root,
-        LEGACY_DOCS_ROOT_NAME,
-    )
-    trust_path = (
-        project_root
-        / LEGACY_DOCS_ROOT_NAME
-        / "harness"
-        / "access-control"
-        / "trust.json"
-    )
-    trust = json.loads(trust_path.read_text(encoding="utf-8"))
-    key_path = locate_admin_key(config["project_id"], codex_dir, claude_dir, backup_key)
-    if fingerprint(public_key_from_private(key_path)) != trust.get("admin_key_fingerprint"):
-        raise AccessError("administrator key fingerprint does not match legacy trust")
-    legacy_admin_id = legacy_admin_id_for_account(
-        current_policy,
-        config["local_identity"]["provider"],
-        config["local_identity"]["host"],
-        config["local_identity"]["account"],
-    )
-    if legacy_admin_id is None:
-        raise AccessError("the legacy document root can be migrated only by a signed-policy admin")
-
-    legacy_root = project_root / LEGACY_DOCS_ROOT_NAME
-    canonical_root = project_root / DOCS_ROOT_NAME
-    moved = False
-    try:
-        os.replace(legacy_root, canonical_root)
-        moved = True
-        result = apply(
-            project_root,
-            config,
-            approved_hash,
-            codex_dir,
-            claude_dir,
-            backup_key,
-            evidence,
-            approved_plan=plan,
-            allow_migration_dirty=True,
-            existing_manifest_root=LEGACY_DOCS_ROOT_NAME,
-        )
-    except Exception:
-        if moved and canonical_root.exists() and not legacy_root.exists():
-            os.replace(canonical_root, legacy_root)
-        raise
-    return {
-        **result,
-        "status": "migrated",
-        "document_root_before": LEGACY_DOCS_ROOT_NAME,
-        "document_root_after": DOCS_ROOT_NAME,
-    }
-
-
 def apply(
     project_root: Path,
     config: dict[str, Any],
@@ -1874,16 +1638,12 @@ def apply(
     backup_key: Path | None,
     evidence: str | None,
     rotate_key: bool = False,
-    *,
-    approved_plan: dict[str, Any] | None = None,
-    allow_migration_dirty: bool = False,
-    existing_manifest_root: str | None = None,
 ) -> dict[str, Any]:
-    plan = approved_plan or make_plan(project_root, config, "rotate" if rotate_key else "apply")
+    plan = make_plan(project_root, config, "rotate" if rotate_key else "apply")
     if plan["plan_hash"] != approved_hash:
         raise AccessError("approved plan hash does not match the current plan")
     state = plan["preflight"]
-    if state.get("dirty") and not allow_migration_dirty:
+    if state.get("dirty"):
         raise AccessError("Git worktree is not clean")
     if state.get("behind", 0) > 0 or (state.get("ahead", 0) > 0 and state.get("behind", 0) > 0):
         raise AccessError("Git history is behind or diverged; fast-forward it before Apply")
@@ -1911,11 +1671,7 @@ def apply(
     access_dir = project_root / ".ai-docs" / "harness" / "access-control"
     initial = not (access_dir / "policy.json").is_file()
     if not initial:
-        verify_bundle_at(
-            project_root,
-            DOCS_ROOT_NAME,
-            manifest_root_name=existing_manifest_root,
-        )
+        verify_bundle_at(project_root, DOCS_ROOT_NAME)
     if initial and rotate_key:
         raise AccessError("administrator key rotation requires an existing signed policy")
     caller = subject_for_account(
@@ -1993,7 +1749,6 @@ def apply(
     stale_outputs = stale_instruction_outputs(
         project_root,
         desired_instruction_targets,
-        manifest_root_name=existing_manifest_root,
     )
 
     json_outputs: dict[Path, tuple[bytes, dict[str, Any]]] = {}
@@ -2045,13 +1800,7 @@ def apply(
             if private:
                 restrict_private_key(path)
         if config["enable_git_hooks"] and git_root is not None:
-            install_git_hooks(
-                project_root,
-                git_root,
-                layout,
-                config,
-                legacy_root_migration=existing_manifest_root == LEGACY_DOCS_ROOT_NAME,
-            )
+            install_git_hooks(project_root, git_root, layout, config)
         result = verify_bundle(project_root)
     except Exception:
         restore_files(file_snapshot)
@@ -2075,11 +1824,11 @@ def apply(
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     sub = parser.add_subparsers(dest="command", required=True)
-    for name in ("plan", "apply", "rotate-plan", "rotate", "migrate-root-plan", "migrate-root"):
+    for name in ("plan", "apply", "rotate-plan", "rotate"):
         item = sub.add_parser(name)
         item.add_argument("--project-root", required=True)
         item.add_argument("--config", required=True)
-        if name in {"apply", "rotate", "migrate-root"}:
+        if name in {"apply", "rotate"}:
             item.add_argument("--approve-plan-hash", required=True)
             item.add_argument("--provider-admin-evidence")
             item.add_argument("--admin-key")
@@ -2126,26 +1875,13 @@ def main() -> int:
                 result = remove_access_control(project_root, args.approve_plan_hash, codex_dir, claude_dir, backup, args.delete_keys)
             else:
                 config = load_config(Path(args.config).resolve())
-                if args.command == "migrate-root-plan":
-                    result = make_root_migration_plan(project_root, config)
-                elif args.command in {"plan", "rotate-plan"}:
+                if args.command in {"plan", "rotate-plan"}:
                     result = make_plan(project_root, config, "rotate" if args.command == "rotate-plan" else "apply")
                 else:
                     codex_dir = Path(args.codex_key_dir).resolve() if args.codex_key_dir else Path.home() / ".codex" / "harness-kit" / "admin-keys"
                     claude_dir = Path(args.claude_key_dir).resolve() if args.claude_key_dir else Path.home() / ".claude" / "harness-kit" / "admin-keys"
                     backup = Path(args.admin_key).resolve() if args.admin_key else None
-                    if args.command == "migrate-root":
-                        result = migrate_document_root(
-                            project_root,
-                            config,
-                            args.approve_plan_hash,
-                            codex_dir,
-                            claude_dir,
-                            backup,
-                            args.provider_admin_evidence,
-                        )
-                    else:
-                        result = apply(project_root, config, args.approve_plan_hash, codex_dir, claude_dir, backup, args.provider_admin_evidence, args.command == "rotate")
+                    result = apply(project_root, config, args.approve_plan_hash, codex_dir, claude_dir, backup, args.provider_admin_evidence, args.command == "rotate")
         print(json.dumps(result, ensure_ascii=False, indent=2, sort_keys=True))
         return 0
     except (AccessError, OSError, ValueError, KeyError, json.JSONDecodeError) as exc:

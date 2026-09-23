@@ -79,7 +79,7 @@
     },
     {
       "path": "runtime/claude/skills/context-doc/SKILL.md",
-      "sha256": "0778d550f71591a0c8a021b1abac16c2e569f897a302a7d480af012e36d62267"
+      "sha256": "c9fd6b01f4319d26c1e521769ca2d758df920dc6ff47181a1145e7032d002b6d"
     },
     {
       "path": "runtime/claude/skills/context-doc/evals/evals.json",
@@ -151,7 +151,7 @@
     },
     {
       "path": "runtime/claude/skills/create-prototype/SKILL.md",
-      "sha256": "38ee03954103eafe832d0eba07c6b9424ecef27940c924d0fe18c04909bfcc80"
+      "sha256": "12e438d327a8933d8d16bce0538427a89187ef0cf8375b1a9f82b68a308b0d02"
     },
     {
       "path": "runtime/claude/skills/create-prototype/evals/run_evals.py",
@@ -175,7 +175,7 @@
     },
     {
       "path": "runtime/claude/skills/design-doc/SKILL.md",
-      "sha256": "d32b055ce5832319887e67c67959e494df24382f53165c7f6af93fc9d854f569"
+      "sha256": "d6ef7ac517fbe7f8f89c968141c016cef6b0082f8f666c84b4d4af68c31f709d"
     },
     {
       "path": "runtime/claude/skills/design-doc/prompts/interview.md",
@@ -223,7 +223,7 @@
     },
     {
       "path": "runtime/claude/skills/design-prototype-docs/SKILL.md",
-      "sha256": "4d953953cf0a0d3d54cb5154fe17659af8911be437deab199e823ad52890f073"
+      "sha256": "13620ce421491acf1123bbb6765984d204343c449d41ba0e84af92fd3e4cdd58"
     },
     {
       "path": "runtime/claude/skills/design-prototype-docs/evals/run_evals.py",
@@ -235,7 +235,7 @@
     },
     {
       "path": "runtime/claude/skills/doc-audit/SKILL.md",
-      "sha256": "64ca3b5f7ab3921eabe7f8ba39321c5a9577ba336ab82480dc31f1cea2783a16"
+      "sha256": "234b97db6d5cc10c2f10b5b69b7d56d8be269d278c90c5298deac5f111000305"
     },
     {
       "path": "runtime/claude/skills/doc-audit/audit-report.md",
@@ -263,7 +263,7 @@
     },
     {
       "path": "runtime/claude/skills/frontend-design/SKILL.md",
-      "sha256": "8bf5a3ab99d7ccff320bcfd2c430229ee24d09254795da3011406da01fb4d3a1"
+      "sha256": "b2cd2847326d7e4798f7aee7a8e0605bbcdb475fe60f116184882a06b36799e0"
     },
     {
       "path": "runtime/claude/skills/frontend-design/evals/run_evals.py",
@@ -295,7 +295,7 @@
     },
     {
       "path": "runtime/claude/skills/harness-bootstrap/SKILL.md",
-      "sha256": "0fce1df752ffbb9b966c8844a0d93975f686f63b36fdd9d2902580aa1ae1c887"
+      "sha256": "368f62818c88273385b43b48d7dc21b79c1be2ef7a3203b7971daf74a38af61d"
     },
     {
       "path": "runtime/claude/skills/harness-bootstrap/evals/evals.json",
@@ -303,7 +303,7 @@
     },
     {
       "path": "runtime/claude/skills/harness-bootstrap/evals/run_evals.py",
-      "sha256": "e6d51bfa38dab099e2527da8c165f8defc993448801ceb33aed386b014a8d7e7"
+      "sha256": "6b27361ee960d4ae59d031cef3a6ccf788b5232f85b595e0cc7fdedfd7523129"
     },
     {
       "path": "runtime/claude/skills/harness-bootstrap/prompts/code-scan.md",
@@ -327,7 +327,7 @@
     },
     {
       "path": "runtime/claude/skills/harness-setup/SKILL.md",
-      "sha256": "10355d6c3110cbc648ad83d8975fa0bc8870c545df05dc17267633ed581d24d7"
+      "sha256": "f8a1d6e81243ca82515b55d62d0a646c0c85c478115a0a44e00f01d5d6bb527a"
     },
     {
       "path": "runtime/claude/skills/harness-setup/evals/fixtures/portable-routing-baseline.json",
@@ -343,11 +343,11 @@
     },
     {
       "path": "runtime/claude/skills/harness-setup/evals/run_evals.py",
-      "sha256": "c25ec96dbf12a2eff3ecd11ba8d8703a5272072bb327883568160e4a156ffc2e"
+      "sha256": "30cd84edfc1d5e1b7c7278629cfb863ce409770e60c7f34d2ac0b97032ffc00f"
     },
     {
       "path": "runtime/claude/skills/harness-setup/prompts/detection.md",
-      "sha256": "b96e218479b24035cd3b24bf5975911d2f348a00c5512acbd9629cfacf543767"
+      "sha256": "cacd264f3f78e3a48b0fa7b4a4269a57250d6637a75e9f3f338dbe70af766902"
     },
     {
       "path": "runtime/claude/skills/harness-setup/prompts/multi-app-setup.md",
@@ -359,7 +359,7 @@
     },
     {
       "path": "runtime/claude/skills/harness-setup/prompts/update-mode.md",
-      "sha256": "fc79463e2b871c17df403e48b1beb4d85d15b9f3b820e1c60cad1e008d5e90f0"
+      "sha256": "df400a1e4ebfbd85ecb2d2ce1be0592a5861443ae7bd0537f062da61860db9f2"
     },
     {
       "path": "runtime/claude/skills/harness-setup/templates/docs-gitignore.template",
@@ -443,7 +443,7 @@
     },
     {
       "path": "runtime/claude/skills/humanize-korean/SKILL.md",
-      "sha256": "31c305d3a6aa7421c59486294f9874e25205aeb96e992221b5ebb5f814c25c82"
+      "sha256": "202eee4de18147adbe12b44a62531338a80128195ecbd91ba9c135a2858f7784"
     },
     {
       "path": "runtime/claude/skills/humanize-korean/evals/evals.json",
@@ -467,7 +467,7 @@
     },
     {
       "path": "runtime/claude/skills/impl-doc/SKILL.md",
-      "sha256": "5a30aee5eeccfaebb8a00ae77aa42f2585808d96be82bece8c347a2ef116f96b"
+      "sha256": "3c72ec26f6ed82ed554994aa0d2fbd67b86971f0c6bc9814884f3e4d9f2151fb"
     },
     {
       "path": "runtime/claude/skills/impl-doc/prompts/analysis.md",
@@ -495,7 +495,7 @@
     },
     {
       "path": "runtime/claude/skills/impl-fe-be-doc/SKILL.md",
-      "sha256": "59213cb4e7f1a92ba9dcff793cf38acacf61f81348e987a2f5f4f63b526aed17"
+      "sha256": "a0b9d45d87c12a4cf718162bcff7c0018e0e8139ed265c5f705b6fe99bf43b8b"
     },
     {
       "path": "runtime/claude/skills/impl-fe-be-doc/prompts/analysis.md",
@@ -535,7 +535,7 @@
     },
     {
       "path": "runtime/claude/skills/impl-reuse-scan/SKILL.md",
-      "sha256": "ead9ce312019ed59767c39535082888899d1056758a4d7f341f3709cb60867ce"
+      "sha256": "2831f3f3c0b7baae3eff1ee2e0ef4948b156abcd1ffbdad235d607c590c7deb8"
     },
     {
       "path": "runtime/claude/skills/impl-reuse-scan/prompts/decision-interview.md",
@@ -567,7 +567,7 @@
     },
     {
       "path": "runtime/claude/skills/impl-verify/SKILL.md",
-      "sha256": "b44c2c1826e949f5756bf5a093442b4eb3fea54a52a8741b2a130e57d1688e8f"
+      "sha256": "0bda65974684cfb247dbd9965d35bcf304784b9a7ba9fc5e90590c086a9b072b"
     },
     {
       "path": "runtime/claude/skills/impl-verify/evals/run_evals.py",
@@ -603,7 +603,7 @@
     },
     {
       "path": "runtime/claude/skills/motion-design/SKILL.md",
-      "sha256": "fa6a9ef811c602a0f7ba8009c290d2bbe0e754e15b033b39e355cbefed3ef12e"
+      "sha256": "2ba07ab617667b223d21172fb8ed407c7b75908d8af85210b78d70ee79b7fb48"
     },
     {
       "path": "runtime/claude/skills/motion-design/director/choreography.md",
@@ -703,7 +703,7 @@
     },
     {
       "path": "runtime/claude/skills/project-write-access/SKILL.md",
-      "sha256": "f691e3b935925d75f9fb14cfe2ac8d5896784375f782a660722e2cf6517a4892"
+      "sha256": "c9ae493ca258ec027d0fc9d8430f99b4bc8a9e0cf893294351587180db8e6dcf"
     },
     {
       "path": "runtime/claude/skills/project-write-access/agents/openai.yaml",
@@ -727,15 +727,15 @@
     },
     {
       "path": "runtime/claude/skills/project-write-access/evals/run_evals.py",
-      "sha256": "7ac65b97f4ecbb404639d69cd7f08b01d409f304301bcc0f60ed80b686278c63"
+      "sha256": "1cebe81d9ebbd7ed51a19d85a14a3b32542c97e0880b7cf4b408d213f88eb1a2"
     },
     {
       "path": "runtime/claude/skills/project-write-access/prompts/workflow.md",
-      "sha256": "536fa16c8d92da0f65be5ccd1c5eb213dab76f2e9949c2e1ba9fcf3a9bb6dedf"
+      "sha256": "56186fca767364299dd226adad8730e098f05ad2ebacd5e9f70b3848fd1c14ab"
     },
     {
       "path": "runtime/claude/skills/project-write-access/references/policy-schema.md",
-      "sha256": "40e3dd171ca9b3009afab5ff2d0fb71ad9ddf1c799cc63aef00a390d02f41b5c"
+      "sha256": "df74d5643b95eacd1e1f8ec99a51220c08c150d4ce526b1daa62e9ebd81c53eb"
     },
     {
       "path": "runtime/claude/skills/project-write-access/references/provider-capabilities.md",
@@ -743,15 +743,15 @@
     },
     {
       "path": "runtime/claude/skills/project-write-access/references/security-contract.md",
-      "sha256": "e1430e38342ed13dce1de2235cac9a1ca76ba89d540f27ad7af4b5be7c4956c7"
+      "sha256": "2afba21598e4bab6efae68f4ec454e878dae01285d79b838abec42637d7aa3b7"
     },
     {
       "path": "runtime/claude/skills/project-write-access/scripts/project_write_access.py",
-      "sha256": "5d684114f450345a833231058bb05460ef40e5f0ef223fb8b8e4878050e6325c"
+      "sha256": "c1c226151a52da8f48ab55f2d432e84cc9c253cc8512f15e967a3f442581a09b"
     },
     {
       "path": "runtime/claude/skills/ui-ux-pro-max/SKILL.md",
-      "sha256": "91e88288d9a77b99e5cdbb72c893ec06c2db867a60a927670c63e671ab579f1d"
+      "sha256": "5d4bbfa26a8b0014343f302caa70b165f4632015aa197b22891a203097dc5548"
     },
     {
       "path": "runtime/claude/skills/ui-ux-pro-max/data/app-interface.csv",
@@ -963,7 +963,7 @@
     },
     {
       "path": "runtime/codex/skills/context-doc/SKILL.md",
-      "sha256": "0778d550f71591a0c8a021b1abac16c2e569f897a302a7d480af012e36d62267"
+      "sha256": "c9fd6b01f4319d26c1e521769ca2d758df920dc6ff47181a1145e7032d002b6d"
     },
     {
       "path": "runtime/codex/skills/context-doc/evals/evals.json",
@@ -1035,7 +1035,7 @@
     },
     {
       "path": "runtime/codex/skills/create-prototype/SKILL.md",
-      "sha256": "38ee03954103eafe832d0eba07c6b9424ecef27940c924d0fe18c04909bfcc80"
+      "sha256": "12e438d327a8933d8d16bce0538427a89187ef0cf8375b1a9f82b68a308b0d02"
     },
     {
       "path": "runtime/codex/skills/create-prototype/evals/run_evals.py",
@@ -1059,7 +1059,7 @@
     },
     {
       "path": "runtime/codex/skills/design-doc/SKILL.md",
-      "sha256": "d32b055ce5832319887e67c67959e494df24382f53165c7f6af93fc9d854f569"
+      "sha256": "d6ef7ac517fbe7f8f89c968141c016cef6b0082f8f666c84b4d4af68c31f709d"
     },
     {
       "path": "runtime/codex/skills/design-doc/prompts/interview.md",
@@ -1107,7 +1107,7 @@
     },
     {
       "path": "runtime/codex/skills/design-prototype-docs/SKILL.md",
-      "sha256": "4d953953cf0a0d3d54cb5154fe17659af8911be437deab199e823ad52890f073"
+      "sha256": "13620ce421491acf1123bbb6765984d204343c449d41ba0e84af92fd3e4cdd58"
     },
     {
       "path": "runtime/codex/skills/design-prototype-docs/evals/run_evals.py",
@@ -1119,7 +1119,7 @@
     },
     {
       "path": "runtime/codex/skills/doc-audit/SKILL.md",
-      "sha256": "64ca3b5f7ab3921eabe7f8ba39321c5a9577ba336ab82480dc31f1cea2783a16"
+      "sha256": "234b97db6d5cc10c2f10b5b69b7d56d8be269d278c90c5298deac5f111000305"
     },
     {
       "path": "runtime/codex/skills/doc-audit/audit-report.md",
@@ -1147,7 +1147,7 @@
     },
     {
       "path": "runtime/codex/skills/frontend-design/SKILL.md",
-      "sha256": "8bf5a3ab99d7ccff320bcfd2c430229ee24d09254795da3011406da01fb4d3a1"
+      "sha256": "b2cd2847326d7e4798f7aee7a8e0605bbcdb475fe60f116184882a06b36799e0"
     },
     {
       "path": "runtime/codex/skills/frontend-design/evals/run_evals.py",
@@ -1179,7 +1179,7 @@
     },
     {
       "path": "runtime/codex/skills/harness-bootstrap/SKILL.md",
-      "sha256": "0fce1df752ffbb9b966c8844a0d93975f686f63b36fdd9d2902580aa1ae1c887"
+      "sha256": "368f62818c88273385b43b48d7dc21b79c1be2ef7a3203b7971daf74a38af61d"
     },
     {
       "path": "runtime/codex/skills/harness-bootstrap/evals/evals.json",
@@ -1187,7 +1187,7 @@
     },
     {
       "path": "runtime/codex/skills/harness-bootstrap/evals/run_evals.py",
-      "sha256": "e6d51bfa38dab099e2527da8c165f8defc993448801ceb33aed386b014a8d7e7"
+      "sha256": "6b27361ee960d4ae59d031cef3a6ccf788b5232f85b595e0cc7fdedfd7523129"
     },
     {
       "path": "runtime/codex/skills/harness-bootstrap/prompts/code-scan.md",
@@ -1211,7 +1211,7 @@
     },
     {
       "path": "runtime/codex/skills/harness-setup/SKILL.md",
-      "sha256": "10355d6c3110cbc648ad83d8975fa0bc8870c545df05dc17267633ed581d24d7"
+      "sha256": "f8a1d6e81243ca82515b55d62d0a646c0c85c478115a0a44e00f01d5d6bb527a"
     },
     {
       "path": "runtime/codex/skills/harness-setup/evals/fixtures/portable-routing-baseline.json",
@@ -1227,11 +1227,11 @@
     },
     {
       "path": "runtime/codex/skills/harness-setup/evals/run_evals.py",
-      "sha256": "c25ec96dbf12a2eff3ecd11ba8d8703a5272072bb327883568160e4a156ffc2e"
+      "sha256": "30cd84edfc1d5e1b7c7278629cfb863ce409770e60c7f34d2ac0b97032ffc00f"
     },
     {
       "path": "runtime/codex/skills/harness-setup/prompts/detection.md",
-      "sha256": "b96e218479b24035cd3b24bf5975911d2f348a00c5512acbd9629cfacf543767"
+      "sha256": "cacd264f3f78e3a48b0fa7b4a4269a57250d6637a75e9f3f338dbe70af766902"
     },
     {
       "path": "runtime/codex/skills/harness-setup/prompts/multi-app-setup.md",
@@ -1243,7 +1243,7 @@
     },
     {
       "path": "runtime/codex/skills/harness-setup/prompts/update-mode.md",
-      "sha256": "fc79463e2b871c17df403e48b1beb4d85d15b9f3b820e1c60cad1e008d5e90f0"
+      "sha256": "df400a1e4ebfbd85ecb2d2ce1be0592a5861443ae7bd0537f062da61860db9f2"
     },
     {
       "path": "runtime/codex/skills/harness-setup/templates/docs-gitignore.template",
@@ -1327,7 +1327,7 @@
     },
     {
       "path": "runtime/codex/skills/humanize-korean/SKILL.md",
-      "sha256": "31c305d3a6aa7421c59486294f9874e25205aeb96e992221b5ebb5f814c25c82"
+      "sha256": "202eee4de18147adbe12b44a62531338a80128195ecbd91ba9c135a2858f7784"
     },
     {
       "path": "runtime/codex/skills/humanize-korean/evals/evals.json",
@@ -1351,7 +1351,7 @@
     },
     {
       "path": "runtime/codex/skills/impl-doc/SKILL.md",
-      "sha256": "5a30aee5eeccfaebb8a00ae77aa42f2585808d96be82bece8c347a2ef116f96b"
+      "sha256": "3c72ec26f6ed82ed554994aa0d2fbd67b86971f0c6bc9814884f3e4d9f2151fb"
     },
     {
       "path": "runtime/codex/skills/impl-doc/prompts/analysis.md",
@@ -1379,7 +1379,7 @@
     },
     {
       "path": "runtime/codex/skills/impl-fe-be-doc/SKILL.md",
-      "sha256": "59213cb4e7f1a92ba9dcff793cf38acacf61f81348e987a2f5f4f63b526aed17"
+      "sha256": "a0b9d45d87c12a4cf718162bcff7c0018e0e8139ed265c5f705b6fe99bf43b8b"
     },
     {
       "path": "runtime/codex/skills/impl-fe-be-doc/prompts/analysis.md",
@@ -1419,7 +1419,7 @@
     },
     {
       "path": "runtime/codex/skills/impl-reuse-scan/SKILL.md",
-      "sha256": "ead9ce312019ed59767c39535082888899d1056758a4d7f341f3709cb60867ce"
+      "sha256": "2831f3f3c0b7baae3eff1ee2e0ef4948b156abcd1ffbdad235d607c590c7deb8"
     },
     {
       "path": "runtime/codex/skills/impl-reuse-scan/prompts/decision-interview.md",
@@ -1451,7 +1451,7 @@
     },
     {
       "path": "runtime/codex/skills/impl-verify/SKILL.md",
-      "sha256": "b44c2c1826e949f5756bf5a093442b4eb3fea54a52a8741b2a130e57d1688e8f"
+      "sha256": "0bda65974684cfb247dbd9965d35bcf304784b9a7ba9fc5e90590c086a9b072b"
     },
     {
       "path": "runtime/codex/skills/impl-verify/evals/run_evals.py",
@@ -1487,7 +1487,7 @@
     },
     {
       "path": "runtime/codex/skills/motion-design/SKILL.md",
-      "sha256": "fa6a9ef811c602a0f7ba8009c290d2bbe0e754e15b033b39e355cbefed3ef12e"
+      "sha256": "2ba07ab617667b223d21172fb8ed407c7b75908d8af85210b78d70ee79b7fb48"
     },
     {
       "path": "runtime/codex/skills/motion-design/director/choreography.md",
@@ -1587,7 +1587,7 @@
     },
     {
       "path": "runtime/codex/skills/project-write-access/SKILL.md",
-      "sha256": "f691e3b935925d75f9fb14cfe2ac8d5896784375f782a660722e2cf6517a4892"
+      "sha256": "c9ae493ca258ec027d0fc9d8430f99b4bc8a9e0cf893294351587180db8e6dcf"
     },
     {
       "path": "runtime/codex/skills/project-write-access/agents/openai.yaml",
@@ -1611,15 +1611,15 @@
     },
     {
       "path": "runtime/codex/skills/project-write-access/evals/run_evals.py",
-      "sha256": "7ac65b97f4ecbb404639d69cd7f08b01d409f304301bcc0f60ed80b686278c63"
+      "sha256": "1cebe81d9ebbd7ed51a19d85a14a3b32542c97e0880b7cf4b408d213f88eb1a2"
     },
     {
       "path": "runtime/codex/skills/project-write-access/prompts/workflow.md",
-      "sha256": "536fa16c8d92da0f65be5ccd1c5eb213dab76f2e9949c2e1ba9fcf3a9bb6dedf"
+      "sha256": "56186fca767364299dd226adad8730e098f05ad2ebacd5e9f70b3848fd1c14ab"
     },
     {
       "path": "runtime/codex/skills/project-write-access/references/policy-schema.md",
-      "sha256": "40e3dd171ca9b3009afab5ff2d0fb71ad9ddf1c799cc63aef00a390d02f41b5c"
+      "sha256": "df74d5643b95eacd1e1f8ec99a51220c08c150d4ce526b1daa62e9ebd81c53eb"
     },
     {
       "path": "runtime/codex/skills/project-write-access/references/provider-capabilities.md",
@@ -1627,15 +1627,15 @@
     },
     {
       "path": "runtime/codex/skills/project-write-access/references/security-contract.md",
-      "sha256": "e1430e38342ed13dce1de2235cac9a1ca76ba89d540f27ad7af4b5be7c4956c7"
+      "sha256": "2afba21598e4bab6efae68f4ec454e878dae01285d79b838abec42637d7aa3b7"
     },
     {
       "path": "runtime/codex/skills/project-write-access/scripts/project_write_access.py",
-      "sha256": "5d684114f450345a833231058bb05460ef40e5f0ef223fb8b8e4878050e6325c"
+      "sha256": "c1c226151a52da8f48ab55f2d432e84cc9c253cc8512f15e967a3f442581a09b"
     },
     {
       "path": "runtime/codex/skills/ui-ux-pro-max/SKILL.md",
-      "sha256": "91e88288d9a77b99e5cdbb72c893ec06c2db867a60a927670c63e671ab579f1d"
+      "sha256": "5d4bbfa26a8b0014343f302caa70b165f4632015aa197b22891a203097dc5548"
     },
     {
       "path": "runtime/codex/skills/ui-ux-pro-max/data/app-interface.csv",

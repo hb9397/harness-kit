@@ -23,16 +23,9 @@ disable-model-invocation: true
 
 ## 문서 루트 계약
 
-권한 정책의 유일한 문서 루트는 `.ai-docs/`다. 실행 전에 `.ai-docs/`와 이전 이름
-`.docs/`를 함께 확인한다. 두 경로가 함께 있으면 정책을 만들거나 고치지 않고
-`harness-setup`에서 충돌 범위를 먼저 확인한다. `.docs/`만 있고 서명 정책이 없으면
-`harness-setup`의 일반 문서 루트 이관을 먼저 요청한다. `.docs/`를 호환 별칭으로
-간주하거나 두 위치에 정책을 나누어 만들지 않는다.
-
-기존 `.docs/harness/access-control/`에 지원되는 서명 정책이 있으면 일반 Plan이 아닌
-명시적 `migrate-root-plan` → `migrate-root` 분기로 들어간다. 이전 정책·Git 훅·AI 훅과
-관리자 키를 검증하고, 승인된 하나의 트랜잭션에서 문서 루트와 정책 스키마·관리 경로를
-다시 생성한다. 원격 Git 서비스 규칙은 이 이관 명령이 바꾸지 않는다.
+권한 정책의 유일한 문서 루트는 `.ai-docs/`다. `.docs/` 디렉토리가 존재해도
+참조하지 않고 일반 디렉토리로 취급하며, 호환 별칭으로 간주하거나 두 위치에
+정책을 나누어 만들지 않는다.
 
 ## 권한 모델
 
@@ -73,9 +66,6 @@ disable-model-invocation: true
 | 제거 | Step 0 → 1 → 2 → 제거 계획 → 별도 승인 → 5 |
 | 관리자 교체 | Step 0 → 1 → 2 → 교체 계획 → 기존 키 승인 → 별도 승인 → 5 |
 | 키 분실 | Step 0 → 1 → 2. 백업 키가 없으면 변경 없이 종료 |
-| `.docs/`만 있고 서명 정책 없음 | Step 0에서 중단 → `harness-setup` 문서 루트 이관 |
-| `.docs/`만 있고 지원되는 서명 정책 있음 | Step 0 → 1 → 2 → 이관 Plan → 별도 승인 → 이관 Apply → 5 |
-| `.docs/`와 `.ai-docs/` 공존 | Step 0에서 중단 → `harness-setup` 충돌 범위 확인 |
 
 ## Step 0 — 범위와 실행 환경 확인
 
@@ -90,16 +80,10 @@ disable-model-invocation: true
 `AGENTS.md`의 Git 포함 여부를 보여주고 확인받는다. 소스코드는 보호
 범위에 넣지 않는다.
 
-최초 설정·정책 변경·문서 루트 이관 전에 현재 Git 경계에
+최초 설정·정책 변경 전에 현재 Git 경계에
 `harness.gitScopedAccount.*` 로컬 표식이 있고 `user.name`·`user.email`의 실제 출처가
 표식에 등록된 공통 config인지 확인한다. provider·host·account가 이번 설정의
 `local_identity`와 다르면 Apply하지 않고 `git-scoped-account`부터 다시 수행한다.
-
-`.docs/`와 `.ai-docs/`가 함께 있으면 Plan을 생성하지 않는다. `.docs/`만 있으면
-`harness/access-control/`의 정책·신뢰·서명·생성 목록이 모두 있는지 판정한다. 서명
-정책이 없으면 `harness-setup`으로 넘기고, 지원되는 서명 정책이면 관리자에게
-`migrate-root-plan`을 제시한다. 일부 파일만 있거나 지원하지 않는 정책 스키마면
-초기화하지 않고 복구 필요 상태로 중단한다.
 
 프로젝트 파일을 만드는 작업이므로 이 확인을 생략하지 않는다.
 
@@ -181,10 +165,6 @@ provider·host·account, 매핑된 subject·역할, `core.hooksPath`와
 번들의 `scripts/project_write_access.py plan`을 사용해 결정론적 파일 Plan과
 `plan_hash`를 만든다. 명령 인자와 설정 파일에는 토큰·개인키를 넣지 않는다.
 
-서명된 `.docs` 정책 이관은 일반 `plan` 대신 `migrate-root-plan`을 사용한다. Plan에는
-기존 정책 스키마·본문 해시, `.docs/`에서 `.ai-docs/`로 바뀌는 관리 경로, 재생성할
-CODEOWNERS·Git 훅·AI 훅과 원격 규칙 미변경 사실을 포함한다.
-
 ## Step 4 — 적용 승인과 Apply
 
 Plan을 사람에게 보여준 뒤 다음 범위를 나눠 승인받는다.
@@ -213,11 +193,6 @@ Plan을 사람에게 보여준 뒤 다음 범위를 나눠 승인받는다.
 전달한다. 이 명령은 `git-scoped-account` 표식과 서명 정책을 다시 검증한 뒤 로컬 Git
 훅과 AI 쓰기 가드의 계정 연결만 설정한다. 관리자 개인키나 정책 설정 JSON을 받지
 않으며 공유 파일과 원격 상태를 수정하지 않는다.
-
-문서 루트 이관은 승인된 `migrate-root-plan`의 해시를 `migrate-root`에 전달한다.
-이 명령은 기존 관리자 키와 서명을 다시 확인하고 `.docs/` 전체를 `.ai-docs/`로 옮긴
-뒤 정책·생성 목록·로컬 Git 훅·AI 훅을 현재 스키마로 재생성한다. 어느 단계든 실패하면
-문서 루트와 이번 실행이 바꾼 로컬 파일·Git 설정을 이전 상태로 되돌린다.
 
 `admin`만 가진 계정은 `app-doc` 문서를 쓸 수 없다. 권한이 있는 `pm-pl` 또는 해당
 앱의 `app-doc-lead`가 `DESIGN.md`, `*-context.md`, `*-instruction.md`를 만들거나

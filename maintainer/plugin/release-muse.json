@@ -5,7 +5,7 @@
   "version": "0.2.0",
   "plugin_root": "plugins/harness-kit-muse",
   "archive": "plugins/harness-kit-muse-0.2.0.zip",
-  "archive_sha256": "d59e7d22513387a7e80db989b1455a2d3f0c0c91cd5369b5312a22f13669d93f",
+  "archive_sha256": "6f757732b19668c7959cd133b6ad21a49c43a2a35568a022a23c45fc6902c9e2",
   "logical_user_skills": 20,
   "physical_skills": 20,
   "released_state_preserved": true,

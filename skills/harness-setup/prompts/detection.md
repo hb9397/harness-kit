@@ -22,11 +22,10 @@
 2. 위 조건이 성립하면 → **하네스 관리 레포 내부**. 사용자에게 대상 프로젝트 루트 경로를 질문한다. 부모 폴더를 자동 적용하지 않는다.
 
 3. 위 조건 불충족 시, 현재 플랫폼의 파일 조회 도구로 현재 위치의 `.ai-docs/`,
-   이전 `.docs/`, `AGENTS.md` 존재 여부를 함께 확인한다.
+   `AGENTS.md` 존재 여부를 함께 확인한다.
 
-4. `.ai-docs/`, 이전 `.docs/` 또는 `AGENTS.md`가 존재하면 → **하네스 문서가 있거나
-   이관이 필요한 프로젝트**. 현재 위치를 프로젝트 루트로 설정한다. 두 문서 루트의
-   존재 조합은 [세팅 모드 판별]에서 별도로 결정한다.
+4. `.ai-docs/` 또는 `AGENTS.md`가 존재하면 → **하네스 문서가 있는 프로젝트**.
+   현재 위치를 프로젝트 루트로 설정한다.
 
 5. 위 모두 불충족 → 사용자에게 프로젝트 루트 경로를 직접 질문.
 
@@ -97,7 +96,7 @@ Claude Code를 사용할 예정이면 2.1.277 이상인지 확인 가능한 범�
 
 1. 프로젝트 루트의 매니페스트 후보를 확인한다.
 2. 하위 1-depth 디렉토리별 매니페스트와 독립 `.git/` 존재 여부를 확인한다.
-3. `.ai-docs/`, 이전 `.docs/`, `.claude/`, `.agents/`, `node_modules/`, `.git/`, 관리 하네스
+3. `.ai-docs/`, `.claude/`, `.agents/`, `node_modules/`, `.git/`, 관리 하네스
    저장소는 앱 후보에서 제외한다.
 4. 후보마다 근거가 된 매니페스트 또는 `.git/` 경계를 함께 기록한다.
 
@@ -120,21 +119,14 @@ Claude Code를 사용할 예정이면 2.1.277 이상인지 확인 가능한 범�
 탐색한다.
 
 - `.ai-docs/`와 그 안의 Markdown·`root-context/`
-- 이전 `.docs/`와 그 안의 `harness/access-control/` 정책·서명·훅
 - 루트 `AGENTS.md`와 Claude instruction 선점 검사 대상
 - `.claude/skills/*/SKILL.md`, `.agents/skills/*/SKILL.md`,
   `skills/*/SKILL.md` legacy/custom local copy 후보
 
 | 조건 | 모드 |
 |------|------|
-| `.ai-docs/`와 이전 `.docs/`가 함께 존재 | **문서 루트 충돌** |
-| 이전 `.docs/`만 존재 | **이전 문서 루트 이관 모드** |
 | `.ai-docs/` 또는 `AGENTS.md`가 존재 | **갱신 모드** |
 | 위 조건 불충족 | **초기 세팅 모드** |
-
-문서 루트 충돌은 자동 병합하지 않는다. 이전 문서 루트 이관 모드는 `.docs/`의 Git
-경계와 서명 권한 정책 유무를 먼저 확인하고 `SKILL.md`의 **문서 루트 전환 계약**으로
-넘긴다. 이 판정이 끝나기 전 `.ai-docs/`를 새로 만들지 않는다.
 
 > `.claude/skills/`, `.agents/skills/` 또는 `skills/*/SKILL.md`만 있는 경우:
 > legacy/custom local skill 후보로 보고하되, 문서 하네스가 없으면 **초기 세팅**으로
