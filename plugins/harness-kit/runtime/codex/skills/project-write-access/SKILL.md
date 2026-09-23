@@ -98,7 +98,7 @@ disable-model-invocation: true
 2. Git 작업 폴더, upstream, 앞섬·뒤처짐·분기 상태
 3. 세 서비스의 CODEOWNERS 탐색 우선순위와 기존 파일
 4. `core.hooksPath`와 기존 `pre-commit`·`pre-push`
-5. `.claude/settings.json`, `.codex/hooks.json`, `.muse/hooks.json`, 기존 쓰기 훅
+5. `.claude/settings.json`, `.codex/hooks.json`, 기존 쓰기 훅
 6. 현재 호출자가 제시한 Git 서비스 계정과 관리자 권한 증적
 7. 루트 라우팅 정본에 등록된 모든 저장소와 각 Git 서비스의 실제 접근 구성원
 8. 현재 PC의 `git-scoped-account` 프로젝트 루트·공통 config·provider·host·account 표식
@@ -152,7 +152,7 @@ Plan에는 최소한 다음을 포함한다.
 - 생성·수정·유지·충돌 파일 목록
 - CODEOWNERS가 더 높은 우선순위 파일 때문에 무시되는지 여부
 - 기존 Git 훅 연결·복구 계획
-- Claude·Codex·Muse 설정의 관리 항목 병합 계획과 host 신뢰 상태
+- Claude·Codex 설정의 관리 항목 병합 계획과 host 신뢰 상태
 - 사용자가 외부에서 관리하는 브랜치·검토·병합 정책의 기록과 이 스킬의 `변경 없음`
 - 되돌릴 수 없는 외부 상태와 남은 우회 가능성
 
@@ -172,7 +172,7 @@ Plan을 사람에게 보여준 뒤 다음 범위를 나눠 승인받는다.
 
 1. 공유 정책·세 CODEOWNERS·instruction 관리 블록
 2. 로컬 `core.hooksPath`와 Git 훅 연결
-3. Claude·Codex·Muse 프로젝트 훅 설정
+3. Claude·Codex 프로젝트 훅 설정
 4. 최초 키 생성, 관리자 교체 또는 키 폐기
 
 한 번의 포괄 승인으로 다른 범위를 추론하지 않는다. 원격 Git 서비스의 브랜치 보호,
@@ -201,8 +201,7 @@ Plan을 사람에게 보여준 뒤 다음 범위를 나눠 승인받는다.
 문서 종류와 역할, 수정 요약·이유, 현재 역할과 앱 범위를 설명한다. 스킬이
 `design-doc` 또는 `context-doc`을 자동 선택했어도 생략하지 않는다. 답변은 그때
 보여준 변경에만 유효하다. AI instruction과 활성으로 검증된 `PreToolUse` 훅은 이
-경우 `ask` 판정을 내린다. Muse host는 확인 응답이 미검증이므로 같은 경우 deny로
-fail-closed한다. 비대화형 Git 훅은 질문할 수 없으므로 역할에 따른
+경우 `ask` 판정을 내린다. 비대화형 Git 훅은 질문할 수 없으므로 역할에 따른
 허용·거부만 판정한다.
 
 ## Step 5 — 재검증과 보고
@@ -213,7 +212,7 @@ fail-closed한다. 비대화형 Git 훅은 질문할 수 없으므로 역할에 
 - 세 CODEOWNERS 관리 블록과 서비스별 활성 파일 우선순위
 - 로컬 Git 훅의 설치 상태와 기존 훅 연결 상태
 - `git-scoped-account` 표식과 `harness.writeAccess.*`의 provider·host·account 일치 여부
-- 루트 instruction 참조 블록, 전용 `write-access-instruction.md`와 Claude·Codex·Muse host 훅 상태
+- 루트 instruction 참조 블록, 전용 `write-access-instruction.md`와 Claude·Codex host 훅 상태
 - 관리자 문서, 앱 핵심 문서, 팀 작성 경로의 판정과 앱별 책임자 범위
 - 세 계층이 같은 `policy_core_sha256`을 가리키는지
 - 원격 브랜치·검토·병합 정책이 이 스킬에서 변경되지 않았다는 상태
@@ -241,7 +240,7 @@ CODEOWNERS만 생성된 상태나 로컬 훅만 설치된 상태를 완전한 �
 - 로컬 훅은 `--no-verify`, 설정 변경, 다른 PC로 우회할 수 있다.
 - Claude `PreToolUse`는 지원 도구 호출을 막지만 사람의 편집과 별도 프로세스는 못 막는다.
 - Codex 프로젝트 훅은 설치 후 사용자가 host의 훅 목록과 신뢰 상태를 확인하기 전까지
-  `pending-trust`다. Muse 프로젝트 훅도 프로젝트 신뢰 검토 증적 전까지 `pending-trust`다.
+  `pending-trust`다.
 - 복수 저장소 구조에서 Git 밖의 루트 `AGENTS.md`는 CODEOWNERS와 Git
   훅으로 보호할 수 없다. AI 훅·운영체제 파일 권한·형상관리 구조 변경이 필요하다.
 

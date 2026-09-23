@@ -39,7 +39,7 @@
     {
       "id": 6,
       "prompt": "서명된 project-write-access 정책이 있는 기존 .docs 프로젝트를 .ai-docs로 이관해줘.",
-      "expected_output": "일반 하네스 이동으로 처리하지 않고 기존 정책·관리자 키·Git 상태를 검증한다. migrate-root-plan의 별도 승인을 받은 뒤 문서 루트, 정책 스키마, CODEOWNERS, Git 훅과 AI 훅을 한 트랜잭션으로 재생성하며 원격 규칙은 바꾸지 않는다.",
+      "expected_output": ".docs/는 참조하지 않으므로 문서 루트 이관을 수행하지 않는다. .ai-docs/의 기존 서명 정책을 검증한 뒤 그 기준으로만 계획·적용하며, 이관 전용 명령은 제공하지 않는다고 안내한다.",
       "files": [],
       "assertions": []
     },

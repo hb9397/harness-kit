@@ -34,11 +34,6 @@
       "layer": 3,
       "config_path": ".codex/hooks.json",
       "adapter_path": ".codex/hooks/codex-pre-tool-use.ps1"
-    },
-    "muse": {
-      "layer": 3,
-      "config_path": ".muse/hooks.json",
-      "adapter_path": ".muse/hooks/muse-route.py"
     }
   },
   "managed_files": [
@@ -50,13 +45,10 @@
     ".ai-docs/harness/hooks/artifact-route-core.ps1",
     ".ai-docs/harness/hooks/claude-pre-tool-use.ps1",
     ".ai-docs/harness/hooks/codex-pre-tool-use.ps1",
-    ".ai-docs/harness/hooks/muse-route.py",
     ".ai-docs/harness/hooks/approve-artifact.ps1",
     ".claude/settings.json",
     ".claude/hooks/claude-pre-tool-use.ps1",
     ".codex/hooks.json",
-    ".codex/hooks/codex-pre-tool-use.ps1",
-    ".muse/hooks.json",
-    ".muse/hooks/muse-route.py"
+    ".codex/hooks/codex-pre-tool-use.ps1"
   ]
 }

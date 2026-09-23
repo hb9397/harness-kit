@@ -255,29 +255,6 @@ def ai_file_write(guard: Path, project: Path, host: str, path: Path) -> subproce
     )
 
 
-def ai_muse(guard: Path, project: Path, payload: dict | str) -> subprocess.CompletedProcess[str]:
-    return subprocess.run(
-        [sys.executable, str(guard), "ai", "--host", "muse", "--project-root", str(project)],
-        cwd=project,
-        env=CHILD_ENV,
-        input=payload if isinstance(payload, str) else json.dumps(payload, ensure_ascii=False),
-        text=True,
-        encoding="utf-8",
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        check=False,
-    )
-
-
-def muse_payload(tool_name: str, path: str | None, content: str, project: Path, event: str = "PreToolUse") -> dict:
-    tool_input: dict = {}
-    if path is not None:
-        tool_input["path"] = path
-    if content:
-        tool_input["content"] = content
-    return {"hook_event_name": event, "tool_name": tool_name, "tool_input": tool_input, "cwd": str(project)}
-
-
 def make_single_fixture(root: Path) -> Path:
     project = root / "single"
     init_repo(project)
@@ -306,8 +283,10 @@ def assert_skill_contract() -> None:
     assert '"migrate-root-plan"' not in controller
     assert '"migrate-root"' not in controller
     assert "일반 디렉토리로 취급" in skill
-    assert "'--host','muse'" in controller
-    assert ".muse/hooks.json" in controller
+    assert "'--host','muse'" not in controller
+    assert ".muse/hooks.json" not in controller
+    assert "'--host','codex'" in controller
+    assert 'host == "claude"' in controller
     assert '"--method"' not in controller
     assert '"-X"' not in controller
     assert "requires-separate-provider-admin-approval" not in controller
@@ -382,30 +361,6 @@ def test_single_repository(root: Path) -> None:
     )
     assert portable_hook.returncode == 0 and portable_hook.stdout == "", portable_hook.stderr
 
-    muse_hooks = json.loads((project / ".muse" / "hooks.json").read_text(encoding="utf-8"))
-    assert muse_hooks["hooks"]["PreToolUse"][0]["matcher"] == "*"
-    muse_command = next(
-        hook["command"]
-        for entry in muse_hooks["hooks"]["PreToolUse"]
-        for hook in entry["hooks"]
-        if "write_access_guard.py" in hook.get("command", "")
-    )
-    assert str(project.resolve()) not in muse_command
-    assert "--host','muse'" in muse_command
-    portable_muse = subprocess.run(
-        muse_command,
-        shell=True,
-        cwd=nested_cwd,
-        env=CHILD_ENV,
-        input=json.dumps({"hook_event_name": "PreToolUse", "tool_name": "write_file", "tool_input": {"path": str(project / "src" / "app.py"), "content": "proposed"}, "cwd": str(nested_cwd)}),
-        text=True,
-        encoding="utf-8",
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        check=False,
-    )
-    assert portable_muse.returncode == 0 and portable_muse.stdout == "", portable_muse.stderr
-
     guard = project / ".ai-docs" / "harness" / "access-control" / "hooks" / "write_access_guard.py"
     policy_before_enrollment = (project / ".ai-docs" / "harness" / "access-control" / "policy.json").read_bytes()
     for key in ("core.hooksPath", "harness.writeAccess.projectRoot", "harness.writeAccess.provider", "harness.writeAccess.host", "harness.writeAccess.account"):
@@ -469,13 +424,6 @@ def test_single_repository(root: Path) -> None:
         prompt_decision = json.loads(app_prompt.stdout)["hookSpecificOutput"]
         assert prompt_decision["permissionDecision"] == "ask"
         assert "설계 기준" in prompt_decision["permissionDecisionReason"]
-    muse_prompt = ai_file_write(
-        guard, project, "muse", project / ".ai-docs" / "web" / "context-base" / "DESIGN.md"
-    )
-    assert muse_prompt.returncode == 0
-    muse_decision = json.loads(muse_prompt.stdout)["hookSpecificOutput"]
-    assert muse_decision["permissionDecision"] == "deny"
-    assert "Muse confirmation is not supported" in muse_decision["permissionDecisionReason"]
 
     set_local_account(project, "@owner")
     instruction_path = project / ".ai-docs" / "harness" / "access-control" / "write-access-instruction.md"
@@ -517,7 +465,7 @@ def test_single_repository(root: Path) -> None:
 
     provider_review_commands = ("gh pr create --base main", "glab mr create --target-branch main", "tea pr create")
     provider_read_commands = ("gh pr list", "glab mr view 42", "tea pr list")
-    for host in ("claude", "codex", "muse"):
+    for host in ("claude", "codex"):
         for provider_command in provider_review_commands:
             denied_ai = ai_command(guard, project, host, provider_command)
             assert denied_ai.returncode == 0, denied_ai.stderr
@@ -531,22 +479,6 @@ def test_single_repository(root: Path) -> None:
         allowed_ai = ai_command(guard, project, host, "gh issue list")
         assert allowed_ai.returncode == 0
         assert allowed_ai.stdout == ""
-
-    team_doc = ".ai-docs/web/impl-doc/dev-b/team.md"
-    allowed_native = ai_muse(guard, project, muse_payload("write_file", team_doc, "team", project))
-    assert allowed_native.returncode == 0 and allowed_native.stdout == "", allowed_native.stderr
-    namespaced_native = ai_muse(guard, project, muse_payload("plugin.write_file", team_doc, "team", project))
-    assert namespaced_native.returncode == 0 and namespaced_native.stdout == "", namespaced_native.stderr
-    denied_native = ai_muse(guard, project, muse_payload("edit_file", ".ai-docs/web/context-base/DESIGN.md", "proposed", project))
-    assert denied_native.returncode == 0
-    assert json.loads(denied_native.stdout)["hookSpecificOutput"]["permissionDecision"] == "deny"
-    non_write = ai_muse(guard, project, muse_payload("read_file", ".ai-docs/README.md", "", project))
-    assert non_write.returncode == 0 and non_write.stdout == "", non_write.stderr
-    other_event = ai_muse(guard, project, muse_payload("write_file", ".ai-docs/README.md", "blocked", project, event="PostToolUse"))
-    assert other_event.returncode == 0 and other_event.stdout == "", other_event.stderr
-    malformed = ai_muse(guard, project, "not-json{{{")
-    assert malformed.returncode == 0
-    assert json.loads(malformed.stdout)["hookSpecificOutput"]["permissionDecision"] == "deny"
 
     local_state = json.loads((project / ".git" / "harness-write-access.json").read_text(encoding="utf-8"))
     assert local_state["previous_hooks"]["pre-commit"] == str(previous_hook.resolve())

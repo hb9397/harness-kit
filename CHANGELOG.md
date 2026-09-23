@@ -2,6 +2,35 @@
 
 이 문서는 `harness-kit` 사용자 플러그인의 주요 변경 사항을 기록한다.
 
+## [0.10.0] - 2026-09-23
+
+### 변경
+
+- retired `.docs/` 문서 루트 이관 계약을 제거했다. 전 사용자 스킬의 `.docs/`
+  이관·충돌 판정이 사라지고, `.docs/` 디렉토리가 존재해도 참조하지 않고 일반
+  디렉토리로 취급한다.
+- `project-write-access`의 `migrate-root-plan`·`migrate-root` 명령과 스크립트
+  이관 경로를 제거했다. 문서 루트 이관 eval 3건을 삭제하고 stray `.docs/`
+  무시 eval을 신설했다.
+- Muse 지원을 전부 제거했다. `harness-kit-muse` 플러그인 빌드 트랙(빌더·
+  payload·아카이브·릴리스 메타·eval 검증)과 `harness-setup`·`project-write-access`의
+  Muse host 라우팅(Track B: `.muse/` 템플릿·어댑터·installer 분기·가드 `--host muse`·
+  관련 eval·fixture·capability 기록)을 삭제했다. `.muse/` 경로는 참조하지 않고
+  일반 디렉토리로 취급한다.
+- `harness-kit`을 `0.10.0`으로 올렸다. 공개 동작 제거이므로 minor 버전을
+  올리고 breaking으로 명시한다.
+
+### 보호 자산 영향
+
+- `project-write-access`의 `scripts/` 이관 경로 삭제와 `evals/` 이관
+  테스트 교체가 있다. `templates/` 삭제·이동·교체는 없다.
+
+### 배포 상태
+
+- `0.10.0`은 `main` 브랜치 배포 후보로 tag와 GitHub Release를 만들지 않는다.
+- `0.10.0` 플러그인 아카이브 경로와 SHA-256은
+  [`maintainer/plugin/release.json`](./maintainer/plugin/release.json)을 정본으로 따른다.
+
 ## [0.9.0] - 2026-09-22
 
 ### 변경

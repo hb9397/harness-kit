@@ -69,7 +69,7 @@ canonical `policy.json`을 서명한다.
 - fetch·fast-forward 갱신은 원격 동기화 승인 범위다.
 - 공유 정책과 CODEOWNERS 쓰기는 저장소 파일 승인 범위다.
 - `core.hooksPath` 변경은 각 개발자 PC의 Git 설정 승인 범위다.
-- `.claude/settings.json`·`.codex/hooks.json`·`.muse/hooks.json` 변경은 host 설정 승인 범위다.
+- `.claude/settings.json`·`.codex/hooks.json` 변경은 host 설정 승인 범위다.
 - 브랜치 보호·승인·병합 규칙은 이 스킬 밖에서 프로젝트 관리자가 운영하는 범위다. 이
   스킬은 관련 API로 원격 설정을 만들거나 바꾸지 않는다.
 - 키 생성·교체·폐기는 다른 변경과 묶지 않는 별도 승인 범위다.

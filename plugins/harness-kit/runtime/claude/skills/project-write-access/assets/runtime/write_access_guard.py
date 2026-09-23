@@ -598,13 +598,6 @@ def paths_from_git_command(command: str, git_root: Path, policy: dict[str, Any])
     return []
 
 
-MUSE_WRITE_TOOLS = ("write_file", "edit_file")
-
-
-def muse_tool_leaf(name: Any) -> str:
-    return str(name or "").split(".")[-1]
-
-
 def ai_decision(project_root: Path, payload: dict[str, Any]) -> tuple[str, str]:
     policy = load_verified_policy(project_root)
     cwd = Path(str(payload.get("cwd") or project_root)).resolve()
@@ -680,7 +673,7 @@ def main() -> int:
             item.add_argument("remote_name")
             item.add_argument("remote_url")
     ai = sub.add_parser("ai")
-    ai.add_argument("--host", choices=("claude", "codex", "muse"), required=True)
+    ai.add_argument("--host", choices=("claude", "codex"), required=True)
     ai.add_argument("--project-root", required=True)
     check = sub.add_parser("check-path")
     check.add_argument("--project-root", required=True)
@@ -732,14 +725,10 @@ def main() -> int:
         payload = json.loads(sys.stdin.read())
         if "hook_event_name" in payload and payload.get("hook_event_name") != "PreToolUse":
             return 0
-        if args.host == "muse" and "tool_name" in payload and muse_tool_leaf(payload.get("tool_name")) not in MUSE_WRITE_TOOLS:
-            return 0
         decision, reason = ai_decision(project_root, payload)
         if decision == "deny":
             return emit_ai_denial(args.host, reason)
         if decision == "ask":
-            if args.host == "muse":
-                return emit_ai_denial(args.host, "Muse confirmation is not supported; " + reason)
             return emit_ai_confirmation(args.host, reason)
         return 0
     except (GuardError, json.JSONDecodeError, OSError, ValueError) as exc:

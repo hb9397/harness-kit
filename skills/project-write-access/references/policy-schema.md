@@ -102,7 +102,7 @@ Plan과 Apply에 전달하는 JSON은 비밀정보를 담지 않는다. `subject
   않는다.
 - 최초 설정에는 명시적 `admin` 배정이 한 명 이상 있어야 하며 `local_identity`가 그
   관리자 계정과 일치해야 한다. 이후 Apply도 현재 관리자 키로 기존 정책을 검증한다.
-- 최초 설정·정책 변경·문서 루트 이관의 `local_identity`는 현재 Git 경계에
+- 최초 설정·정책 변경의 `local_identity`는 현재 Git 경계에
   `git-scoped-account`가 기록한 provider·host·account와 일치해야 한다. 기존 정책에
   참여자 PC만 연결하는 `local-enroll`은 설정 JSON 없이 이 로컬 표식을 사용한다.
 - provider 계정은 `@개인계정`만 사용한다. 팀이나 그룹을 사람 계정처럼 등록하지 않는다.

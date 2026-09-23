@@ -133,13 +133,6 @@ def main() -> int:
     run([str(SCRIPTS / "validate_plugin.py")])
     run([str(SCRIPTS / "build_plugin.py"), "--check"])
     run([str(SCRIPTS / "validate_plugin.py")])
-    muse_build = run([str(SCRIPTS / "build_muse_plugin.py")])
-    muse_release = json.loads(muse_build.stdout)
-    if muse_release["physical_skills"] != expected_skills:
-        raise AssertionError("muse physical skill count mismatch")
-    if muse_release["version"] != json.loads((ROOT / "plugins" / "harness-kit-muse" / ".muse-plugin" / "plugin.json").read_text(encoding="utf-8"))["version"]:
-        raise AssertionError("muse plugin manifest version mismatch")
-    run([str(SCRIPTS / "build_muse_plugin.py"), "--check"])
 
     with tempfile.TemporaryDirectory(prefix="harness-plugin-check-eval-") as tmp:
         fixture_root = Path(tmp)

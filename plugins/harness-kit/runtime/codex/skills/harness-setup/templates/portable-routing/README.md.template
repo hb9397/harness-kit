@@ -19,7 +19,6 @@ separate:
 
 - Claude: `.claude/settings.json` and `.claude/hooks/claude-pre-tool-use.ps1`
 - Codex: `.codex/hooks.json` and `.codex/hooks/codex-pre-tool-use.ps1`
-- Muse: `.muse/hooks.json` and `.muse/hooks/muse-route.py`
 
 Host status is stored only in the Git-ignored
 `.ai-docs/.harness/routing-state.local.json`. Each user runs the installer on
@@ -30,17 +29,11 @@ targets and does not write files.
 The local `pending-trust`/`active` state records trust evidence only. Codex
 decides execution from its own `/hooks` trusted hash (or a per-invocation
 `--dangerously-bypass-hook-trust`), so a `pending-trust` hook may already run.
-A Muse hook fires after project trust; a new or changed managed definition stays
-`pending-trust` until user-reviewed evidence is recorded with `-ActivateTrust`.
 Re-running `-Apply` keeps `active` only while the host config hash is unchanged.
 
 The Codex hook matches only `apply_patch|Bash`. It prints nothing on allow, a
 `systemMessage` on bypass, and a `hookEventName=PreToolUse` deny response (exit 0)
-on deny or when the adapter or core fails. The Muse hook matches every tool call
-(`*`) and gates `write_file|edit_file` inside the adapter. It prints nothing on
-allow and an exit-0 `hookSpecificOutput.permissionDecision=deny` response on deny
-or when the adapter fails; a nonzero exit also blocks, so an untested hook
-command must never be approved.
+on deny or when the adapter or core fails.
 
 ## Write guard boundary
 

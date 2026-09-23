@@ -196,7 +196,6 @@ def validate_config(raw: dict[str, Any]) -> dict[str, Any]:
                 ".gitea/CODEOWNERS",
                 ".claude/settings.json",
                 ".codex/hooks.json",
-                ".muse/hooks.json",
             }
             if not isinstance(pattern, str) or not (pattern.startswith(".ai-docs/") or pattern in allowed_control_paths):
                 raise AccessError("path_rules may protect only document-harness and write-access control paths")
@@ -332,7 +331,6 @@ def path_rules(config: dict[str, Any], layout: dict[str, Any]) -> list[dict[str,
         add("AGENTS.md", "admin", 120)
         add(".claude/settings.json", "admin", 120)
         add(".codex/hooks.json", "admin", 120)
-        add(".muse/hooks.json", "admin", 120)
         codeowners_prefix = "" if layout["git_root_relative"] == "." else f"{docs}/"
         for provider_dir in (".github", ".gitlab", ".gitea"):
             add(f"{codeowners_prefix}{provider_dir}/CODEOWNERS", "admin", 120)
@@ -626,15 +624,6 @@ def merge_hook_config(path: Path, host: str, project_root: Path) -> tuple[bytes,
             ],
         }
         matcher = "Write|Edit|Bash|PowerShell"
-    elif host == "muse":
-        command = (
-            'python -c "import pathlib,runpy,sys; p=pathlib.Path.cwd(); '
-            "r=next((x for x in (p,*p.parents) if (x/'.ai-docs/harness/access-control/hooks/write_access_guard.py').is_file()),None); "
-            "assert r is not None,'project write access guard not found'; g=r/'.ai-docs/harness/access-control/hooks/write_access_guard.py'; "
-            "sys.argv=[str(g),'ai','--host','muse','--project-root',str(r)]; runpy.run_path(str(g),run_name='__main__')\""
-        )
-        handler = {"type": "command", "command": command}
-        matcher = "*"
     else:
         command = (
             'python -c "import pathlib,runpy,sys; p=pathlib.Path.cwd(); '
@@ -988,7 +977,7 @@ def make_plan(project_root: Path, config: dict[str, Any], operation: str = "appl
         target = access_dir / name
         changes.append({"path": relative(project_root, target), "action": "modify" if target.exists() else "create"})
     if config["enable_ai_hooks"]:
-        for target in (project_root / ".claude" / "settings.json", project_root / ".codex" / "hooks.json", project_root / ".muse" / "hooks.json"):
+        for target in (project_root / ".claude" / "settings.json", project_root / ".codex" / "hooks.json"):
             changes.append({"path": relative(project_root, target), "action": "modify" if target.exists() else "create"})
     if config["enable_git_hooks"] and git_root is None:
         conflicts.append({"provider": "local-git", "type": "hooks-unavailable", "path": ".git/config"})
@@ -1184,7 +1173,6 @@ def provider_state(config: dict[str, Any], layout: dict[str, Any], git_root: Pat
         "hosts": {
             "claude": "pending-trust" if config["enable_ai_hooks"] else "not-installed",
             "codex": "pending-trust" if config["enable_ai_hooks"] else "not-installed",
-            "muse": "pending-trust" if config["enable_ai_hooks"] else "not-installed",
         },
     }
 
@@ -1755,7 +1743,6 @@ def apply(
     if config["enable_ai_hooks"]:
         json_outputs[project_root / ".claude" / "settings.json"] = merge_hook_config(project_root / ".claude" / "settings.json", "claude", project_root)
         json_outputs[project_root / ".codex" / "hooks.json"] = merge_hook_config(project_root / ".codex" / "hooks.json", "codex", project_root)
-        json_outputs[project_root / ".muse" / "hooks.json"] = merge_hook_config(project_root / ".muse" / "hooks.json", "muse", project_root)
 
     manifest_entries: list[dict[str, str]] = []
     for path, content in full_outputs.items():

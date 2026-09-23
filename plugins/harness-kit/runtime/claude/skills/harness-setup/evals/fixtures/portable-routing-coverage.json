@@ -17,15 +17,12 @@
     {"id": 13, "title": "external text normalization proposal", "fixture": "external Markdown, MDX, TXT, RST, AsciiDoc", "assertion": "required fields and UTF-8 proposal are inbox-first; marker-aware merge requires G12", "evidence": "skills/harness-setup/evals/run_evals.py; skills/harness-setup/templates/portable-routing/normalize-artifact.ps1.template"},
     {"id": 14, "title": "fixed-format inbox promotion boundary", "fixture": "JSON, YAML, image and PDF external bundle", "assertion": "source hash and proposal stay in _inbox; lossy automatic conversion is forbidden", "evidence": "skills/harness-setup/evals/run_evals.py; skills/harness-setup/templates/portable-routing/normalize-artifact.ps1.template"},
     {"id": 15, "title": "22-skill artifact contract coverage", "fixture": "live skill inventory", "assertion": "19 user plus 3 manager skills have routing profiles and unknown write capability is false", "evidence": "maintainer/inventory/artifact-output-contract.json; maintainer/skills/skill-portfolio-maintainer/scripts/validate_artifact_output_contract.py"},
-    {"id": 16, "title": "four runtime combinations and trust transition", "fixture": "installed|portable-only x Claude|Codex", "assertion": "routing contract remains shared and Codex becomes active only after explicit trust evidence", "evidence": "skills/harness-setup/evals/run_evals.py; skills/harness-setup/templates/portable-routing/install-routing.ps1.template"},
-    {"id": 17, "title": "Muse host routing", "fixture": "triple-host clean project", "assertion": "Muse hook config, python adapter verdicts and installer targets match the shared routing contract", "evidence": "skills/harness-setup/evals/run_evals.py; skills/harness-setup/templates/portable-routing/muse-hooks.json.template; skills/harness-setup/templates/portable-routing/hooks/muse-route.py.template"}
+    {"id": 16, "title": "four runtime combinations and trust transition", "fixture": "installed|portable-only x Claude|Codex", "assertion": "routing contract remains shared and Codex becomes active only after explicit trust evidence", "evidence": "skills/harness-setup/evals/run_evals.py; skills/harness-setup/templates/portable-routing/install-routing.ps1.template"}
   ],
   "runtime_matrix": [
     {"bundle": "harness-kit-installed", "host": "claude", "expected_trust": "pending-trust"},
     {"bundle": "harness-kit-installed", "host": "codex", "expected_trust": "pending-trust"},
-    {"bundle": "harness-kit-installed", "host": "muse", "expected_trust": "pending-trust"},
     {"bundle": "portable-only", "host": "claude", "expected_trust": "pending-trust"},
-    {"bundle": "portable-only", "host": "codex", "expected_trust": "active"},
-    {"bundle": "portable-only", "host": "muse", "expected_trust": "pending-trust"}
+    {"bundle": "portable-only", "host": "codex", "expected_trust": "active"}
   ]
 }

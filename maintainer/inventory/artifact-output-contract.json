@@ -57,8 +57,7 @@
     "common_policy_location": ".ai-docs/harness/**",
     "host_specific_installation": {
       "claude": ".claude/settings.json; .claude/hooks/**",
-      "codex": ".codex/hooks.json; .codex/hooks/**",
-      "muse": ".muse/hooks.json; .muse/hooks/**"
+      "codex": ".codex/hooks.json; .codex/hooks/**"
     },
     "host_capabilities": {
       "claude": {
@@ -80,16 +79,6 @@
         "project_scope": ".codex/hooks.json",
         "trust": "new or changed non-managed hook definitions remain pending review until trusted through /hooks",
         "source": "https://learn.chatgpt.com/docs/hooks"
-      },
-      "muse": {
-        "status": "supported",
-        "event": "PreToolUse",
-        "matcher": "* with in-adapter write-tool gating (write_file, edit_file)",
-        "input": "JSON stdin; hook_event_name, tool_name, tool_input.path and cwd",
-        "deny": "exit 0 with hookSpecificOutput.permissionDecision=deny; nonzero exit also blocks",
-        "project_scope": ".muse/hooks.json",
-        "project_root_variable": "cwd",
-        "source": "https://dev.meta.ai/docs/muse-code/extending"
       }
     },
     "bypass_boundaries": [

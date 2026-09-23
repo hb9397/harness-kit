@@ -58,16 +58,6 @@
       "note": "Local CSV search over the bundled design database. All data ships with the skill; nothing is fetched."
     },
     {
-      "skill": "harness-setup",
-      "executables": ["templates/portable-routing/hooks/muse-route.py.template"],
-      "interpreter": "python3",
-      "third_party_dependencies": [],
-      "network": false,
-      "subprocess": false,
-      "writes": "No verdict files. A consumed one-shot approval marker is deleted after exactly one approved write; no other files are written.",
-      "note": "Muse PreToolUse adapter mirroring the shared portable-routing containment and one-shot approval contract. Fail-closed deny on malformed input or missing routing."
-    },
-    {
       "skill": "motion-design",
       "executables": [],
       "interpreter": null,
