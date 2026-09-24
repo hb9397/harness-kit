@@ -134,7 +134,8 @@ Claude Code를 사용할 예정이면 2.1.277 이상인지 확인 가능한 범�
 
 ### Portable routing 상태 판별
 
-`.ai-docs/harness/artifact-routing.json`이 있으면 manifest의 mode, app id와 host별
-status를 읽는다. bundle은 있으나 host adapter/config가 없거나 `uninstalled`이면
-**manual portable adoption**으로 분류한다. 이 분류는 `-Plan`/`-Check`만으로는
+`.ai-docs/harness/artifact-routing.json`이 있으면 manifest의 mode와 app id를 읽고,
+`install-routing.ps1 -Check`로 host별 로컬 상태를 확인한다. bundle은 있으나 host
+adapter/config가 없거나 `uninstalled`이면 **manual portable adoption**으로 분류한다.
+이 분류는 `-Plan`/`-Check`만으로는
 바뀌지 않으며 host-local 적용은 G10 승인 뒤에만 제안한다.

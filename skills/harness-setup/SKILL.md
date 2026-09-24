@@ -427,7 +427,8 @@ Codex matcher는 쓰기 가능 도구 `apply_patch|Bash`만 대상으로 하며,
 stderr는 도구 실행을 막지 못했으므로 차단 경로로 쓰지 않는다.
 
 로컬 상태의 `pending-trust`/`active`는 사용자 신뢰 증적 기록이며 hook 실행 여부를 결정하지
-않는다. Codex 실행 여부는 사용자 `/hooks` trusted hash 또는 호출 단위
+않는다. 설치된 Claude hook도 `pending-trust`에서 실행될 수 있다. Codex 실행 여부는
+사용자 `/hooks` trusted hash 또는 호출 단위
 `--dangerously-bypass-hook-trust`가 결정하므로 `pending-trust` 상태에서도 hook이 실행될 수
 있고, guard는 이를 이유로 차단하지 않는다. `-Apply`는 이미 `active`인 host의 config hash가
 그대로일 때만 `active`를 유지하고, hook 정의가 바뀌면 `pending-trust`로 되돌린다. `-Check`도

@@ -962,8 +962,8 @@ cd .ai-docs && git init && git add -A && git commit -m "init: 프로젝트 AI �
 | 상태 | 뜻 |
 |---|---|
 | `not-installed` | host 설정과 adapter 파일이 없다. 기계적 write hook은 동작하지 않는다 |
-| `pending-trust` | 현재 PC에 설치됐지만 host 신뢰 절차가 끝나지 않았다. 활성 보호 장치로 보지 않는다 |
-| `active` | 관리자가 host별 hook 검토를 마치고 신뢰 증적을 승인했다 |
+| `pending-trust` | 현재 PC에 설치됐지만 host 신뢰 절차가 끝나지 않았다. hook은 실행될 수 있으나 검증된 보호 장치로 간주하지 않는다 |
+| `active` | 관리자가 host별 hook 검토를 마치고 신뢰 증적을 승인했다. 실행 여부를 결정하는 스위치는 아니다 |
 | `uninstalled` | 승인된 절차로 해제했다 |
 
 - 설치 전에 `install-routing.ps1 -Plan`으로 변경 제안을 확인한다.

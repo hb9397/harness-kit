@@ -4,10 +4,10 @@
   "plugin": {
     "plugin_root": "plugins/harness-kit",
     "plugin_id": "harness-kit",
-    "version": "0.10.0",
+    "version": "0.10.1",
     "codex_manifest_matches_claude": true,
-    "archive": "plugins/harness-kit-0.10.0.zip",
-    "archive_sha256": "5543a75a5c4666495760879589217d6c0e277c93d3815e7251cc2efa6c22aea4",
+    "archive": "plugins/harness-kit-0.10.1.zip",
+    "archive_sha256": "afe97e6c55c47d13dec84eb1826f0f879b1c95167b49efd280bc797c5fad30b5",
     "archive_sha256_matches_release": true,
     "logical_user_skills": 20,
     "codex_physical_skills": 20,
@@ -119,13 +119,13 @@
     "platforms": {
       "codex": {
         "status": "passed",
-        "cli_version": "codex-cli 0.156.0",
+        "cli_version": "codex-cli 0.156.1",
         "marketplace": "hb9397",
         "plugin_id": "harness-kit@hb9397",
         "evidence_level": "marketplace-install-and-cache-smoke",
         "model_invocation_verified": false,
         "installed_payload": {
-          "version": "0.10.0",
+          "version": "0.10.1",
           "skill_count": 20,
           "agent_count": 0,
           "required_skills": [
@@ -140,13 +140,13 @@
       },
       "claude": {
         "status": "passed",
-        "cli_version": "2.1.280 (Claude Code)",
+        "cli_version": "2.1.281 (Claude Code)",
         "marketplace": "hb9397",
         "plugin_id": "harness-kit@hb9397",
         "evidence_level": "marketplace-install-and-cache-smoke",
         "model_invocation_verified": false,
         "installed_payload": {
-          "version": "0.10.0",
+          "version": "0.10.1",
           "skill_count": 20,
           "agent_count": 0,
           "required_skills": [

@@ -50,18 +50,16 @@
 앱 경로에 만들고 누구에게 인계할지는 해당 앱의 Layer 2
 `artifact-output-routing-instruction.md`를 따른다.
 
-manifest는 **공유 계약**, `install-routing.ps1 -Check`은 **현재 PC의 실제 설치 상태**를
-보여 준다. 로컬 상태가 없거나 adapter가 없으면 `not-installed`이며 active hook으로
-취급하지 않는다.
+manifest에는 공유 산출물 계약과 host adapter 경로를 기록한다. 설치·신뢰 상태는 기록하지
+않는다. 현재 PC의 상태는 `install-routing.ps1 -Check`로 확인한다. 로컬 상태나 adapter가 없으면
+`not-installed`다.
 
-세팅만으로 Claude·Codex 설정이나 hook이 자동 활성화되지는 않는다. 기본 bundle 생성은
-공유 문서만 만들며, `install-routing.ps1 -Plan`/`-Check`은 읽기 전용이다. host별
-`.claude/` 또는 `.codex/` adapter는 별도 설치 승인 뒤에만 병합하고, Codex는 `/hooks`
-신뢰 검토까지 끝나기 전 `pending-trust` 상태를 활성화로 간주하지 않는다.
-
-Claude Code도 이 파일의 portable routing 계약을 직접 따른다. bundle 생성만으로 Claude
-설정이나 hook이 활성화되지는 않으며, 로컬 상태가 `pending-trust`이면 host별 승인과 신뢰
-검토가 끝날 때까지 활성 hook으로 간주하지 않는다.
+기본 bundle 생성은 Claude·Codex hook을 설치하지 않는다. `install-routing.ps1 -Plan`과
+`-Check`은 읽기 전용이며, host별 adapter는 별도 설치 승인 뒤에만 병합한다.
+`pending-trust`와 `active`는 신뢰 검토 기록이지 hook 실행 스위치가 아니다. 설치된 hook은
+`pending-trust`에서도 실행될 수 있으므로, 신뢰 검토 전에는 검증된 보호 장치로 간주하지
+않는다. Codex는 `/hooks`, Claude Code는 해당 host의 hook 설정을 검토한 뒤
+`-ActivateTrust -ApproveTrustEvidence`로 검토 결과만 기록한다.
 
 ---
 

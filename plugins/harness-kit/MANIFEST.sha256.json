@@ -3,15 +3,15 @@
   "files": [
     {
       "path": ".claude-plugin/plugin.json",
-      "sha256": "00b209fdc0b99fc5fc452285772efc932b82048bcc1f6d874778e35da59c6e92"
+      "sha256": "f9ffc534dd0083bdcea47d88518d914300a08a4291a3e91eb80a5a786475404c"
     },
     {
       "path": ".codex-plugin/plugin.json",
-      "sha256": "1f81f139148c930ddc874a5fb12432335b3a77308f588bd56def4958af204704"
+      "sha256": "7661a5d90ca50e79bfc30a5bf93969ad6cdf2a910b8213893de097dc7895018a"
     },
     {
       "path": "CAPABILITIES.json",
-      "sha256": "5077c9e9ed129446e448834378931752474bbb63a6744650f25b416413453013"
+      "sha256": "820ffddeb95c7363ea4bcb8f5764f058f7dc5133823473934184051449a44b8d"
     },
     {
       "path": "LICENSE",
@@ -27,7 +27,7 @@
     },
     {
       "path": "UPSTREAMS.lock.json",
-      "sha256": "6cdb6bf7d90e619ada5f77f73b141b8e997ba2b76cefd0e23877f3748ed7cf73"
+      "sha256": "78d8df3a4f05d9034c9e904b87a5ad93fd2cd94badec46a1280c88da2dea05ef"
     },
     {
       "path": "licenses/anthropic-frontend-design-LICENSE",
@@ -327,7 +327,7 @@
     },
     {
       "path": "runtime/claude/skills/harness-setup/SKILL.md",
-      "sha256": "65d8f388ed92a7e23ea6f99930a046bba9b009f41f7966590d48278e8bf40ae6"
+      "sha256": "cddcca63d32f8b9f348c56ce87b40b30ed48057c1c5768654b783b4d14b1294e"
     },
     {
       "path": "runtime/claude/skills/harness-setup/evals/fixtures/portable-routing-baseline.json",
@@ -343,11 +343,11 @@
     },
     {
       "path": "runtime/claude/skills/harness-setup/evals/run_evals.py",
-      "sha256": "47300b24c07908d9932a6ea7f900609f241507cdc6169175a2c978fc6e7b80d9"
+      "sha256": "7ca72a8722d6b5c4a3d314c3e547c3ccc1533d6ad505a710064a8e67c773c084"
     },
     {
       "path": "runtime/claude/skills/harness-setup/prompts/detection.md",
-      "sha256": "cacd264f3f78e3a48b0fa7b4a4269a57250d6637a75e9f3f338dbe70af766902"
+      "sha256": "3622a934059bf17abfbf324a1f0236d5e3b63ff33ca5f94dae511494b7709281"
     },
     {
       "path": "runtime/claude/skills/harness-setup/prompts/multi-app-setup.md",
@@ -427,11 +427,11 @@
     },
     {
       "path": "runtime/claude/skills/harness-setup/templates/root-context-single.template",
-      "sha256": "feebcded7e60a7fa179e86a110d285ba5042735da288803b9e983bcedd0657ba"
+      "sha256": "19593bdb5a861e71e255b7b9845918fb091db516f4dd36e2208d4629495b3d18"
     },
     {
       "path": "runtime/claude/skills/harness-setup/templates/root-context.template",
-      "sha256": "af4f5b87926febc7c1f02eeb4bdf06fb8de31bdfcb560152b3bfa45f74a52798"
+      "sha256": "af4fbc81276bfb847b28e92ef86f528be4923b1e0a954f022e7c5d3955ec40bb"
     },
     {
       "path": "runtime/claude/skills/humanize-korean/SKILL.md",
@@ -1203,7 +1203,7 @@
     },
     {
       "path": "runtime/codex/skills/harness-setup/SKILL.md",
-      "sha256": "65d8f388ed92a7e23ea6f99930a046bba9b009f41f7966590d48278e8bf40ae6"
+      "sha256": "cddcca63d32f8b9f348c56ce87b40b30ed48057c1c5768654b783b4d14b1294e"
     },
     {
       "path": "runtime/codex/skills/harness-setup/evals/fixtures/portable-routing-baseline.json",
@@ -1219,11 +1219,11 @@
     },
     {
       "path": "runtime/codex/skills/harness-setup/evals/run_evals.py",
-      "sha256": "47300b24c07908d9932a6ea7f900609f241507cdc6169175a2c978fc6e7b80d9"
+      "sha256": "7ca72a8722d6b5c4a3d314c3e547c3ccc1533d6ad505a710064a8e67c773c084"
     },
     {
       "path": "runtime/codex/skills/harness-setup/prompts/detection.md",
-      "sha256": "cacd264f3f78e3a48b0fa7b4a4269a57250d6637a75e9f3f338dbe70af766902"
+      "sha256": "3622a934059bf17abfbf324a1f0236d5e3b63ff33ca5f94dae511494b7709281"
     },
     {
       "path": "runtime/codex/skills/harness-setup/prompts/multi-app-setup.md",
@@ -1303,11 +1303,11 @@
     },
     {
       "path": "runtime/codex/skills/harness-setup/templates/root-context-single.template",
-      "sha256": "feebcded7e60a7fa179e86a110d285ba5042735da288803b9e983bcedd0657ba"
+      "sha256": "19593bdb5a861e71e255b7b9845918fb091db516f4dd36e2208d4629495b3d18"
     },
     {
       "path": "runtime/codex/skills/harness-setup/templates/root-context.template",
-      "sha256": "af4f5b87926febc7c1f02eeb4bdf06fb8de31bdfcb560152b3bfa45f74a52798"
+      "sha256": "af4fbc81276bfb847b28e92ef86f528be4923b1e0a954f022e7c5d3955ec40bb"
     },
     {
       "path": "runtime/codex/skills/humanize-korean/SKILL.md",

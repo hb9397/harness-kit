@@ -942,6 +942,7 @@ def check_setup_contract() -> None:
             if retired in text:
                 raise AssertionError(f"{path} still references the retired .docs root: {retired}")
     require(detection, "manual portable adoption", SETUP_ROOT / "prompts" / "detection.md")
+    require(detection, "`install-routing.ps1 -Check`로 host별 로컬 상태", SETUP_ROOT / "prompts" / "detection.md")
 
     for path, needle in (
         (SETUP_ROOT / "prompts" / "single-app-setup.md", ".ai-docs/harness/"),
@@ -994,6 +995,11 @@ def check_setup_contract() -> None:
             raise AssertionError(f"missing bundled template: {template_path}")
 
     single_template = read(SETUP_ROOT / "templates" / "root-context-single.template")
+    for template_name in ("root-context-single.template", "root-context.template"):
+        template_path = SETUP_ROOT / "templates" / template_name
+        template = read(template_path)
+        require(template, "설치·신뢰 상태는 기록하지", template_path)
+        require(template, "신뢰 검토 기록이지 hook 실행 스위치가 아니다", template_path)
     if "{{PROJECT_NAME}}" in single_template or "{{PROJECT_ROOT}}" in single_template:
         raise AssertionError("single-app root map still embeds checkout identity")
     require(single_template, "프로젝트 루트: `./`", SETUP_ROOT / "templates" / "root-context-single.template")
@@ -1044,7 +1050,7 @@ def check_setup_contract() -> None:
             "Claude Code 2.1.277",
             ".ai-docs/harness/artifact-routing.json",
             "pending-trust",
-            "host별 승인과 신뢰",
+            "신뢰 검토 기록이지 hook 실행 스위치가 아니다",
         ):
             require(template, needle, template_path)
     if (SETUP_ROOT / "templates" / "claude-bridge.template").exists():
