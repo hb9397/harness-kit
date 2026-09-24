@@ -42,7 +42,11 @@ documents, approved app source, `.ai-docs/_inbox/**`, and declared exceptions. A
 new managed document requires a path-bound, content-hash-bound, one-shot marker
 created with `approve-artifact.ps1 -Approve`; it expires and is consumed after
 one exact write. Dynamic shell targets are recorded as bypass evidence, not
-claimed as fully enforced. Hosted tools, opt-out tool paths, shell redirects
+claimed as fully enforced. Writes outside the project are denied, except the
+running host's own agent state computed at runtime: Claude
+`<CLAUDE_CONFIG_DIR or ~/.claude>/projects/<project-slug>/memory/` and
+`<temp>/claude/<project-slug>/`, and Codex `<CODEX_HOME or ~/.codex>/memories/`.
+Hosted tools, opt-out tool paths, shell redirects
 created after command execution, and processes outside this project are also
 best-effort limits rather than a complete security boundary.
 

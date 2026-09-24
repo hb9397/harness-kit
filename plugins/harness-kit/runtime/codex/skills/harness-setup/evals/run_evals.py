@@ -475,13 +475,14 @@ def check_portable_routing_bundle() -> None:
 
         codex_adapter_path = project / ".codex" / "hooks" / "codex-pre-tool-use.ps1"
 
-        def invoke_codex(payload: dict | str, shell: str = "pwsh") -> tuple[str, str]:
+        def invoke_codex(payload: dict | str, shell: str = "pwsh", env: dict | None = None) -> tuple[str, str]:
             result = subprocess.run(
                 [shell, "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", str(codex_adapter_path)],
                 input=payload if isinstance(payload, str) else json.dumps(payload, ensure_ascii=False),
                 capture_output=True,
                 encoding="utf-8",
                 errors="replace",
+                env=env,
                 check=False,
             )
             return codex_pre_tool_use_outcome(result.returncode, result.stdout, result.stderr)
@@ -515,6 +516,50 @@ def check_portable_routing_bundle() -> None:
         moved["tool_input"]["command"] = "*** Begin Patch\n*** Update File: README.md\n*** Move to: ../moved.md\n*** End Patch"
         if invoke_codex(moved)[0] != "blocked":
             raise AssertionError("Codex apply_patch Move to target escaped the write guard")
+
+        # Host-private agent state (memory, scratchpad) sits outside the project but is not a
+        # project artifact; only the running host's own roots are exempt from containment.
+        host_home = Path(tmp) / "host-home"
+        host_tmp = Path(tmp) / "host-tmp"
+        host_tmp.mkdir()
+        # resolve() expands 8.3 short names (e.g. RUNNER~1) so the slug matches under both
+        # pwsh and Windows PowerShell 5.1, whose GetFullPath expands them.
+        long_project = project.resolve()
+        slug = re.sub(r"[^A-Za-z0-9]", "-", str(long_project))
+        codex_env = {**os.environ, "CODEX_HOME": str(host_home / "codex")}
+        for shell in HOOK_SHELLS:
+            memory_patch = apply_patch_payload((str(host_home / "codex" / "memories" / "note.md"), "note"))
+            if invoke_codex(memory_patch, shell=shell, env=codex_env) != ("completed", ""):
+                raise AssertionError(f"Codex own memories write was not allowed under {shell}")
+            foreign = apply_patch_payload((str(host_home / "codex" / "config.toml"), "blocked"))
+            if invoke_codex(foreign, shell=shell, env=codex_env)[0] != "blocked":
+                raise AssertionError(f"Codex home outside memories escaped containment under {shell}")
+        claude_env = {
+            **os.environ,
+            "CLAUDE_PROJECT_DIR": str(long_project),
+            "CLAUDE_CONFIG_DIR": str(host_home / "claude"),
+            "TMP": str(host_tmp),
+            "TEMP": str(host_tmp),
+            "TMPDIR": str(host_tmp),
+        }
+        claude_private_cases = (
+            (host_home / "claude" / "projects" / slug / "memory" / "MEMORY.md", 0),
+            (host_tmp / "claude" / slug / "session" / "scratchpad" / "notes.txt", 0),
+            (host_home / "claude" / "projects" / "other-project" / "memory" / "MEMORY.md", 2),
+        )
+        for (target, expected_code), shell in [(case, shell) for case in claude_private_cases for shell in HOOK_SHELLS]:
+            private_run = subprocess.run(
+                [shell, "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", str(project / ".claude" / "hooks" / "claude-pre-tool-use.ps1")],
+                input=json.dumps({"tool_name": "Write", "tool_input": {"file_path": str(target), "content": "x"}}),
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+                errors="replace",
+                env=claude_env,
+                check=False,
+            )
+            if private_run.returncode != expected_code:
+                raise AssertionError(f"Claude host-private write {target} under {shell}: expected {expected_code}, got {private_run.returncode} / {private_run.stderr}")
 
         existing = project / ".ai-docs" / "instruction" / "existing.md"
         existing.parent.mkdir(parents=True, exist_ok=True)

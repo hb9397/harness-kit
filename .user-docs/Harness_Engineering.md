@@ -911,7 +911,7 @@ python maintainer/skills/skill-portfolio-maintainer/scripts/validate_registry.py
 `harness-setup`은 `.ai-docs/harness/`에 프로젝트 상대경로 기반 경로·형식 계약을 남긴다. 공유 manifest의 `project_root`는 `.`이며 사용자 홈·checkout 절대경로와 host 상태를 넣지 않는다. PC별 설치·신뢰·config hash는 Git에서 제외되는 `.ai-docs/.harness/routing-state.local.json`에 둔다. `-Plan`/`-Check`은 읽기 전용이며, Claude/Codex host-local hook의 `-Apply`/`-Uninstall`은 host별 diff와 별도 승인 뒤에만 수행한다. Codex hook은 `/hooks` 신뢰 증적 전까지 로컬 상태를 `pending-trust`로 기록한다.
 따라서 이후 다른 플러그인이나 일반 AI 도구를 사용해도 bundle과 앱별 routing instruction만으로 산출물 위치를 해석할 수 있다.
 
-G10 뒤 선택 host에 설치하는 `PreToolUse` adapter는 공통 write guard를 호출한다. guard는 경로를 project containment 기준으로 정규화하고, 기존 canonical 문서·승인된 앱 source·`.ai-docs/_inbox/**`·manifest exception만 통과시킨다. 새 관리 문서는 target path, operation, content SHA-256, TTL을 함께 묶은 1회성 approval marker가 정확히 일치할 때만 통과하며 성공 뒤 marker를 소비한다.
+G10 뒤 선택 host에 설치하는 `PreToolUse` adapter는 공통 write guard를 호출한다. guard는 경로를 project containment 기준으로 정규화하고, 기존 canonical 문서·승인된 앱 source·`.ai-docs/_inbox/**`·manifest exception만 통과시킨다. 프로젝트 밖 쓰기는 거부하되, 실행 중인 host의 자기 상태 폴더(Claude의 프로젝트별 memory·scratchpad, Codex의 `memories/`)는 실행 시점에 경로를 계산해 예외로 둔다. 새 관리 문서는 target path, operation, content SHA-256, TTL을 함께 묶은 1회성 approval marker가 정확히 일치할 때만 통과하며 성공 뒤 marker를 소비한다.
 Codex는 deny JSON을, Claude는 exit 2/stderr를 사용하며 두 host 모두 allow는 빈 stdout이다. Codex matcher는 `apply_patch|Bash`만 대상으로 하고, allow는 빈 stdout, bypass는 `systemMessage`, adapter/core 예외는 deny JSON(exit 0)으로 응답해 내부 판정 객체를 Codex에 노출하지 않는다.
 
 이는 관찰 가능한 local write surface의 best-effort guard다. 동적 shell target, hosted tool, opt-out path, 명령 실행 후의 redirect, 외부 process는 완전 차단을 주장하지 않고 bypass evidence로 남긴다. 실제 Codex `/hooks` trust는 여전히 별도의 사용자 증적이다.

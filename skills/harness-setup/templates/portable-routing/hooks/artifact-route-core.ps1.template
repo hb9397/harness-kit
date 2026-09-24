@@ -39,6 +39,23 @@ function Test-Contained([string]$Candidate, [string]$Root) {
         $normalizedCandidate.StartsWith($normalizedRoot + [IO.Path]::DirectorySeparatorChar, [StringComparison]::OrdinalIgnoreCase)
 }
 
+# Host-private agent state (memory, scratchpad) lives outside the project; it is not a project
+# artifact, so containment does not apply. Roots are derived at runtime and never stored in the
+# shared manifest.
+# ponytail: default layout only; custom memory dirs (e.g. autoMemoryDirectory) still hit containment.
+function Get-HostPrivateRoots([string]$Project) {
+    $slug = $Project -replace '[^A-Za-z0-9]', '-'
+    if ($RuntimeHost -eq 'claude') {
+        $configDir = if ($env:CLAUDE_CONFIG_DIR) { $env:CLAUDE_CONFIG_DIR } else { Join-Path $HOME '.claude' }
+        return @(
+            (Join-Path $configDir "projects/$slug/memory"),
+            (Join-Path ([IO.Path]::GetTempPath()) "claude/$slug")
+        )
+    }
+    $codexHome = if ($env:CODEX_HOME) { $env:CODEX_HOME } else { Join-Path $HOME '.codex' }
+    return @(Join-Path $codexHome 'memories')
+}
+
 function Get-InputProperty([object]$InputObject, [string[]]$Names) {
     foreach ($name in $Names) {
         $property = $InputObject.PSObject.Properties[$name]
@@ -110,11 +127,13 @@ $forbiddenExternalRoots = @(
 )
 $canonicalInstruction = [string]$routing.apps[0].routing_instruction
 $allowedRootFiles = @((Join-Path $project 'AGENTS.md'))
+$hostPrivateRoots = @(Get-HostPrivateRoots $project)
 $approvedMarkers = @()
 
 foreach ($request in Get-WriteRequests) {
     if ($request.operation -eq 'bypass') { Write-Output (New-Decision 'bypass' 'dynamic shell target is outside reliable local-hook extraction; record bypass evidence' @()); exit 0 }
     $target = Get-NormalizedPath $request.path $project
+    if ($null -ne $target -and ($hostPrivateRoots | Where-Object { Test-Contained $target $_ })) { continue }
     if ($null -eq $target -or -not (Test-Contained $target $project)) { Write-Output (New-Decision 'deny' "target is outside project containment: $($request.path)" @()); exit 0 }
     $relative = $target.Substring($project.Length).TrimStart([char]92, [char]47).Replace([char]92, [char]47)
     $exists = Test-Path -LiteralPath $target -PathType Leaf

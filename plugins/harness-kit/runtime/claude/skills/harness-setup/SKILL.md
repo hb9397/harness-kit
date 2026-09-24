@@ -414,7 +414,10 @@ host config의 managed entry에는 사용자 홈이나 설치 당시 체크아�
 갱신하며 lossless 여부를 알 수 없는 자동 canonical promotion은 금지한다.
 
 host adapter가 활성화된 경우 공통 write guard는 absolute/relative, separator, case,
-traversal을 정규화해 project containment를 확인한다. 기존 canonical file, 승인된 app
+traversal을 정규화해 project containment를 확인한다. 실행 중인 host의 자기 상태 폴더는
+containment 예외다. Claude는 `<CLAUDE_CONFIG_DIR 또는 ~/.claude>/projects/<project-slug>/memory/`와
+`<temp>/claude/<project-slug>/`, Codex는 `<CODEX_HOME 또는 ~/.codex>/memories/`이며 경로는
+실행 시점에 계산하고 manifest에 기록하지 않는다. 기존 canonical file, 승인된 app
 source, `.ai-docs/_inbox/**`, manifest exception은 허용한다. 새 managed `.ai-docs` 또는 root
 context 파일은 target path·operation·content SHA-256·TTL에 정확히 묶인 one-shot marker가
 있을 때만 통과하며 성공 후 원자적으로 소비한다. Codex는
