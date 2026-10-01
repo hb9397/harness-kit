@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import base64
 import hashlib
 import json
 import os
@@ -340,7 +341,11 @@ def check_portable_routing_bundle() -> None:
         raise AssertionError("Codex hook command still requires an installation-time absolute path")
     codex_hook_config = json.loads(render_portable("codex-hooks.json.template", replacements))
     codex_handler = codex_hook_config["hooks"]["PreToolUse"][0]["hooks"][0]
-    if "(Get-Location).Path" not in codex_handler.get("commandWindows", "") or ".codex/hooks/codex-pre-tool-use.ps1" not in codex_handler.get("commandWindows", ""):
+    windows_command = codex_handler.get("commandWindows", "")
+    if " -EncodedCommand " not in windows_command:
+        raise AssertionError("Codex Windows launcher must avoid outer-shell variable expansion")
+    windows_script = base64.b64decode(windows_command.rsplit(" ", 1)[1], validate=True).decode("utf-16-le")
+    if "(Get-Location).Path" not in windows_script or ".codex/hooks/codex-pre-tool-use.ps1" not in windows_script:
         raise AssertionError("Codex Windows hook config does not resolve the project hook portably")
     codex_matcher = codex_hook_config["hooks"]["PreToolUse"][0]["matcher"]
     for write_tool in ("apply_patch", "Bash"):
@@ -487,24 +492,34 @@ def check_portable_routing_bundle() -> None:
             )
             return codex_pre_tool_use_outcome(result.returncode, result.stdout, result.stderr)
 
-        nested_cwd = project / "src" / "nested"
+        nested_cwd = project / "src" / "nested checkout"
         nested_cwd.mkdir(parents=True)
         codex_config = json.loads(read(project / ".codex" / "hooks.json"))
         command_key = "commandWindows" if os.name == "nt" else "command"
         portable_command = codex_config["hooks"]["PreToolUse"][0]["hooks"][0][command_key]
-        portable_run = subprocess.run(
-            portable_command,
-            shell=True,
-            cwd=nested_cwd,
-            input=json.dumps({"tool_name": "Bash", "tool_input": {"command": "Get-ChildItem .ai-docs"}}),
-            capture_output=True,
-            text=True,
-            encoding="utf-8",
-            errors="replace",
-            check=False,
-        )
-        if codex_pre_tool_use_outcome(portable_run.returncode, portable_run.stdout, portable_run.stderr) != ("completed", ""):
-            raise AssertionError(f"portable Codex command failed from a nested checkout path: {portable_run.stderr}")
+        launchers = [portable_command]
+        if os.name == "nt":
+            # Codex runs hooks through the session shell, which can be PowerShell.
+            launchers.extend([shell, "-NoProfile", "-Command", portable_command] for shell in HOOK_SHELLS)
+        for launcher in launchers:
+            for payload, expected in (
+                ({"tool_name": "Bash", "tool_input": {"command": "Get-ChildItem .ai-docs"}}, "completed"),
+                (apply_patch_payload(("../escape.md", "blocked")), "blocked"),
+            ):
+                portable_run = subprocess.run(
+                    launcher,
+                    shell=isinstance(launcher, str),
+                    cwd=nested_cwd,
+                    input=json.dumps(payload),
+                    capture_output=True,
+                    text=True,
+                    encoding="utf-8",
+                    errors="replace",
+                    check=False,
+                )
+                outcome = codex_pre_tool_use_outcome(portable_run.returncode, portable_run.stdout, portable_run.stderr)
+                if outcome[0] != expected or (expected == "completed" and outcome[1]):
+                    raise AssertionError(f"portable Codex command failed via {launcher}: {outcome}")
 
         outside = invoke_codex(apply_patch_payload(("../escape.md", "blocked")))
         if outside[0] != "blocked" or "outside project containment" not in outside[1]:
@@ -741,7 +756,7 @@ def check_portable_routing_bundle() -> None:
         if run_installer("-Apply", "-TargetHost", "codex", "-ApproveHostInstall")["codex"]["state"] != "pending-trust":
             raise AssertionError("re-Apply of a changed Codex hook definition must require trust again")
         migrated = json.loads(read(codex_config_path))["hooks"]["PreToolUse"]
-        managed = [entry for entry in migrated if any("codex-pre-tool-use.ps1" in hook.get("commandWindows", "") for hook in entry["hooks"])]
+        managed = [entry for entry in migrated if any("codex-pre-tool-use.ps1" in hook.get("command", "") for hook in entry["hooks"])]
         if len(managed) != 1 or managed[0]["matcher"] != "apply_patch|Bash" or unrelated_entry not in migrated:
             raise AssertionError(f"Codex re-Apply must replace the legacy managed entry once and keep unrelated hooks: {migrated}")
         installed_adapter = (project / ".codex" / "hooks" / "codex-pre-tool-use.ps1").read_bytes()

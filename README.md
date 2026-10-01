@@ -157,6 +157,10 @@ flowchart TD
 Git에서 제외되는 `.ai-docs/.harness/routing-state.local.json`에 둔다. 기존 하네스는
 업데이트된 `harness-setup`을 다시 실행하면 이 portable 형식으로 갱신된다.
 
+Windows Codex 훅은 `-EncodedCommand`로 PowerShell 변수의 이중 해석을 방지한다.
+기존 설치는 bundle 갱신 후 Codex host에 `install-routing.ps1 -Apply -TargetHost codex
+-ApproveHostInstall`을 다시 적용하고, 변경된 정의를 `/hooks`에서 재검토한다.
+
 `.ai-docs/_inbox/`의 참고 파일은 기본적으로 `.gitignore`에 따라 로컬에서만 보관한다.
 다만 설계·instruction에 계속 참고해야 하는 원문을 팀과 공유하려면 사용자가 정확한
 파일 경로와 Git 공유 의도를 명시적으로 요청한 경우에만 해당 파일을 선택 추적할 수 있다.

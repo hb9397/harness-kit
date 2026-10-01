@@ -5,9 +5,9 @@
 ## 릴리스 후보
 
 - 플러그인 ID: `harness-kit`
-- 버전: `0.10.2`
-- 아카이브: `plugins/harness-kit-0.10.2.zip`
-- 아카이브 SHA-256: `c112179d25e923e4fb3d16d5f974ea2b0dba0fcdc3f043fb21e563c92437776f`
+- 버전: `0.10.3`
+- 아카이브: `plugins/harness-kit-0.10.3.zip`
+- 아카이브 SHA-256: `69dc71a9bac07bb3b2e6ceeaef1bb2a6c6e67203a8845eeb825e9a06a8669d2e`
 - Codex 물리 스킬 수: 20
 - Codex 물리 에이전트 수: 0
 - Claude 물리 스킬 수: 20

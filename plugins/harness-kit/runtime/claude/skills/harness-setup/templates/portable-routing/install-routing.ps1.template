@@ -90,7 +90,8 @@ function Is-ManagedHandler([string]$Name, [object]$Handler, [object]$Paths) {
     $commandProperty = $Handler.PSObject.Properties['command']
     $windowsProperty = $Handler.PSObject.Properties['commandWindows']
     if ($Name -eq 'claude') { return $null -ne $commandProperty -and $commandProperty.Value -eq 'powershell.exe' -and $null -ne $argsProperty -and (@($argsProperty.Value) -contains '${CLAUDE_PROJECT_DIR}/.claude/hooks/claude-pre-tool-use.ps1') }
-    return $null -ne $windowsProperty -and ([string]$windowsProperty.Value).Replace([char]92, [char]47).Contains('.codex/hooks/codex-pre-tool-use.ps1')
+    # The Windows launcher is encoded; the plain command still identifies this adapter.
+    return @(@($commandProperty, $windowsProperty) | Where-Object { $null -ne $_ -and ([string]$_.Value).Replace([char]92, [char]47).Contains('.codex/hooks/codex-pre-tool-use.ps1') }).Count -gt 0
 }
 function Merge-Handler([string]$Name, [object]$Paths, [bool]$Remove) {
     $config = Read-Config $Paths.config

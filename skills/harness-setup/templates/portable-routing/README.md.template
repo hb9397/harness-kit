@@ -31,6 +31,11 @@ decides execution from its own `/hooks` trusted hash (or a per-invocation
 `--dangerously-bypass-hook-trust`), so a `pending-trust` hook may already run.
 Re-running `-Apply` keeps `active` only while the host config hash is unchanged.
 
+The Windows Codex launcher uses `-EncodedCommand` with a UTF-16LE Base64 script
+so an outer PowerShell session cannot expand its variables. The script searches
+parent directories for `.codex/hooks/codex-pre-tool-use.ps1`. When editing the
+launcher, decode and re-encode that script, then check both cmd.exe and PowerShell.
+
 The Codex hook matches only `apply_patch|Bash`. It prints nothing on allow, a
 `systemMessage` on bypass, and a `hookEventName=PreToolUse` deny response (exit 0)
 on deny or when the adapter or core fails.

@@ -7,7 +7,7 @@
           {
             "type": "command",
             "command": "pwsh -NoProfile -ExecutionPolicy Bypass -Command '$d=(Get-Location).Path; while ($true) { $s=Join-Path $d \".codex/hooks/codex-pre-tool-use.ps1\"; if (Test-Path -LiteralPath $s -PathType Leaf) { & $s; exit $LASTEXITCODE }; $p=Split-Path -Parent $d; if (-not $p -or $p -eq $d) { throw \"Codex project hook not found.\" }; $d=$p }'",
-            "commandWindows": "powershell.exe -NoProfile -ExecutionPolicy Bypass -Command \"$d=(Get-Location).Path; while ($true) { $s=Join-Path $d '.codex/hooks/codex-pre-tool-use.ps1'; if (Test-Path -LiteralPath $s -PathType Leaf) { & $s; exit $LASTEXITCODE }; $p=Split-Path -Parent $d; if (-not $p -or $p -eq $d) { throw 'Codex project hook not found.' }; $d=$p }\""
+            "commandWindows": "powershell.exe -NoProfile -ExecutionPolicy Bypass -EncodedCommand JABkAD0AKABHAGUAdAAtAEwAbwBjAGEAdABpAG8AbgApAC4AUABhAHQAaAA7ACAAdwBoAGkAbABlACAAKAAkAHQAcgB1AGUAKQAgAHsAIAAkAHMAPQBKAG8AaQBuAC0AUABhAHQAaAAgACQAZAAgACcALgBjAG8AZABlAHgALwBoAG8AbwBrAHMALwBjAG8AZABlAHgALQBwAHIAZQAtAHQAbwBvAGwALQB1AHMAZQAuAHAAcwAxACcAOwAgAGkAZgAgACgAVABlAHMAdAAtAFAAYQB0AGgAIAAtAEwAaQB0AGUAcgBhAGwAUABhAHQAaAAgACQAcwAgAC0AUABhAHQAaABUAHkAcABlACAATABlAGEAZgApACAAewAgACYAIAAkAHMAOwAgAGUAeABpAHQAIAAkAEwAQQBTAFQARQBYAEkAVABDAE8ARABFACAAfQA7ACAAJABwAD0AUwBwAGwAaQB0AC0AUABhAHQAaAAgAC0AUABhAHIAZQBuAHQAIAAkAGQAOwAgAGkAZgAgACgALQBuAG8AdAAgACQAcAAgAC0AbwByACAAJABwACAALQBlAHEAIAAkAGQAKQAgAHsAIAB0AGgAcgBvAHcAIAAnAEMAbwBkAGUAeAAgAHAAcgBvAGoAZQBjAHQAIABoAG8AbwBrACAAbgBvAHQAIABmAG8AdQBuAGQALgAnACAAfQA7ACAAJABkAD0AJABwACAAfQA="
           }
         ]
       }

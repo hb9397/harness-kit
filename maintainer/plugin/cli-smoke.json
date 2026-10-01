@@ -9,13 +9,13 @@
   "platforms": {
     "codex": {
       "status": "passed",
-      "cli_version": "codex-cli 0.156.1",
+      "cli_version": "codex-cli 0.159.3",
       "marketplace": "hb9397",
       "plugin_id": "harness-kit@hb9397",
       "evidence_level": "marketplace-install-and-cache-smoke",
       "model_invocation_verified": false,
       "installed_payload": {
-        "version": "0.10.2",
+        "version": "0.10.3",
         "skill_count": 20,
         "agent_count": 0,
         "required_skills": [
@@ -30,13 +30,13 @@
     },
     "claude": {
       "status": "passed",
-      "cli_version": "2.1.281 (Claude Code)",
+      "cli_version": "2.1.284 (Claude Code)",
       "marketplace": "hb9397",
       "plugin_id": "harness-kit@hb9397",
       "evidence_level": "marketplace-install-and-cache-smoke",
       "model_invocation_verified": false,
       "installed_payload": {
-        "version": "0.10.2",
+        "version": "0.10.3",
         "skill_count": 20,
         "agent_count": 0,
         "required_skills": [
